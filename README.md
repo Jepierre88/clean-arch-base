@@ -1,4 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# 🧹 Clean Architecture Base for React/Next.js
+
+Welcome to a modern, scalable and maintainable boilerplate for React/Next.js projects, designed with Clean Architecture principles.
+
+## 🚀 Why Clean Architecture?
+
+Clean Architecture separates your code into clear layers (Domain, Use Cases, Infrastructure, Presentation), making your app:
+- **Easy to test**
+- **Highly maintainable**
+- **Ready for growth and change**
+- **Decoupled from frameworks and databases**
+
+## 🏗️ Project Structure
+
+```
+src/
+	app/                # Next.js app entrypoints
+	di/                 # Dependency injection setup
+	domain/             # Pure business logic (entities, repositories, usecases)
+	infraestructure/    # Data sources, repository implementations
+	presentation/       # UI components
+```
+
+## 🔄 Example Flow
+
+1. **Presentation**: UI triggers an action (e.g., fetch users)
+2. **UseCase**: Business logic orchestrates the request
+3. **Repository**: Abstracts data access
+4. **Infrastructure**: Connects to real data sources
+5. **DI Container**: Wires everything together
+
+## 📝 Quick Start
+
+Clone, install and run:
+
+```bash
+git clone https://github.com/tuusuario/clean-arch-base.git
+cd clean-arch-base
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) and start building!
+
+## 📚 Learn More
+
+- [Clean Architecture by Uncle Bob](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [tsyringe (DI for TypeScript)](https://github.com/microsoft/tsyringe)
+
+## ✨ Contribute & Feedback
+
+Pull requests and suggestions are welcome! Star the repo if you find it useful.
+
+---
+
+Ready to build robust React apps with Clean Architecture? Fork and start coding!
 
 ## Getting Started
 
