@@ -4,8 +4,20 @@ import { UserRepository } from "../domain/repositories/UserRepository";
 import { UserRepositoryImp } from "../infraestructure/repositories/UserRepositoryImp";
 import { UserDatasourceService } from "../infraestructure/datasources/UsersDataSourceService";
 
-container.registerSingleton<UserDatasourceService>("UserDatasourceService", UserDatasourceService);
+export function setupContainer() {
+  if (!container.isRegistered("UserDatasourceService")) {
+    container.register<UserDatasourceService>(
+      "UserDatasourceService",
+      { useClass: UserDatasourceService }
+    );
+  }
 
-container.registerSingleton<UserRepository>("UserRepository", UserRepositoryImp);
+  if (!container.isRegistered("UserRepository")) {
+    container.register<UserRepository>(
+      "UserRepository",
+      { useClass: UserRepositoryImp }
+    );
+  }
+}
 
 export { container };
