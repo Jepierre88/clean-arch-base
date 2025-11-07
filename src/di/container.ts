@@ -4,7 +4,7 @@ import { UserRepository } from "../domain/repositories/UserRepository";
 import { UserRepositoryImp } from "../infraestructure/repositories/UserRepositoryImp";
 import { UserDatasourceService } from "../infraestructure/datasources/UsersDataSourceService";
 
-export function setupContainer() {
+//export function setupContainer() {
   if (!container.isRegistered("UserDatasourceService")) {
     container.register<UserDatasourceService>(
       "UserDatasourceService",
@@ -18,6 +18,6 @@ export function setupContainer() {
       { useClass: UserRepositoryImp }
     );
   }
-}
+//}
 
 export { container };
