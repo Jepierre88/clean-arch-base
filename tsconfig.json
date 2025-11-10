@@ -3,7 +3,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -21,7 +25,21 @@
       }
     ],
     "paths": {
-    "@/src/*": ["./src/*"]
+      "@/src/*": [
+        "./src/*"
+      ],
+      "@/di/*": [
+        "./src/di/*"
+      ],
+      "@/domain/*": [
+        "./src/domain/*"
+      ],
+      "@/infraestructure/*": [
+        "./src/infraestructure/*"
+      ],
+      "@/public/*": [
+        "./public/*"
+      ],
     }
   },
   "include": [
@@ -32,5 +50,7 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
