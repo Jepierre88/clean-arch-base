@@ -3,7 +3,7 @@ import TCompany from "@/src/shared/types/auth/company.type";
 
 export interface ISetCompanyResponse
   extends IGeneralResponse<{
-    access_token: string;
-    refresh_token: string;
+    accessToken: string;
+    refreshToken: string;
     company: TCompany;
   }> {}
