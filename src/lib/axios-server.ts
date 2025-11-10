@@ -51,22 +51,30 @@ export function getServerApi(queryParams?: Record<string, unknown>) {
     return config;
   });
 
-  apiServer.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError) => {
-      const status = error.response?.status;
+    apiServer.interceptors.response.use(
+        (response) => response,
+        async (error: AxiosError) => {
+            const status = error.response?.status;
+            const requestUrl = error.config?.url ?? "";
 
-      if (status === 401) {
-        try {
-          await signOut();
-        } catch (signOutError) {
-          console.error("Error al cerrar sesión tras 401", signOutError);
+            // 🧠 Si la URL contiene /auth/login, no ejecutar el interceptor de error
+            if (requestUrl.includes("/auth/login")) {
+                return Promise.reject(error);
+            }
+
+            // 🔐 Si hay un 401, cerrar sesión automáticamente
+            if (status === 401) {
+                try {
+                    await signOut();
+                } catch (signOutError) {
+                    console.error("Error al cerrar sesión tras 401", signOutError);
+                }
+            }
+
+            return Promise.reject(error);
         }
-      }
+    );
 
-      return Promise.reject(error);
-    }
-  );
 
   return apiServer;
 }

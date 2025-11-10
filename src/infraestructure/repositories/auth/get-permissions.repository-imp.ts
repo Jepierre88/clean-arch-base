@@ -1,8 +1,7 @@
 import { inject, injectable } from "tsyringe";
 
-import IGetPermissionsResponse from "@/src/shared/interfaces/auth/get-permissions-response.interface";
 
-import { GetPermissionsRepository, IGetPermissionsParams } from "@/domain/index";
+import { GetPermissionsRepository, IGetPermissionsParams, IGetPermissionsResponse } from "@/domain/index";
 
 import {GetPermissionsDatasourceService} from "@/infraestructure/index"
 

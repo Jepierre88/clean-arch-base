@@ -87,7 +87,7 @@ export default function LoginPage() {
   const form = useForm<ILoginParams>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
     },
   });
@@ -198,11 +198,10 @@ export default function LoginPage() {
 
     try {
       const response = (await signIn("credentials", {
-        email: data.email,
+        identifier: data.identifier,
         password: data.password,
         redirect: false,
       })) as SignInResponse | undefined;
-
       if (!response || response.error) {
         toast.error(
           response?.code === ELoginCodes.CredentialsError
@@ -263,7 +262,7 @@ export default function LoginPage() {
       <CardHeader>
         <CardTitle>
           {isLoginStep
-            ? "Inicia sesión en CHRONOPOS"
+            ? "Inicia sesión en CHRONOPARK"
             : "Selecciona tu compañía"}
         </CardTitle>
         <CardDescription>
@@ -287,7 +286,7 @@ export default function LoginPage() {
             >
               <FormField
                 control={form.control}
-                name="email"
+                name="identifier"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Correo electrónico</FormLabel>

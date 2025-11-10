@@ -24,7 +24,7 @@ declare module "next-auth" {
     refreshToken?: string;
     permissions: TPermission;
   }
-  type User = TUser
+  interface User extends TUser {}
 }
 declare module "next-auth/jwt" {
   interface JWT {
@@ -52,7 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {
+        identifier: {
           label: "Email",
           type: "text",
           placeholder: "jsmith@example.com",
@@ -67,11 +67,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const loginUseCase = container.resolve(LoginUseCase)
 
         const loginResponse = await loginUseCase.execute({
-          email: credentials.email as string,
+          identifier: credentials.identifier as string,
           password: credentials.password as string,
         });
 
-        return loginResponse.success ? loginResponse.data : null;
+        console.log("loginResponse", loginResponse);
+
+          if (!loginResponse.success) {
+              // devuelve null para indicar fallo de login
+              return null;
+          }
+
+          return loginResponse.data; // objeto usuario
 
       },
     }),
