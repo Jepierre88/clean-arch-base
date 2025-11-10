@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../backend-parking/.idea/backend-parking.iml" filepath="$PROJECT_DIR$/../backend-parking/.idea/backend-parking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/chrono-park-frontend.iml" filepath="$PROJECT_DIR$/.idea/chrono-park-frontend.iml" />
+      <module fileurl="file://$USER_HOME$/Documentos/PERSONAL/chrono-pos-v1/.idea/frontend-pos.iml" filepath="$USER_HOME$/Documentos/PERSONAL/chrono-pos-v1/.idea/frontend-pos.iml" />
+    </modules>
+  </component>
+</project>
