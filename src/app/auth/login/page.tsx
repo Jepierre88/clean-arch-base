@@ -39,7 +39,7 @@ import { loginAction } from "@/src/app/auth/actions/login.action";
 import { setCompanyAction } from "@/src/app/auth/actions/set-company.action";
 import TCompany from "@/src/shared/types/auth/company.type";
 import { TPermission } from "@/src/shared/types/auth/permission.type";
-import type { SessionTokens } from "@/src/shared/types/auth/session.type";
+import type { SessionTokens, SessionUser } from "@/src/shared/types/auth/session.type";
 import { clearSessionCache } from "@/src/lib/session-client";
 
 type CompanyOption = {
@@ -167,6 +167,11 @@ export default function LoginPage() {
     showCompanySelectionStep(companyList, toastId);
   };
 
+  const continueLoginWithoutCompany = async (user: SessionUser, toastId: ToastId)=>{
+    toast.success(`Sesión iniciada correctamente`, { id: toastId });
+    router.replace("/admin");
+  }
+
   const onSubmit: SubmitHandler<ILoginParams> = async (data) => {
     const loadingToast = toast.loading("Iniciando sesión...");
 
@@ -187,10 +192,16 @@ export default function LoginPage() {
 
       console.log("Login exitoso:", response.data);
 
-      await continueLoginWithCompanies(
-        response.data.companies ?? [],
+      //HERE WE WILL CREATE A NEW FUNCTION NAME CONTINUE WITHOUT COMPANY
+      await continueLoginWithoutCompany(
+        response.data.user,
         loadingToast
       );
+
+      // await continueLoginWithCompanies(
+      //   response.data.companies ?? [],
+      //   loadingToast
+      // );
     } catch (error) {
       toast.error(getErrorMessage(error, "No se pudo iniciar sesión"), {
         id: loadingToast,

@@ -1,8 +1,6 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 import { UserRepository } from "@/domain/repositories/UserRepository";
-import { UserRepositoryImp } from "@/infraestructure/repositories/UserRepositoryImp";
-import { UserDatasourceService } from "@/infraestructure/datasources/UsersDataSourceService";
 
 import {GetPermissionsRepository, LoginRepository, SetCompanyRepository} from "@/domain/index"
 import {
@@ -13,21 +11,6 @@ import {
   SetCompanyDatasourceService,
   SetCompanyRepositoryImp,
 } from "@/infraestructure/index"
-
-//export function setupContainer() {
-  if (!container.isRegistered("UserDatasourceService")) {
-    container.register<UserDatasourceService>(
-      "UserDatasourceService",
-      { useClass: UserDatasourceService }
-    );
-  }
-
-  if (!container.isRegistered("UserRepository")) {
-    container.register<UserRepository>(
-      "UserRepository",
-      { useClass: UserRepositoryImp }
-    );
-  }
 
   if(!container.isRegistered("LoginRepository")){
     container.register<LoginRepository>(
@@ -68,7 +51,5 @@ import {
       { useClass: SetCompanyDatasourceService }
     );
   }
-
-//}
 
 export { container };
