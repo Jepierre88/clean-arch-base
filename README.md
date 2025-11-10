@@ -45,6 +45,7 @@ Open [http://localhost:3000](http://localhost:3000) and start building!
 
 ## 📚 Learn More
 
+- [Session module guide](./docs/session-module.md)
 - [Clean Architecture by Uncle Bob](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [tsyringe (DI for TypeScript)](https://github.com/microsoft/tsyringe)
