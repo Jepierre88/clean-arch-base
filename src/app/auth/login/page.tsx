@@ -5,7 +5,6 @@ import { ILoginParams } from "@/domain/index";
 import { LoginSchema } from "@/src/shared/schemas/auth/login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { getSession, signIn, SignInResponse, useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Button } from "@/src/shared/components/ui/button";
 import {
@@ -35,12 +34,13 @@ import {
   SelectValue,
   SelectItem, // 👈 IMPORTANTE
 } from "@/src/shared/components/ui/select";
-import { ELoginCodes } from "@/src/shared/enums/auth/login-codes.enum";
 import { EyeIcon, EyeOff } from "lucide-react";
+import { loginAction } from "@/src/app/auth/actions/login.action";
 import { setCompanyAction } from "@/src/app/auth/actions/set-company.action";
-import { getPermissionsAction } from "@/src/app/auth/actions/get-permissions.action";
 import TCompany from "@/src/shared/types/auth/company.type";
 import { TPermission } from "@/src/shared/types/auth/permission.type";
+import type { SessionTokens } from "@/src/shared/types/auth/session.type";
+import { clearSessionCache } from "@/src/lib/session-client";
 
 type CompanyOption = {
   id: string;
@@ -48,9 +48,8 @@ type CompanyOption = {
 };
 
 type SelectionResult = {
-  accessToken: string;
-  refreshToken: string;
   company: TCompany;
+  tokens: SessionTokens;
   permissions: TPermission;
 };
 
@@ -82,7 +81,6 @@ const getErrorMessage = (error: unknown, fallback: string): string => {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { update } = useSession();
 
   const form = useForm<ILoginParams>({
     resolver: zodResolver(LoginSchema),
@@ -96,51 +94,28 @@ export default function LoginPage() {
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
   const [settingCompany, setSettingCompany] = useState(false);
-  const [isShownPassword, setIsShownPassword] = useState(false)
+  const [isShownPassword, setIsShownPassword] = useState(false);
 
   const resetCompanySelectionState = () => {
     setCompanies([]);
     setSelectedCompanyId("");
     setStep("login");
   };
-
-  const applySelectionToUserSession = async (selection: SelectionResult) => {
-    await update({
-      selectedCompany: selection.company,
-      accessToken: selection.accessToken,
-      refreshToken: selection.refreshToken,
-      permissions: selection.permissions,
-    });
-  };
-
   const selectCompanyAndFetchPermissions = async (
     companyId: string
   ): Promise<SelectionResult> => {
-    const setCompanyResponse = await setCompanyAction({ companyId });
+    const response = await setCompanyAction({ companyId });
 
-    if (!setCompanyResponse.success || !setCompanyResponse.data) {
-      throw new Error(
-        setCompanyResponse.error || "No se pudo establecer la compañía"
-      );
+    if (!response.success || !response.data) {
+      throw new Error(response.error || "No se pudo establecer la compañía");
     }
 
-    const { access_token, refresh_token, company } = setCompanyResponse.data;
-
-    const permissionsResponse = await getPermissionsAction({
-      token: access_token,
-    });
-
-    if (!permissionsResponse.success || !permissionsResponse.data) {
-      throw new Error(
-        permissionsResponse.error || "No se pudieron obtener los permisos"
-      );
-    }
+    clearSessionCache();
 
     return {
-      accessToken: access_token,
-      refreshToken: refresh_token,
-      company,
-      permissions: permissionsResponse.data,
+      company: response.data.company,
+      tokens: response.data.tokens,
+      permissions: response.data.permissions,
     };
   };
 
@@ -149,7 +124,6 @@ export default function LoginPage() {
     toastId: ToastId
   ) => {
     const selection = await selectCompanyAndFetchPermissions(companyId);
-    await applySelectionToUserSession(selection);
     resetCompanySelectionState();
 
     toast.success(
@@ -197,25 +171,26 @@ export default function LoginPage() {
     const loadingToast = toast.loading("Iniciando sesión...");
 
     try {
-      const response = (await signIn("credentials", {
+      const response = await loginAction({
         identifier: data.identifier,
         password: data.password,
-        redirect: false,
-      })) as SignInResponse | undefined;
-      if (!response || response.error) {
-        toast.error(
-          response?.code === ELoginCodes.CredentialsError
-            ? "Credenciales incorrectas"
-            : "Error desconocido",
-          { id: loadingToast }
-        );
+      });
+
+      if (!response.success || !response.data) {
+        toast.error(response.error ?? "No se pudo iniciar sesión", {
+          id: loadingToast,
+        });
         return;
       }
 
-      const companiesFromSession =
-        (await getSession())?.user?.companies ?? [];
+      clearSessionCache();
 
-  await continueLoginWithCompanies(companiesFromSession, loadingToast);
+      console.log("Login exitoso:", response.data);
+
+      await continueLoginWithCompanies(
+        response.data.companies ?? [],
+        loadingToast
+      );
     } catch (error) {
       toast.error(getErrorMessage(error, "No se pudo iniciar sesión"), {
         id: loadingToast,
@@ -234,7 +209,6 @@ export default function LoginPage() {
       const selection = await selectCompanyAndFetchPermissions(
         selectedCompanyId
       );
-      await applySelectionToUserSession(selection);
       resetCompanySelectionState();
 
       toast.success(
@@ -314,10 +288,18 @@ export default function LoginPage() {
                           type={isShownPassword ? "text" : "password"}
                           {...field}
                         />
-                        <Button variant="ghost" size="icon" className="absolute right-0 top-1/2 -translate-y-1/2" type="button" onClick={() => setIsShownPassword(!isShownPassword)}>
-                          {
-                            isShownPassword ? <EyeOff className="h-4 w-4"/> : <EyeIcon className="h-4 w-4"/>
-                          }
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-0 top-1/2 -translate-y-1/2"
+                          type="button"
+                          onClick={() => setIsShownPassword(!isShownPassword)}
+                        >
+                          {isShownPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <EyeIcon className="h-4 w-4" />
+                          )}
                         </Button>
                       </div>
                     </FormControl>

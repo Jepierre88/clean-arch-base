@@ -2,8 +2,8 @@
 "use client";
 
 import axios, { AxiosInstance } from "axios";
-import { getSession } from "next-auth/react";
 import { ENVIRONMENT } from "../shared/constants/environment";
+import { getClientSession } from "./session-client";
 
 // Declaración global para singleton en HMR
 declare global {
@@ -21,19 +21,19 @@ function createAxiosClient() {
   instance.interceptors.request.use(async (config) => {
     if (typeof window === "undefined") return config;
 
-    try {
-      const session = await getSession();
-      const token = session?.user?.tokens?.access_token;
+    const session = await getClientSession();
+    const token = session?.tokens?.accessToken;
 
-      // Axios v1 headers is a plain object; ensure we don’t override if already present
-      const headersObj = (config.headers ?? {}) as Record<string, unknown>;
-      const hasAuthHeader =
-        typeof (headersObj["Authorization"]) === "string" && (headersObj["Authorization"] as string).length > 0;
-      if (token && !hasAuthHeader) {
-        config.headers.set("Authorization", `Bearer ${token}`);
+    if (token) {
+      if (config.headers && typeof (config.headers as { set?: unknown }).set === "function") {
+        (config.headers as { set: (key: string, value: string) => void }).set(
+          "Authorization",
+          `Bearer ${token}`
+        );
+      } else {
+        const headers = (config.headers = config.headers ?? {});
+        (headers as Record<string, unknown>)["Authorization"] = `Bearer ${token}`;
       }
-    } catch (error) {
-      console.error("Error obteniendo la sesión:", error);
     }
 
     return config;

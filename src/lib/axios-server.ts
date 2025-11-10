@@ -1,8 +1,7 @@
 // lib/api/server.ts
 import axios, { AxiosError } from "axios";
 import { ENVIRONMENT } from "../shared/constants/environment";
-import { auth, signOut } from "./auth";
-import { redirect } from "next/navigation";
+import { destroySession, getSession } from "./session";
 
 let apiServer: ReturnType<typeof axios.create> | null = null;
 
@@ -16,8 +15,8 @@ export function getServerApi(queryParams?: Record<string, unknown>) {
 
   // Interceptor: auth (token de sesión en server)
   apiServer.interceptors.request.use(async (config) => {
-    const session = await auth();
-    const token = session?.sessionToken;
+    const session = await getSession();
+    const token = session?.tokens?.accessToken;
 
     if (token) {
       const headers = (config.headers = config.headers ?? {});
@@ -51,29 +50,29 @@ export function getServerApi(queryParams?: Record<string, unknown>) {
     return config;
   });
 
-    apiServer.interceptors.response.use(
-        (response) => response,
-        async (error: AxiosError) => {
-            const status = error.response?.status;
-            const requestUrl = error.config?.url ?? "";
+  apiServer.interceptors.response.use(
+    (response) => response,
+    async (error: AxiosError) => {
+      const status = error.response?.status;
+      const requestUrl = error.config?.url ?? "";
 
-            // 🧠 Si la URL contiene /auth/login, no ejecutar el interceptor de error
-            if (requestUrl.includes("/auth/login")) {
-                return Promise.reject(error);
-            }
+      // 🧠 Si la URL contiene /auth/login, no ejecutar el interceptor de error
+      if (requestUrl.includes("/auth/login")) {
+        return Promise.reject(error);
+      }
 
-            // 🔐 Si hay un 401, cerrar sesión automáticamente
-            if (status === 401) {
-                try {
-                    await signOut();
-                } catch (signOutError) {
-                    console.error("Error al cerrar sesión tras 401", signOutError);
-                }
-            }
-
-            return Promise.reject(error);
+      // 🔐 Si hay un 401, cerrar sesión automáticamente
+      if (status === 401) {
+        try {
+          await destroySession();
+        } catch (destroyError) {
+          console.error("Error al cerrar sesión tras 401", destroyError);
         }
-    );
+      }
+
+      return Promise.reject(error);
+    }
+  );
 
 
   return apiServer;
