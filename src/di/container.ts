@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 
-import {GetPermissionsRepository, LoginRepository} from "@/domain/index"
+import { LoginRepository} from "@/domain/index"
 import {
   LoginDatasourceService,
   LoginRepositoryImp,
