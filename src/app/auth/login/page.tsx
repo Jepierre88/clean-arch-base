@@ -27,47 +27,8 @@ import { Input } from "@/src/shared/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 // import setCompanyClientService from "@/src/shared/services/data/auth/set-company-client.service";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-  SelectItem, // 👈 IMPORTANTE
-} from "@/src/shared/components/ui/select";
 import { EyeIcon, EyeOff } from "lucide-react";
 import { loginAction } from "@/src/app/auth/actions/login.action";
-import { setCompanyAction } from "@/src/app/auth/actions/set-company.action";
-import TCompany from "@/src/shared/types/auth/company.type";
-import { TPermission } from "@/src/shared/types/auth/permission.type";
-import type { SessionTokens, SessionUser } from "@/src/shared/types/auth/session.type";
-import { clearSessionCache } from "@/src/lib/session-client";
-
-type CompanyOption = {
-  id: string;
-  name: string;
-};
-
-type SelectionResult = {
-  company: TCompany;
-  tokens: SessionTokens;
-  permissions: TPermission;
-};
-
-const COMPANY_SELECTOR_STEP = "company" as const;
-
-type ToastId = string | number;
-type Step = "login" | typeof COMPANY_SELECTOR_STEP;
-
-const getCompanyDisplayName = (company: TCompany): string =>
-  company.name || company.shortName || company.branding?.logo || company.id;
-
-const mapCompanyToOption = (company: TCompany): CompanyOption => ({
-  id: company.id,
-  name: getCompanyDisplayName(company),
-});
-
-const buildCompanyOptions = (companies: TCompany[]): CompanyOption[] =>
-  companies.map(mapCompanyToOption);
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
   if (typeof error === "string" && error.trim().length > 0) {
@@ -90,87 +51,7 @@ export default function LoginPage() {
     },
   });
 
-  const [step, setStep] = useState<Step>("login");
-  const [companies, setCompanies] = useState<CompanyOption[]>([]);
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
-  const [settingCompany, setSettingCompany] = useState(false);
   const [isShownPassword, setIsShownPassword] = useState(false);
-
-  const resetCompanySelectionState = () => {
-    setCompanies([]);
-    setSelectedCompanyId("");
-    setStep("login");
-  };
-  const selectCompanyAndFetchPermissions = async (
-    companyId: string
-  ): Promise<SelectionResult> => {
-    const response = await setCompanyAction({ companyId });
-
-    if (!response.success || !response.data) {
-      throw new Error(response.error || "No se pudo establecer la compañía");
-    }
-
-    clearSessionCache();
-
-    return {
-      company: response.data.company,
-      tokens: response.data.tokens,
-      permissions: response.data.permissions,
-    };
-  };
-
-  const completeLoginWithSingleCompany = async (
-    companyId: string,
-    toastId: ToastId
-  ) => {
-    const selection = await selectCompanyAndFetchPermissions(companyId);
-    resetCompanySelectionState();
-
-    toast.success(
-      `Sesión iniciada con ${getCompanyDisplayName(selection.company)}`,
-      { id: toastId }
-    );
-    router.replace("/admin");
-  };
-
-  const showCompanySelectionStep = (
-    companyList: TCompany[],
-    toastId: ToastId
-  ) => {
-    setCompanies(buildCompanyOptions(companyList));
-    setSelectedCompanyId("");
-    setStep(COMPANY_SELECTOR_STEP);
-
-    toast.info(
-      "Tu usuario tiene múltiples compañías. Selecciona una para continuar.",
-      { id: toastId }
-    );
-  };
-
-  const continueLoginWithCompanies = async (
-    companyList: TCompany[],
-    toastId: ToastId
-  ) => {
-    if (companyList.length === 0) {
-      resetCompanySelectionState();
-      toast.error("No se encontraron compañías asociadas a tu usuario.", {
-        id: toastId,
-      });
-      return;
-    }
-
-    if (companyList.length === 1) {
-      await completeLoginWithSingleCompany(companyList[0].id, toastId);
-      return;
-    }
-
-    showCompanySelectionStep(companyList, toastId);
-  };
-
-  const continueLoginWithoutCompany = async (user: SessionUser, toastId: ToastId)=>{
-    toast.success(`Sesión iniciada correctamente`, { id: toastId });
-    router.replace("/admin");
-  }
 
   const onSubmit: SubmitHandler<ILoginParams> = async (data) => {
     const loadingToast = toast.loading("Iniciando sesión...");
@@ -188,20 +69,21 @@ export default function LoginPage() {
         return;
       }
 
-      clearSessionCache();
-
       console.log("Login exitoso:", response.data);
 
-      //HERE WE WILL CREATE A NEW FUNCTION NAME CONTINUE WITHOUT COMPANY
-      await continueLoginWithoutCompany(
-        response.data.user,
-        loadingToast
-      );
+      // If backend returned applications, redirect to first application's path
+      const apps = (response.data.applications ?? []) as { path?: string }[];
+      if (apps.length > 0 && apps[0].path) {
+        toast.success("Sesión iniciada correctamente", { id: loadingToast });
+        // Normalize the path and redirect
+        const appPath = apps[0].path.startsWith("/") ? apps[0].path : `/${apps[0].path}`;
+        router.replace(appPath);
+        return;
+      }
 
-      // await continueLoginWithCompanies(
-      //   response.data.companies ?? [],
-      //   loadingToast
-      // );
+      // Fallback: redirect to /admin
+      toast.success("Sesión iniciada correctamente", { id: loadingToast });
+      router.replace("/admin");
     } catch (error) {
       toast.error(getErrorMessage(error, "No se pudo iniciar sesión"), {
         id: loadingToast,
@@ -209,66 +91,18 @@ export default function LoginPage() {
     }
   };
 
-  const confirmCompany = async () => {
-    if (!selectedCompanyId) {
-      toast.message("Selecciona una compañía para continuar");
-      return;
-    }
-    setSettingCompany(true);
-    const selectingToast = toast.loading("Aplicando compañía...");
-    try {
-      const selection = await selectCompanyAndFetchPermissions(
-        selectedCompanyId
-      );
-      resetCompanySelectionState();
-
-      toast.success(
-        `Sesión iniciada con ${getCompanyDisplayName(selection.company)}`,
-        { id: selectingToast }
-      );
-      router.replace("/admin");
-    } catch (error) {
-      toast.error(
-        getErrorMessage(
-          error,
-          "No se pudo establecer la compañía. Intenta de nuevo."
-        ),
-        { id: selectingToast }
-      );
-    } finally {
-      setSettingCompany(false);
-    }
-  };
-
-  const isLoginStep = step === "login";
-
   return (
     <Card className="w-full max-w-sm mx-auto my-auto">
       <CardHeader>
-        <CardTitle>
-          {isLoginStep
-            ? "Inicia sesión en CHRONOPARK"
-            : "Selecciona tu compañía"}
-        </CardTitle>
-        <CardDescription>
-          {isLoginStep
-            ? "Ingresa tu correo electrónico y contraseña."
-            : "Tu usuario tiene múltiples compañías. Elige con cuál iniciar la sesión."}
-        </CardDescription>
-        {isLoginStep && (
-          <CardAction>
-            <Button variant="link">Registrarse</Button>
-          </CardAction>
-        )}
+        <CardTitle>Inicia sesión en CHRONOPARK</CardTitle>
+        <CardDescription>Ingresa tu correo electrónico y contraseña.</CardDescription>
+        <CardAction>
+          <Button variant="link">Registrarse</Button>
+        </CardAction>
       </CardHeader>
-
       <CardContent>
-        {isLoginStep ? (
-          <Form {...form}>
-            <form
-              className="flex flex-col gap-4"
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
+        <Form {...form}>
+          <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="identifier"
@@ -325,45 +159,7 @@ export default function LoginPage() {
                 </Button>
               </div>
             </form>
-          </Form>
-        ) : (
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="text-sm font-medium">Compañía</label>
-              <Select
-                value={selectedCompanyId}
-                onValueChange={setSelectedCompanyId}
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Selecciona una compañía" />
-                </SelectTrigger>
-                <SelectContent>
-                  {companies.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="w-full flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setStep("login")}
-                disabled={settingCompany}
-              >
-                Volver
-              </Button>
-              <Button
-                onClick={confirmCompany}
-                disabled={settingCompany || !selectedCompanyId}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                {settingCompany ? "Aplicando..." : "Continuar"}
-              </Button>
-            </div>
-          </div>
-        )}
+        </Form>
       </CardContent>
     </Card>
   );

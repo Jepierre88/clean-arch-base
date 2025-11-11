@@ -5,32 +5,24 @@ import { AxiosError } from "axios";
 import { container } from "@/di/container";
 import { LoginUseCase } from "@/domain/index";
 import type { ILoginParams } from "@/domain/entities/auth/login-params.entity";
-import type TCompany from "@/src/shared/types/auth/company.type";
-import type { TPermission } from "@/src/shared/types/auth/permission.type";
+// company/permission types not used here; kept in todo for future mapping
+import type { TApplication } from "@/src/shared/types/auth/application.type";
 import type IActionResponse from "@/src/shared/interfaces/generic/action-response";
-import type TUser from "@/src/shared/types/auth/user.type";
+// TUser is not used directly here
 import type { SessionTokens, SessionUser } from "@/src/shared/types/auth/session.type";
 import type IErrorResponse from "@/src/shared/interfaces/generic/error-response.interface";
 import { createSession } from "@/src/lib/session";
 
 export type LoginActionResult = {
   user: SessionUser;
-  companies: TCompany[];
-  permissions: TPermission | null;
+  applications?: TApplication[];
+  role?: { id: string; name: string } | null;
 };
 
-function mapTokens(tokens: TUser["tokens"] | undefined): SessionTokens {
-  const source = (tokens ?? {}) as Record<string, unknown>;
-
+function mapTokensFromPayload(payload: Record<string, unknown>): SessionTokens {
   return {
-    accessToken:
-      (source.accessToken as string | undefined) ??
-      (source["access_token"] as string | undefined) ??
-      "",
-    refreshToken:
-      (source.refreshToken as string | undefined) ??
-      (source["refresh_token"] as string | undefined) ??
-      undefined,
+    accessToken: (payload["access_token"] as string) || (payload["accessToken"] as string) || "",
+    refreshToken: (payload["refresh_token"] as string) || (payload["refreshToken"] as string) || undefined,
   };
 }
 
@@ -40,7 +32,7 @@ export async function loginAction(
   try {
     const useCase = container.resolve(LoginUseCase);
     const response = await useCase.execute(params);
-    
+
     if (!response.success || !response.data) {
       return {
         success: false,
@@ -48,30 +40,36 @@ export async function loginAction(
       };
     }
 
-    const user = response.data;
-    const { tokens: rawTokens, ...restUser } = user;
-    const tokens = mapTokens(rawTokens);
-    const companies = Array.isArray(user.companies) ? user.companies : [];
-    const permissions = (user as { permissions?: TPermission }).permissions ?? null;
+    // New backend shape: { success, message, data: { access_token, refresh_token, role, user, applications } }
+    const payload = response.data as unknown as Record<string, unknown>;
+
+    const tokens = mapTokensFromPayload(payload);
+    const userRaw = (payload["user"] as Record<string, unknown>) ?? {};
 
     const sessionUser: SessionUser = {
-      ...restUser,
+      id: (userRaw.id as string) || "",
+      email: (userRaw.email as string) || undefined,
+      name: (userRaw.name as string) || undefined,
+      ...userRaw,
     };
+
+    const applications = (payload["applications"] as TApplication[]) || [];
+    const role = (payload["role"] as { id: string; name: string }) || null;
 
     await createSession({
       user: sessionUser,
-      companies,
-      selectedCompany: null,
       permissions: null,
       tokens,
+      role,
+      applications,
     });
 
     return {
       success: true,
       data: {
         user: sessionUser,
-        companies,
-        permissions,
+        applications,
+        role,
       },
     };
   } catch (error) {

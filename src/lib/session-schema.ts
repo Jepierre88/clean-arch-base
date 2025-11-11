@@ -3,12 +3,10 @@ import type {
   CreateSessionInput,
   SessionPayload,
   SessionTokens,
-  SessionCompany,
   SessionPermission,
   SessionMetadata,
 } from "@/src/shared/types/auth/session.type";
-
-const EMPTY_COMPANIES: SessionCompany[] = [];
+import type { TApplication } from "@/src/shared/types/auth/application.type";
 
 export function normalizeTokens(
   tokens: SessionTokens | Record<string, unknown> | undefined
@@ -31,12 +29,9 @@ export function normalizeTokens(
   };
 }
 
-export function normalizeCompanies(companies?: unknown): SessionCompany[] {
-  if (!Array.isArray(companies)) {
-    return EMPTY_COMPANIES;
-  }
-
-  return companies as SessionCompany[];
+export function normalizeApplications(apps?: unknown): TApplication[] {
+  if (!Array.isArray(apps)) return [];
+  return apps as TApplication[];
 }
 
 export function normalizePermissions(
@@ -49,8 +44,6 @@ export function ensureSessionPayload(
   payload: SessionPayload,
   meta: SessionMeta
 ): SessionPayload {
-  const companies = normalizeCompanies(payload.companies);
-  const selectedCompany = payload.selectedCompany ?? companies[0] ?? null;
   const metadata: SessionMetadata = {
     ...(payload.metadata ?? {}),
     maxAge: meta.maxAge,
@@ -61,9 +54,8 @@ export function ensureSessionPayload(
   return {
     ...payload,
     tokens: normalizeTokens(payload.tokens),
-    companies,
-    selectedCompany,
     permissions: normalizePermissions(payload.permissions),
+    applications: normalizeApplications(payload.applications),
     metadata,
   };
 }
@@ -72,15 +64,15 @@ export function buildSessionPayload(
   input: CreateSessionInput,
   meta: SessionMeta
 ): SessionPayload {
-  const companies = normalizeCompanies(input.companies ?? input.user?.companies);
+  const applications = normalizeApplications(input.applications ?? input.user?.applications);
 
   return ensureSessionPayload(
     {
       user: input.user,
-      companies,
-      selectedCompany: input.selectedCompany ?? companies[0] ?? null,
       permissions: input.permissions ?? normalizePermissions(input.user?.permissions),
       tokens: normalizeTokens(input.tokens),
+      role: input.role ?? (input.user?.role as { id: string; name: string } | null) ?? null,
+      applications,
       metadata: {
         ...(input.metadata ?? {}),
         maxAge: meta.maxAge,

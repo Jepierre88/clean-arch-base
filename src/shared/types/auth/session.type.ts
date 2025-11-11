@@ -1,6 +1,6 @@
-import TCompany from "./company.type";
 import { TPermission } from "./permission.type";
 import TUser from "./user.type";
+import { TApplication } from "./application.type";
 
 export type SessionTokens = {
   accessToken: string;
@@ -13,9 +13,6 @@ export type SessionUser = Partial<TUser> & {
   name?: string | null;
   [key: string]: unknown;
 };
-
-export type SessionCompany = TCompany;
-
 export type SessionPermission = Partial<TPermission> & {
   code?: string;
   [key: string]: unknown;
@@ -30,19 +27,19 @@ export type SessionMetadata = {
 
 export type SessionPayload = {
   user: SessionUser;
-  companies: SessionCompany[];
-  selectedCompany: SessionCompany | null;
   permissions: SessionPermission | null;
   tokens: SessionTokens;
+  role?: { id: string; name: string } | null;
+  applications?: TApplication[];
   metadata: SessionMetadata;
 };
 
 export type CreateSessionInput = {
   user: SessionUser;
-  companies?: SessionCompany[];
-  selectedCompany?: SessionCompany | null;
   permissions?: SessionPermission | null;
   tokens: SessionTokens;
+  role?: { id: string; name: string } | null;
+  applications?: TApplication[];
   metadata?: Partial<SessionMetadata>;
   maxAge?: number;
 };
