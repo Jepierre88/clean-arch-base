@@ -12,7 +12,6 @@ export class GetPermissionsDatasourceService
   async getPermissions(
     params: IGetPermissionsParams
   ): Promise<IGetPermissionsResponse> {
-    console.log("GetPermissionsDatasourceService params:", params);
     return await this.api
       .get<IGetPermissionsResponse>("/auth/permissions", {
         headers: {

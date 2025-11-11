@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
-import { UserRepository } from "@/domain/repositories/UserRepository";
 
 import {GetPermissionsRepository, LoginRepository} from "@/domain/index"
 import {
