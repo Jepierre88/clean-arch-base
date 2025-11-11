@@ -3,4 +3,5 @@ export const ENVIRONMENT = {
     SESSION_SECRET: process.env.SESSION_SECRET || process.env.AUTH_SECRET || "",
     SESSION_COOKIE_NAME: process.env.SESSION_COOKIE_NAME || "chrono_session",
     SESSION_MAX_AGE: Number(process.env.SESSION_MAX_AGE ?? 60 * 60 * 8),
+    DEBOUNCE_TIME: Number(process.env.NEXT_PUBLIC_DEBOUNCE_TIME ?? 300),
 };

@@ -3,8 +3,6 @@ import { container } from "tsyringe";
 
 import {GetPermissionsRepository, LoginRepository} from "@/domain/index"
 import {
-  GetPermissionsDatasourceService,
-  GetPermissionsRepositoryImp,
   LoginDatasourceService,
   LoginRepositoryImp,
 } from "@/infraestructure/index"
@@ -20,19 +18,6 @@ import {
     container.register<LoginDatasourceService>(
       "LoginDatasourceService",
       { useClass: LoginDatasourceService }
-    );
-  }
-
-  if (!container.isRegistered("GetPermissionsRepository")) {
-    container.register<GetPermissionsRepository>("GetPermissionsRepository", {
-      useClass: GetPermissionsRepositoryImp,
-    });
-  }
-
-  if (!container.isRegistered("GetPermissionsDatasourceService")) {
-    container.register<GetPermissionsDatasourceService>(
-      "GetPermissionsDatasourceService",
-      { useClass: GetPermissionsDatasourceService }
     );
   }
 
