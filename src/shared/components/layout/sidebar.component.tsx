@@ -42,8 +42,15 @@ export default function SidebarComponent({ applications }: { applications: TAppl
   };
 
   const handleRedirect = (path: string) => {
-    router.replace(path);
-    // redirect(path)
+    // Use push so navigation is added to history (back button works)
+    router.push(path);
+  };
+
+  const normalizeToAbsolutePath = (p: string | undefined) => {
+    if (!p) return "/admin";
+    const clean = p.replace(/^\/+/, ""); // remove leading slashes
+    if (clean.startsWith("admin/")) return `/${clean}`; // already has admin
+    return `/admin/${clean}`;
   };
 
   return (
@@ -75,7 +82,8 @@ export default function SidebarComponent({ applications }: { applications: TAppl
             <SidebarGroupLabel>{app.name}</SidebarGroupLabel>
             <SidebarMenu>
               {app.resources.map((res) => {
-                const isActive = pathname.startsWith(`/admin${res.path}`);
+                const resPath = normalizeToAbsolutePath(res.path);
+                const isActive = pathname.startsWith(resPath);
 
                 return isResourceWithoutSubresources(res) ? (
                   <SidebarMenuItem key={res.id}>
@@ -83,7 +91,7 @@ export default function SidebarComponent({ applications }: { applications: TAppl
                       className={`cursor-pointer ${
                         isActive ? "bg-accent text-accent-foreground" : ""
                       }`}
-                      onClick={() => handleRedirect(`/admin${res.path}`)}
+                      onClick={() => handleRedirect(resPath)}
                     >
                       <AppIcons iconName={res.icon as EIconNames} />
                       {res.name}
@@ -104,9 +112,8 @@ export default function SidebarComponent({ applications }: { applications: TAppl
                     <CollapsibleContent>
                       <SidebarMenuSub>
                         {res.subresources.map((subresource) => {
-                          const isSubActive = pathname.startsWith(
-                            `/admin${subresource.path}`
-                          );
+                          const subPath = normalizeToAbsolutePath(subresource.path);
+                          const isSubActive = pathname.startsWith(subPath);
                           return (
                             <SidebarMenuSubItem key={subresource.name}>
                               <SidebarMenuSubButton
@@ -115,9 +122,7 @@ export default function SidebarComponent({ applications }: { applications: TAppl
                                     ? "bg-accent text-accent-foreground"
                                     : ""
                                 }
-                                onClick={() =>
-                                  handleRedirect(`/admin${subresource.path}`)
-                                }
+                                onClick={() => handleRedirect(subPath)}
                               >
                                 {subresource.name}
                               </SidebarMenuSubButton>
