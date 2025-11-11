@@ -26,8 +26,13 @@ import {
 import { TResource } from "../../types/auth/resource.type";
 import AppIcons from "../icons.component";
 import { EIconNames } from "../../enums/icon-names.enum";
+import Image from "next/image";
 
-export default function SidebarComponent({ applications }: { applications: TApplication[] }) {
+export default function SidebarComponent({
+  applications,
+}: {
+  applications: TApplication[];
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -42,7 +47,6 @@ export default function SidebarComponent({ applications }: { applications: TAppl
   };
 
   const handleRedirect = (path: string) => {
-    // Use push so navigation is added to history (back button works)
     router.push(path);
   };
 
@@ -55,7 +59,23 @@ export default function SidebarComponent({ applications }: { applications: TAppl
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
+      <SidebarHeader className="mx-auto">
+        <Image
+          src="/img/BLACK_LOGO.png"
+          alt="Logotipo ChronoPOS"
+          width={82}
+          height={82}
+          className="block dark:hidden"
+          priority
+        />
+        <Image
+          src="/img/WHITE_LOGO.png"
+          alt="Logotipo ChronoPOS (modo oscuro)"
+          width={82}
+          height={82}
+          className="hidden dark:block"
+          priority
+        />{" "}
         {/* CompanySwitcher removed: companies are not part of the session anymore */}
       </SidebarHeader>
       <SidebarContent>
@@ -112,7 +132,9 @@ export default function SidebarComponent({ applications }: { applications: TAppl
                     <CollapsibleContent>
                       <SidebarMenuSub>
                         {res.subresources.map((subresource) => {
-                          const subPath = normalizeToAbsolutePath(subresource.path);
+                          const subPath = normalizeToAbsolutePath(
+                            subresource.path
+                          );
                           const isSubActive = pathname.startsWith(subPath);
                           return (
                             <SidebarMenuSubItem key={subresource.name}>
