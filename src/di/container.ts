@@ -2,14 +2,12 @@ import "reflect-metadata";
 import { container } from "tsyringe";
 import { UserRepository } from "@/domain/repositories/UserRepository";
 
-import {GetPermissionsRepository, LoginRepository, SetCompanyRepository} from "@/domain/index"
+import {GetPermissionsRepository, LoginRepository} from "@/domain/index"
 import {
   GetPermissionsDatasourceService,
   GetPermissionsRepositoryImp,
   LoginDatasourceService,
   LoginRepositoryImp,
-  SetCompanyDatasourceService,
-  SetCompanyRepositoryImp,
 } from "@/infraestructure/index"
 
   if(!container.isRegistered("LoginRepository")){
@@ -39,17 +37,6 @@ import {
     );
   }
 
-  if (!container.isRegistered("SetCompanyRepository")) {
-    container.register<SetCompanyRepository>("SetCompanyRepository", {
-      useClass: SetCompanyRepositoryImp,
-    });
-  }
-
-  if (!container.isRegistered("SetCompanyDatasourceService")) {
-    container.register<SetCompanyDatasourceService>(
-      "SetCompanyDatasourceService",
-      { useClass: SetCompanyDatasourceService }
-    );
-  }
+  // set-company bindings removed (companies flow deprecated)
 
 export { container };

@@ -1,3 +1,3 @@
-export interface ISetCompanyParams {
-  companyId: string;
-}
+// Deprecated: set-company params entity removed.
+
+export {};

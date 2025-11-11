@@ -1,5 +1,3 @@
-import { ISetCompanyParams, ISetCompanyResponse } from "@/domain/index";
+// Deprecated: set-company repository removed from the domain.
 
-export abstract class SetCompanyRepository {
-  abstract setCompany(params: ISetCompanyParams): Promise<ISetCompanyResponse>;
-}
+export {};
