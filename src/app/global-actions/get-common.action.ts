@@ -15,10 +15,8 @@ export async function getCommonAction<T = unknown>(
   try {
     const usecase = container.resolve(CommonUsecase);
     const response = await usecase.get<T>(service);
-    console.log("Common data fetched for service:", service, response);
     return { success: true, data: response };
   } catch (error) {
-    console.error("Error in getCommonAction for service:", service, error);
     return { success: false, error: (error as AxiosError<IErrorResponse>).response?.data.message || "Error inesperado"};
   }
 }
