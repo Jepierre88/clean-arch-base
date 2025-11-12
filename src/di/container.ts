@@ -1,42 +1,51 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 
-import { LoginRepository, ManualControlRepository} from "@/domain/index"
+import { LoginRepository, ManualControlRepository } from "@/domain/index";
 import {
+  CommonDatasourceService,
+  CommonRepositoryImp,
   LoginDatasourceService,
   LoginRepositoryImp,
   ManualControlDatasourceService,
   ManualControlRepositoryImp,
-} from "@/infraestructure/index"
+} from "@/infraestructure/index";
 
-  if(!container.isRegistered("LoginRepository")){
-    container.register<LoginRepository>(
-      "LoginRepository",
-      { useClass: LoginRepositoryImp }
-    );
-  }
+if (!container.isRegistered("LoginRepository")) {
+  container.register<LoginRepository>("LoginRepository", {
+    useClass: LoginRepositoryImp,
+  });
+}
 
-  if(!container.isRegistered("LoginDatasourceService")){
-    container.register<LoginDatasourceService>(
-      "LoginDatasourceService",
-      { useClass: LoginDatasourceService }
-    );
-  }
+if (!container.isRegistered("LoginDatasourceService")) {
+  container.register<LoginDatasourceService>("LoginDatasourceService", {
+    useClass: LoginDatasourceService,
+  });
+}
 
-  if(!container.isRegistered("ManualControlRepository")){
-    container.register<ManualControlRepository>(
-      "ManualControlRepository",
-      { useClass: ManualControlRepositoryImp }
-    )
-  }
+if (!container.isRegistered("ManualControlRepository")) {
+  container.register<ManualControlRepository>("ManualControlRepository", {
+    useClass: ManualControlRepositoryImp,
+  });
+}
 
-  if(!container.isRegistered("ManualControlDatasourceService")){
-    container.register<ManualControlDatasourceService>(
-      "ManualControlDatasourceService",
-      { useClass: ManualControlDatasourceService }
-    )
-  }
+if (!container.isRegistered("ManualControlDatasourceService")) {
+  container.register<ManualControlDatasourceService>(
+    "ManualControlDatasourceService",
+    { useClass: ManualControlDatasourceService }
+  );
+}
 
-  // set-company bindings removed (companies flow deprecated)
+if (!container.isRegistered("CommonDatasourceService")) {
+  container.register("CommonDatasourceService", {
+    useClass: CommonDatasourceService,
+  });
+}
+
+if (!container.isRegistered("CommonRepository")) {
+  container.register("CommonRepository", { useClass: CommonRepositoryImp });
+}
+
+// set-company bindings removed (companies flow deprecated)
 
 export { container };

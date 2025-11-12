@@ -68,9 +68,6 @@ export default function LoginPage() {
         });
         return;
       }
-
-      console.log("Login exitoso:", response.data);
-
       // If backend returned applications, redirect to first application's path
       const apps = (response.data.applications ?? []) as { path?: string }[];
       if (apps.length > 0 && apps[0].path) {

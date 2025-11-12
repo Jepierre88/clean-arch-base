@@ -2,13 +2,20 @@
  
 import * as React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {Calendar} from "../ui/calendar";
 import { cn } from "@/src/lib/utils";
-import { CalendarIcon, Calendar } from "lucide-react";
-import { format } from "path";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import { Button } from "../ui/button";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
  
-export function DateTimePicker() {
-  const [date, setDate] = React.useState<Date>();
+export function DateTimePicker({
+  date,
+  setDate,
+}: {
+  date?: Date;
+  setDate: (date: Date) => void;
+}) {
   const [isOpen, setIsOpen] = React.useState(false);
  
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -64,7 +71,7 @@ export function DateTimePicker() {
             mode="single"
             selected={date}
             onSelect={handleDateSelect}
-            initialFocus
+            
           />
           <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
             <ScrollArea className="w-64 sm:w-auto">
