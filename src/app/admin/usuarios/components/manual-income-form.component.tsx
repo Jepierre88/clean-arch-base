@@ -29,23 +29,15 @@ import {
   ManualIncomeForm,
   ManualIncomeSchema,
 } from "@/src/shared/schemas/admin/manual-income.schema";
+import { TVehicleType } from "@/src/shared/types/common/vehicle-types.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export default function ManualIncomeFormComponent() {
-  const [entryTime, setEntryTime] = useState<Date>();
   const { vehicleTypes } = useCommonContext();
 
-  const incomeForm = useForm({
-    resolver: zodResolver(ManualIncomeSchema),
-    defaultValues: {
-      entryTime: new Date(),
-      licensePlate: "",
-      vehivleTypeId: "",
-    },
-  });
 
   const onManualIncomeSubmit = (params: ManualIncomeForm) => {
     console.log(params)
@@ -60,9 +52,29 @@ export default function ManualIncomeFormComponent() {
           </CardDescription> */}
         </CardHeader>
 
-        <form
+        <IncomeForm vehicleTypes={vehicleTypes} onSubmit={onManualIncomeSubmit}/>
+      </CardContent>
+    </Card>
+  );
+}
+
+
+const IncomeForm = ({vehicleTypes, onSubmit}: {
+  vehicleTypes: TVehicleType[],
+  onSubmit: (params: ManualIncomeForm)=>void
+}) => {
+    const incomeForm = useForm({
+    resolver: zodResolver(ManualIncomeSchema),
+    defaultValues: {
+      entryTime: new Date(),
+      licensePlate: "",
+      vehivleTypeId: "",
+    },
+  });
+  return (
+     <form
           className="flex flex-col gap-4"
-          onSubmit={incomeForm.handleSubmit(onManualIncomeSubmit)}
+          onSubmit={incomeForm.handleSubmit(onSubmit)}
         >
           <Controller
             control={incomeForm.control}
@@ -110,13 +122,6 @@ export default function ManualIncomeFormComponent() {
             )}
           />
 
-          {/* 
-
-          <div className="flex flex-col gap-2">
-            <Label>Fecha de ingreso</Label> 
-            <DateTimePicker date={date} setDate={setDate} />
-          </div> */}
-
           <Controller
             name="entryTime"
             control={incomeForm.control}
@@ -140,7 +145,5 @@ export default function ManualIncomeFormComponent() {
             <Check /> Generar ingreso manual
           </Button>
         </form>
-      </CardContent>
-    </Card>
-  );
+  )
 }
