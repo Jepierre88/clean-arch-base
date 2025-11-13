@@ -1,3 +1,11 @@
+import { QrSectionComponent } from "./components/qr-section.component";
+
 export default function Page() {
-  return <div>Cobro Page</div>;
+  return (
+    <section>
+      <article className="bg-muted p-12 rounded-xl">
+        <QrSectionComponent/>
+      </article>
+    </section>
+  );
 }

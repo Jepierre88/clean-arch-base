@@ -5,6 +5,6 @@ import { AxiosServerInstance } from "../axios-server.intance";
 export class PaymentDatasourceService extends AxiosServerInstance implements PaymentRepository{
     async validateFee(params: IValidateAmmountParamsEntity): Promise<IValidateAmmountResponseEntity> {
         const { parkingSessionId, exitDate } = params;
-        return this.api.post<IValidateAmmountResponseEntity>(`/parking-sessions/${parkingSessionId}/validate-fee`, { exitDate }).then(response => response.data);
+        return this.api.post<IValidateAmmountResponseEntity>(`/parking-sessions/${parkingSessionId}/calculate-fee`, { exitDate }).then(response => response.data);
     }
 }
