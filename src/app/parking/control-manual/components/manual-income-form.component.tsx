@@ -29,7 +29,7 @@ import { useCommonContext } from "@/src/shared/context/common.context";
 import {
   ManualIncomeForm,
   ManualIncomeSchema,
-} from "@/src/shared/schemas/admin/manual-income.schema";
+} from "@/src/shared/schemas/parking/manual-income.schema";
 import { TRateProfile } from "@/src/shared/types/common/rate-profile.type";
 import { TVehicleType } from "@/src/shared/types/common/vehicle-types.type";
 import { zodResolver } from "@hookform/resolvers/zod";

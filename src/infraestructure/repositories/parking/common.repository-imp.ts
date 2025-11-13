@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import IGeneralResponse from "@/src/shared/interfaces/generic/general-response.interface";
 import { EServices } from "@/src/shared/enums/common/services.enum";
-import { CommonRepository } from "@/domain/repositories/admin/common.repository";
+import { CommonRepository } from "@/src/domain/repositories/parking/common.repository";
 import { CommonDatasourceService } from "@/infraestructure/index";
 import { TRateProfile } from "@/src/shared/types/common/rate-profile.type";
 

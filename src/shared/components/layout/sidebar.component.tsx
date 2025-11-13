@@ -51,10 +51,11 @@ export default function SidebarComponent({
   };
 
   const normalizeToAbsolutePath = (p: string | undefined) => {
-    if (!p) return "/admin";
+    if (!p) return "/parking";
     const clean = p.replace(/^\/+/, ""); // remove leading slashes
-    if (clean.startsWith("admin/")) return `/${clean}`; // already has admin
-    return `/admin/${clean}`;
+    // if the path already targets admin or parking, keep it absolute
+    if (clean.startsWith("admin/") || clean.startsWith("parking/")) return `/${clean}`;
+    return `/parking/${clean}`;
   };
 
   return (
@@ -85,11 +86,11 @@ export default function SidebarComponent({
             <SidebarMenuItem>
               <SidebarMenuButton
                 className={`cursor-pointer ${
-                  pathname === "/admin/dashboard"
+                  pathname === "/parking/dashboard"
                     ? "bg-accent text-accent-foreground"
                     : ""
                 }`}
-                onClick={() => handleRedirect("/admin/dashboard")}
+                onClick={() => handleRedirect("/parking/dashboard")}
               >
                 <AppIcons iconName={EIconNames.DASHBOARD} />
                 Dashboard

@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { getSessionFromRequest } from "@/src/lib/session";
 
-export const ADMIN_PREFIX = "/admin";
+export const ADMIN_PREFIX = "/parking";
 
 export const PROTECTED_MATCHERS = [ADMIN_PREFIX, `${ADMIN_PREFIX}/:path*`];
 export const LOGIN_ROUTE = "/auth/login";

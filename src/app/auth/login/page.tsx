@@ -80,7 +80,7 @@ export default function LoginPage() {
 
       // Fallback: redirect to /admin
       toast.success("Sesión iniciada correctamente", { id: loadingToast });
-      router.replace("/admin");
+      router.replace("/parking");
     } catch (error) {
       toast.error(getErrorMessage(error, "No se pudo iniciar sesión"), {
         id: loadingToast,
