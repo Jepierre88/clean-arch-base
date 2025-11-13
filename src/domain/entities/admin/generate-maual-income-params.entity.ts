@@ -1,7 +1,7 @@
-export interface IGenerateManualIncomeEntity {
+export interface IGenerateManualIncomeParamsEntity {
     entryTime: string
     licensePlate: string
     ownerId?: string
     rateProfileId?: string
-    vahicleTypeId?: string
+    vehicleTypeId?: string
 }

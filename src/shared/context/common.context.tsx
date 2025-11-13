@@ -9,7 +9,6 @@ const CommonContext = createContext<TCommonContextType | undefined>(undefined);
 export const useCommonContext = () => {
   const context = useContext(CommonContext);
   if (!context) {
-    // throw new Error("useCommonContext must be used within a CommonProvider");
     return {} as TCommonContextType
   }
   return context;

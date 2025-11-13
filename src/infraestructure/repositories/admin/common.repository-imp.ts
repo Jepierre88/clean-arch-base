@@ -3,6 +3,7 @@ import IGeneralResponse from "@/src/shared/interfaces/generic/general-response.i
 import { EServices } from "@/src/shared/enums/common/services.enum";
 import { CommonRepository } from "@/domain/repositories/admin/common.repository";
 import { CommonDatasourceService } from "@/infraestructure/index";
+import { TRateProfile } from "@/src/shared/types/common/rate-profile.type";
 
 @injectable()
 export class CommonRepositoryImp implements CommonRepository {
@@ -13,5 +14,9 @@ export class CommonRepositoryImp implements CommonRepository {
 
   get<T = unknown>(service: EServices): Promise<IGeneralResponse<T>> {
     return this.ds.get<T>(service);
+  }
+
+  getRateProfiles(vehicleTypeId: string): Promise<IGeneralResponse<TRateProfile, false>> {
+    return this.ds.getRateProfiles(vehicleTypeId);
   }
 }
