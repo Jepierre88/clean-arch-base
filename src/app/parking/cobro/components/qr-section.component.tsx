@@ -24,16 +24,7 @@ export function QrSectionComponent() {
   };
 
   return (
-    <>
-      <header>
-        <Title className="text-xl" type="h2">
-          Datos del vehículo
-        </Title>
-        <small>Valida el valor a pagar por el tiempo de estacionamiento del vehículo en el estacionamiento.</small>
-      </header>
       <QrFormComponent onValidateFee={onValidateFee} />
-
-    </>
   );
 }
 

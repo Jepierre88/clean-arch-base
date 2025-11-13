@@ -24,7 +24,7 @@ import {
   Form,
 } from "@/src/shared/components/ui/form";
 import { Input } from "@/src/shared/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 // import setCompanyClientService from "@/src/shared/services/data/auth/set-company-client.service";
 import { EyeIcon, EyeOff } from "lucide-react";
@@ -42,6 +42,8 @@ const getErrorMessage = (error: unknown, fallback: string): string => {
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromPath = searchParams.get("from") ?? undefined;
 
   const form = useForm<ILoginParams>({
     resolver: zodResolver(LoginSchema),
@@ -68,6 +70,13 @@ export default function LoginPage() {
         });
         return;
       }
+      // If the login was requested because router redirected with a `from` param, respect it
+      if (fromPath) {
+        toast.success("Sesión iniciada correctamente", { id: loadingToast });
+        router.replace(fromPath);
+        return;
+      }
+
       // If backend returned applications, redirect to first application's path
       const apps = (response.data.applications ?? []) as { path?: string }[];
       if (apps.length > 0 && apps[0].path) {
@@ -78,7 +87,7 @@ export default function LoginPage() {
         return;
       }
 
-      // Fallback: redirect to /admin
+      // Fallback: redirect to /parking
       toast.success("Sesión iniciada correctamente", { id: loadingToast });
       router.replace("/parking");
     } catch (error) {
