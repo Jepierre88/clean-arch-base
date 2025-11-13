@@ -21,3 +21,5 @@ export * from "./entities/parking/validate-ammount-response.entity"
 
 export * from "./entities/parking/generate-manual-income-params.entity"
 export * from "./entities/parking/generate-manual-income-response.entity"
+
+export * from "./entities/parking/ammount-detail.entity"

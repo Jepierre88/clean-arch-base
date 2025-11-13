@@ -54,7 +54,7 @@ export default function SidebarComponent({
     if (!p) return "/parking";
     const clean = p.replace(/^\/+/, ""); // remove leading slashes
     // if the path already targets admin or parking, keep it absolute
-    if (clean.startsWith("admin/") || clean.startsWith("parking/")) return `/${clean}`;
+    if (clean.startsWith("parking/") || clean.startsWith("parking/")) return `/${clean}`;
     return `/parking/${clean}`;
   };
 
