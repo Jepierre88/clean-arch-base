@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
 import { signOut, useClientSession } from "@/src/lib/session-client";
 
-export default function AdminPage() {
+export default function ParkingPage() {
   const router = useRouter();
   const { data: session, isLoading, refresh } = useClientSession();
 

@@ -4,11 +4,11 @@ export interface IAmmountDetailEntity {
     parkingSessionId: string;
     entryTime: string;
     exitTime: string;
-    durationInMinutes: number;
+    durationMinutes: number;
     durationFormatted: string;
-    calculatedAmmount: number;
-    discountPercentage: number;
-    finalAmmount: number;
+    calculatedAmount: number;
+    discountPercentage: number | null;
+    finalAmount: number;
     rateProfileName: string;
     agreementName: string;
     appliedRules: IRuleAppliedEntity[];

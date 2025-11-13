@@ -5,7 +5,7 @@ import { CommonProvider } from "@/src/shared/context/common.context";
 import { PaymentProvider } from "@/src/shared/context/payment.context";
 import { PropsWithChildren } from "react";
 
-export default function AdminProviders({ children }: PropsWithChildren) {
+export default function ParkingProviders({ children }: PropsWithChildren) {
   return (
     <PaymentProvider>
       <CommonProvider>

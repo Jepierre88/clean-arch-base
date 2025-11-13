@@ -5,14 +5,14 @@ import { PropsWithChildren } from "react";
 import { getSession } from "@/src/lib/session";
 import CustomDialog from "@/src/shared/components/dialog/custom-dialog.component";
 import FooterComponent from "@/src/shared/components/layout/footer.component";
-import AdminProviders from "./providers";
+import ParkingProviders from "./providers";
 
-export default async function AdminLayout({ children }: PropsWithChildren) {
+export default async function ParkingLayout({ children }: PropsWithChildren) {
   const session = await getSession();
   const applications = session?.applications ?? [];
 
   return (
-    <AdminProviders>
+    <ParkingProviders>
       <SidebarComponent applications={applications} />
       <SidebarInset className="min-w-0 overflow-x-hidden">
         <HeaderComponent />
@@ -22,6 +22,6 @@ export default async function AdminLayout({ children }: PropsWithChildren) {
         </div>
       </SidebarInset>
       <CustomDialog />
-    </AdminProviders>
+    </ParkingProviders>
   );
 }
