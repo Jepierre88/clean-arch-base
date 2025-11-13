@@ -9,6 +9,8 @@ import {
   LoginRepositoryImp,
   ManualControlDatasourceService,
   ManualControlRepositoryImp,
+  PaymentDatasourceService,
+  PaymentRepositoryImp,
 } from "@/infraestructure/index";
 
 if (!container.isRegistered("LoginRepository")) {
@@ -44,6 +46,14 @@ if (!container.isRegistered("CommonDatasourceService")) {
 
 if (!container.isRegistered("CommonRepository")) {
   container.register("CommonRepository", { useClass: CommonRepositoryImp });
+}
+
+if(!container.isRegistered("PaymentDatasourceService")){
+  container.register("PaymentDatasourceService", { useClass: PaymentDatasourceService });
+}
+
+if(!container.isRegistered("PaymentRepository")){
+  container.register("PaymentRepository", { useClass: PaymentRepositoryImp });
 }
 
 // set-company bindings removed (companies flow deprecated)
