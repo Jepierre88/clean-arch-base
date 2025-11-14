@@ -61,15 +61,15 @@ export default function SearchComponent() {
         {!isOpen ? (
           <Button
             variant="outline"
+            size="icon-sm"
             aria-label="Abrir búsqueda"
             onClick={() => setIsOpen(true)}
-            className="p-2 rounded-md hover:bg-accent text-muted-foreground"
           >
             <Search className="w-5 h-5" />
           </Button>
         ) : (
-          <div className="flex items-center gap-2 w-full">
-            <Search className="w-4 h-4 ml-2 text-muted-foreground" />
+          <div className="flex w-full items-center gap-2">
+            <Search className="ml-2 h-4 w-4 text-muted-foreground" />
             <Input
               ref={inputRef}
               type="text"
@@ -78,14 +78,15 @@ export default function SearchComponent() {
               placeholder="Buscar..."
               className="w-full"
             />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               aria-label="Cerrar búsqueda"
               onClick={() => setIsOpen(false)}
-              className="p-2 rounded-md hover:bg-accent text-muted-foreground"
             >
-              <X className="w-4 h-4" />
-            </button>
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         )}
       </div>
@@ -94,7 +95,7 @@ export default function SearchComponent() {
 
   return (
     <div className="flex items-center justify-between gap-4">
-      <Search className="w-4 h-4 ml-3 text-muted-foreground" />
+  <Search className="ml-3 h-4 w-4 text-muted-foreground" />
       <Input
         type="text"
         value={searchTerm}

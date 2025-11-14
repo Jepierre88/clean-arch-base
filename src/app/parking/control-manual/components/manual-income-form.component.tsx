@@ -190,7 +190,7 @@ const IncomeForm = ({
                     {...field}
                     id="licensePlate"
                     placeholder="QJJ15G"
-                    className="mt-2 h-12 rounded-md border border-border bg-background px-3 text-lg font-semibold uppercase tracking-widest text-foreground focus-visible:ring-0"
+                    className="mt-2 h-12 text-lg font-semibold uppercase tracking-[0.6em]"
                     maxLength={6}
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -214,7 +214,7 @@ const IncomeForm = ({
                     }}
                     value={field.value ?? ""}
                   >
-                    <SelectTrigger className="mt-2 h-12 rounded-md border border-border bg-background/80 text-left text-sm font-medium">
+                    <SelectTrigger className="mt-2 text-left">
                       <SelectValue placeholder="Seleccionar tipo" />
                     </SelectTrigger>
                     <SelectContent>
@@ -263,7 +263,7 @@ const IncomeForm = ({
                     disabled={rateProfiles.length === 0}
                     value={field.value ?? ""}
                   >
-                    <SelectTrigger className="mt-2 h-12 rounded-md border border-border bg-background/80 text-left text-sm font-medium disabled:opacity-50">
+                    <SelectTrigger className="mt-2 text-left">
                       <SelectValue placeholder="Seleccionar perfil de tarifa" />
                     </SelectTrigger>
                     <SelectContent>
@@ -289,7 +289,7 @@ const IncomeForm = ({
             type="submit"
             size="lg"
             disabled={isSubmitting || !isValid}
-            className="inline-flex min-w-[200px] items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium shadow-sm"
+            className="min-w-[200px]"
           >
             {isSubmitting ? (
               <>
