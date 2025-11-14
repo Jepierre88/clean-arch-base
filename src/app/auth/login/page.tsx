@@ -101,8 +101,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 pb-12 pt-10 sm:px-8">
-      <Card className="w-full max-w-md">
+    <div className="flex w-full max-w-lg flex-1 items-center justify-center px-2 py-4 sm:px-4">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold">Inicia sesión en CHRONOPARK</CardTitle>
           <CardDescription>

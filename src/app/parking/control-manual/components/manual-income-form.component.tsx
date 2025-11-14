@@ -59,7 +59,7 @@ export default function ManualIncomeFormComponent() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-4xl px-2 py-6">
+    <section className="flex h-full w-full flex-1">
       <IncomeForm vehicleTypes={vehicleTypes} onSubmit={onManualIncomeSubmit} />
     </section>
   );
@@ -128,8 +128,8 @@ const IncomeForm = ({
   });
 
   return (
-    <form onSubmit={handleFormSubmit} className="w-full">
-      <Card>
+    <form onSubmit={handleFormSubmit} className="flex h-full w-full">
+      <Card className="flex w-full flex-1 flex-col">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
             <Badge
@@ -152,8 +152,8 @@ const IncomeForm = ({
           </div>
         </CardHeader>
 
-  <CardContent className="space-y-6">
-          <div className="rounded-lg border border-border/70 bg-muted/30 px-4 py-4">
+        <CardContent className="space-y-4">
+          <div className="rounded-xl border border-border/60 bg-muted/20 px-4 py-3">
             <div className="flex flex-wrap items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <CarFront className="h-5 w-5" />
@@ -166,7 +166,7 @@ const IncomeForm = ({
               </div>
             </div>
 
-            <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
+            <div className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1 text-foreground font-medium">
                 <CalendarPlus className="h-3.5 w-3.5" />
                 <span>Registro en tiempo real</span>
@@ -174,7 +174,7 @@ const IncomeForm = ({
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-2">
             <Controller
               control={control}
               name="licensePlate"
@@ -190,7 +190,7 @@ const IncomeForm = ({
                     {...field}
                     id="licensePlate"
                     placeholder="QJJ15G"
-                    className="mt-2 h-12 text-lg font-semibold uppercase tracking-[0.6em]"
+                    className="mt-1 h-12 text-lg font-semibold uppercase tracking-[0.6em]"
                     maxLength={6}
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -214,7 +214,7 @@ const IncomeForm = ({
                     }}
                     value={field.value ?? ""}
                   >
-                    <SelectTrigger className="mt-2 text-left">
+                    <SelectTrigger className="mt-1 text-left">
                       <SelectValue placeholder="Seleccionar tipo" />
                     </SelectTrigger>
                     <SelectContent>
@@ -263,7 +263,7 @@ const IncomeForm = ({
                     disabled={rateProfiles.length === 0}
                     value={field.value ?? ""}
                   >
-                    <SelectTrigger className="mt-2 text-left">
+                    <SelectTrigger className="mt-1 text-left">
                       <SelectValue placeholder="Seleccionar perfil de tarifa" />
                     </SelectTrigger>
                     <SelectContent>
@@ -281,7 +281,7 @@ const IncomeForm = ({
           </div>
         </CardContent>
 
-        <CardFooter className="flex-col gap-4 bg-muted/10 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <CardFooter className="flex-col gap-3 bg-muted/5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
             El registro quedará auditado en el historial de control manual.
           </p>
