@@ -78,6 +78,7 @@ export const DialogProvider = ({ children }: DialogProviderProps) => {
 
   useEffect(() => {
     if (isOpen === false) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle("");
       setDescription("");
       setRenderContent(null);

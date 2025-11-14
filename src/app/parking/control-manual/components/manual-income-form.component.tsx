@@ -1,7 +1,6 @@
 "use client";
 
 import { getRateProfileAction } from "@/src/app/global-actions/get-common.action";
-import { Button } from "@/src/components/ui/button";
 import { IGenerateManualIncomeParamsEntity } from "@/src/domain";
 import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
 import {
@@ -38,6 +37,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { generateManualIncomeAction } from "../actions/generate-manual-income.action";
+import { Button } from "@/src/shared/components/ui/button";
 
 export default function ManualIncomeFormComponent() {
   const { vehicleTypes } = useCommonContext();

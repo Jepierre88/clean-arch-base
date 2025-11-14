@@ -1,4 +1,4 @@
-export interface IValidateAmmountParamsEntity {
+export interface IValidateAmountParamsEntity {
     parkingSessionId: string;
     exitDate?: string;
 }

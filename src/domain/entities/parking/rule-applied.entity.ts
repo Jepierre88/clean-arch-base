@@ -1,5 +1,5 @@
 export interface IRuleAppliedEntity {
     ruleType: string;
     description: string;
-    ammount:number
+    amount: number;
 }

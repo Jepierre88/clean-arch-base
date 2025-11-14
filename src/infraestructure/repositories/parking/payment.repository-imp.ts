@@ -1,5 +1,5 @@
 import { inject, injectable } from "tsyringe";
-import { IValidateAmmountParamsEntity, IValidateAmmountResponseEntity, PaymentRepository } from "@/domain/index"
+import { IValidateAmountParamsEntity, IValidateAmountResponseEntity, PaymentRepository } from "@/domain/index"
 import { PaymentDatasourceService } from "@/infraestructure/index";
 
 @injectable()
@@ -10,7 +10,7 @@ export class PaymentRepositoryImp implements PaymentRepository {
         private paymentDatasourceService: PaymentDatasourceService
     ){}
 
-    async validateFee(params: IValidateAmmountParamsEntity): Promise<IValidateAmmountResponseEntity> {
+    async validateFee(params: IValidateAmountParamsEntity): Promise<IValidateAmountResponseEntity> {
         return this.paymentDatasourceService.validateFee(params);
     }
 }

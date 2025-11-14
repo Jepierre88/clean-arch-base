@@ -1,6 +1,6 @@
 import { IRuleAppliedEntity } from "./rule-applied.entity";
 
-export interface IAmmountDetailEntity {
+export interface IAmountDetailEntity {
     parkingSessionId: string;
     entryTime: string;
     exitTime: string;

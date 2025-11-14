@@ -1,99 +1,221 @@
 "use client";
 
 import EmptyState from "@/src/shared/components/empty-state.component";
-import {usePaymentContext} from "@/src/shared/context/payment.context";
-import {X} from "lucide-react";
-import {Separator} from "@/src/shared/components/ui/separator";
-import {Badge} from "@/src/shared/components/ui/badge";
+import { usePaymentContext } from "@/src/shared/context/payment.context";
+import { Badge } from "@/src/shared/components/ui/badge";
 import LabelValueComponent from "@/src/app/parking/cobro/components/label-value.component";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/src/shared/components/ui/card";
+import { CalendarClock, Clock8, TimerReset, Wallet2, X } from "lucide-react";
+import { cn } from "@/src/lib/utils";
 
-export function QrDetailSectionComponent() {
-    const {validateRaw} = usePaymentContext();
+const currencyFormatter = new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+});
 
-    const formatDate = (date: Date | string): string => {
-        return new Date(date).toLocaleDateString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-        })
-    }
+const shortDateFormatter = new Intl.DateTimeFormat("es-CO", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+});
 
-    return (
-        <>
-            {validateRaw?.data ? (
-                <div className="flex flex-col gap-4 my-auto h-full py-4">
-                    <div className="grid grid-cols-1 gap-4">
-                        <div className={"flex justify-between "}>
-                            <p className="text-sm text-muted-foreground">Perfil de tarifa</p>
-                            <div className="flex items-center gap-2">
-                <span className="font-medium">
-                  {validateRaw.data.rateProfileName}
-                </span>
-                                {validateRaw.data.agreementName && (
-                                    <Badge variant="outline">
-                                        {validateRaw.data.agreementName}
-                                    </Badge>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+const timeFormatter = new Intl.DateTimeFormat("es-CO", {
+    hour: "2-digit",
+    minute: "2-digit",
+});
 
-                    <Separator/>
+const formatCurrency = (value: number) => currencyFormatter.format(value ?? 0);
 
-                    <LabelValueComponent
-                        label={"Entrada"}
-                        value={formatDate(validateRaw.data.entryTime)}
-                    />
-                    <LabelValueComponent label={"Salida"} value={formatDate(validateRaw.data.exitTime)}/>
+const getDateParts = (value: Date | string) => {
+    const date = new Date(value);
+    return {
+        dateLabel: shortDateFormatter.format(date),
+        timeLabel: timeFormatter.format(date),
+    };
+};
 
-                    <div className="grid grid-cols-1 md:grid-cols-3  gap-4">
-                        <LabelValueComponent label={"Duración"} value={`${validateRaw.data.durationMinutes} minutos`}
-                                             display={"col"}/>
-                        <LabelValueComponent label={"Monto"}
-                                             value={`$ ${validateRaw.data.calculatedAmount.toLocaleString("es-CO")}`}
-                                             display={"col"}/>
-                        <LabelValueComponent label={"Descuento"} value={`${validateRaw.data.discountPercentage ?? 0}%`}
-                                             display={"col"}/>
-                    </div>
+type QrDetailSectionProps = {
+    className?: string;
+};
 
-                    <Separator/>
+export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
+    const { validateRaw } = usePaymentContext();
 
-                    <div>
-                        <p className="text-sm text-muted-foreground">Reglas aplicadas</p>
-                        <ul className="mt-4 space-y-6 relative overflow-y-auto">
+    const detail = validateRaw?.data;
 
-                            {/* Línea vertical */}
-                            <div className="absolute left-3 top-0 bottom-0 w-px bg-muted-foreground/20"/>
-
-                            {validateRaw.data.appliedRules?.length ? (
-                                validateRaw.data.appliedRules.map((r, idx) => (
-                                    <li key={idx} className="relative pl-10">
-                                        {/* Punto del timeline */}
-                                        <span className="absolute left-0 top-1.5 w-3 h-3 rounded-full bg-primary"/>
-
-                                        <div className="flex justify-between gap-4">
-                                            <span className="font-medium">{r.ruleType}</span>
-                                            <span className="text-sm text-muted-foreground">
-              {r.description ?? "-"} • ${(r.ammount ?? 0).toFixed(2)}
-            </span>
-                                        </div>
-                                    </li>
-                                ))
-                            ) : (
-                                <li className="text-sm text-muted-foreground">Sin reglas aplicadas</li>
-                            )}
-                        </ul>
-                    </div>
-
-                </div>
-            ) : (
-                <article className="flex my-auto mx-auto">
+    if (!detail) {
+        return (
+            <section className={cn("flex h-full flex-col", className)}>
+                <div className="flex flex-1 items-center justify-center px-4">
                     <EmptyState
                         title="No hay datos registrados"
                         description="Intenta leer un QR para visualizar sus datos"
-                        icon={<X/>}
+                        icon={<X />}
                     />
-                </article>
-            )}
-        </>
+                </div>
+            </section>
+        );
+    }
+
+    const entry = getDateParts(detail.entryTime);
+    const exit = getDateParts(detail.exitTime);
+    const discount = detail.discountPercentage ?? 0;
+    const rules = detail.appliedRules ?? [];
+    const visibleRules = rules.slice(0, 4);
+    const hiddenRules = Math.max(rules.length - visibleRules.length, 0);
+
+    return (
+        <section className={cn("flex h-full flex-col gap-3 py-4", className)}>
+            <Card className="flex flex-col">
+                <CardHeader className="space-y-3 pb-1">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+                                Perfil de tarifa
+                            </p>
+                            <CardTitle className="text-xl font-semibold tracking-tight">
+                                {detail.rateProfileName}
+                            </CardTitle>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                            {detail.agreementName && (
+                                <Badge className="border border-primary/30 bg-primary/10 text-foreground">
+                                    {detail.agreementName}
+                                </Badge>
+                            )}
+                            <Badge variant="outline" className="text-[10px] font-semibold">
+                                Sesión #{detail.parkingSessionId}
+                            </Badge>
+                        </div>
+                    </div>
+
+                    <CardDescription className="text-[11px]">
+                        Revisa la información calculada antes de continuar con el cobro.
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4 pb-4">
+                    <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/2 to-transparent px-4 py-3 shadow-inner">
+                        <div className="flex items-center gap-3 text-foreground">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10">
+                                <Wallet2 className="h-4 w-4" />
+                            </span>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em]">
+                                    Total estimado
+                                </span>
+                                <span className="text-[10px] text-foreground/70">
+                                    Última actualización {exit.dateLabel} · {exit.timeLabel}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
+                            <p className="text-2xl font-bold text-foreground">
+                                {formatCurrency(detail.finalAmount)}
+                            </p>
+                            {discount > 0 && (
+                                <Badge className="border-green-500/40 bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+                                    Descuento {discount}%
+                                </Badge>
+                            )}
+                        </div>
+
+                        <p className="mt-1 text-[11px] text-muted-foreground">
+                            Subtotal antes de descuentos: {formatCurrency(detail.calculatedAmount)}
+                        </p>
+                    </div>
+
+                    <div className="grid gap-2 md:grid-cols-2">
+                        <LabelValueComponent
+                            label="Entrada"
+                            helper={entry.dateLabel}
+                            value={entry.timeLabel}
+                            icon={<CalendarClock className="h-4 w-4" />}
+                            size="mini"
+                        />
+
+                        <LabelValueComponent
+                            label="Salida"
+                            helper={exit.dateLabel}
+                            value={exit.timeLabel}
+                            icon={<CalendarClock className="h-4 w-4" />}
+                            size="mini"
+                        />
+
+                        <LabelValueComponent
+                            label="Duración"
+                            helper={`${detail.durationMinutes} minutos`}
+                            value={detail.durationFormatted ?? `${detail.durationMinutes} min`}
+                            icon={<Clock8 className="h-4 w-4" />}
+                            size="mini"
+                        />
+
+                        <LabelValueComponent
+                            label="Tiempo de gracia"
+                            helper="Ventana sin cargo"
+                            value={`${detail.graceTimeInMinutes} min`}
+                            icon={<TimerReset className="h-4 w-4" />}
+                            size="mini"
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card className="flex flex-col border border-border/60 bg-card/90 shadow-sm">
+                <CardHeader className="py-3">
+                    <CardTitle className="text-sm font-semibold">Reglas aplicadas</CardTitle>
+                    <CardDescription className="text-[11px]">
+                        {rules.length
+                            ? "Resumen compacto de los ajustes aplicados."
+                            : "No se encontraron reglas aplicadas para esta sesión."}
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-2 py-3">
+                    {visibleRules.length ? (
+                        <div className="grid gap-2 sm:grid-cols-2">
+                            {visibleRules.map((rule, idx) => (
+                                <div
+                                    key={`${rule.ruleType}-${idx}`}
+                                    className="rounded-2xl border border-border/60 px-3 py-2"
+                                >
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="text-[13px] font-semibold text-foreground">
+                                            {rule.ruleType}
+                                        </span>
+                                        <Badge variant="outline" className="border-primary/40 px-2 py-0.5 text-[11px] text-foreground">
+                                            {formatCurrency(rule.amount ?? 0)}
+                                        </Badge>
+                                    </div>
+                                    {rule.description && (
+                                        <p className="mt-1 text-[11px] text-muted-foreground line-clamp-2">
+                                            {rule.description}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+                            Sin reglas aplicadas para este cálculo.
+                        </div>
+                    )}
+
+                    {hiddenRules > 0 && (
+                        <p className="text-center text-xs text-muted-foreground">
+                            + {hiddenRules} reglas adicionales no mostradas para mantener el resumen compacto.
+                        </p>
+                    )}
+                </CardContent>
+            </Card>
+        </section>
     );
 }

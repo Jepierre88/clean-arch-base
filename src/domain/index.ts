@@ -16,10 +16,10 @@ export * from "./entities/auth/get-permissions-params.entity";
 export * from "./entities/auth/login-response.entity";
 export * from "./entities/auth/login-params.entity";
 
-export * from "./entities/parking/validate-ammount-params.entity"
-export * from "./entities/parking/validate-ammount-response.entity"
+export * from "./entities/parking/validate-amount-params.entity";
+export * from "./entities/parking/validate-amount-response.entity";
 
 export * from "./entities/parking/generate-manual-income-params.entity"
 export * from "./entities/parking/generate-manual-income-response.entity"
 
-export * from "./entities/parking/ammount-detail.entity"
+export * from "./entities/parking/amount-detail.entity"

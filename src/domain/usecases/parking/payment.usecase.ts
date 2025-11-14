@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 
-import { IValidateAmmountParamsEntity, IValidateAmmountResponseEntity, PaymentRepository } from "@/domain/index"
+import { IValidateAmountParamsEntity, IValidateAmountResponseEntity, PaymentRepository } from "@/domain/index"
 
 @injectable()
 export class PaymentUsecase implements PaymentRepository{
@@ -8,7 +8,7 @@ export class PaymentUsecase implements PaymentRepository{
         @inject("PaymentRepository") private paymentRepository: PaymentRepository
     ) {}
 
-    validateFee(params: IValidateAmmountParamsEntity): Promise<IValidateAmmountResponseEntity> {
+    validateFee(params: IValidateAmountParamsEntity): Promise<IValidateAmountResponseEntity> {
         return this.paymentRepository.validateFee(params);
     }
 }
