@@ -1,5 +1,5 @@
 
-# 🧹 Clean Architecture Base for React/Next.js.
+# 🧹 Clean Architecture Base for React/Next.js
 
 Welcome to a modern, scalable and maintainable boilerplate for React/Next.js projects, designed with Clean Architecture principles.
 
