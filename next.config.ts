@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["avatars.githubusercontent.com", '*'],
   },
-  cacheComponents: true,
+  cacheComponents: false,
 };
 
 export default nextConfig;
