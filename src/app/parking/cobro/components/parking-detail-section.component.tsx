@@ -72,68 +72,68 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
     const hiddenRules = Math.max(rules.length - visibleRules.length, 0);
 
     return (
-        <section className={cn("flex h-full flex-col gap-3 py-4", className)}>
-            <Card className="flex flex-col">
-                <CardHeader className="space-y-3 pb-1">
-                    <div className="flex flex-wrap items-start justify-between gap-4">
+        <section className={cn("flex h-full flex-col gap-2 py-2", className)}>
+            <Card className="flex flex-col border border-border/60 bg-card/95 shadow-sm">
+                <CardHeader className="space-y-2 pb-0">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+                            <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                                 Perfil de tarifa
                             </p>
-                            <CardTitle className="text-xl font-semibold tracking-tight">
+                            <CardTitle className="text-lg font-semibold tracking-tight">
                                 {detail.rateProfileName}
                             </CardTitle>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-1.5">
                             {detail.agreementName && (
-                                <Badge className="border border-primary/30 bg-primary/10 text-foreground">
+                                <Badge className="border border-primary/30 bg-primary/10 text-xs text-foreground">
                                     {detail.agreementName}
                                 </Badge>
                             )}
-                            <Badge variant="outline" className="text-[10px] font-semibold">
+                            <Badge variant="outline" className="text-[9px] font-semibold">
                                 Sesión #{detail.parkingSessionId}
                             </Badge>
                         </div>
                     </div>
 
-                    <CardDescription className="text-[11px]">
+                    <CardDescription className="text-[10px]">
                         Revisa la información calculada antes de continuar con el cobro.
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-4 pb-4">
-                    <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/2 to-transparent px-4 py-3 shadow-inner">
-                        <div className="flex items-center gap-3 text-foreground">
-                            <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10">
-                                <Wallet2 className="h-4 w-4" />
+                <CardContent className="space-y-3 pb-3 pt-2">
+                    <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent px-3 py-2.5 shadow-inner">
+                        <div className="flex items-center gap-2.5 text-foreground">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-primary/10">
+                                <Wallet2 className="h-3.5 w-3.5" />
                             </span>
                             <div className="flex flex-col">
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em]">
+                                <span className="text-[9px] font-semibold uppercase tracking-[0.3em]">
                                     Total estimado
                                 </span>
-                                <span className="text-[10px] text-foreground/70">
+                                <span className="text-[9px] text-foreground/70">
                                     Última actualización {exit.dateLabel} · {exit.timeLabel}
                                 </span>
                             </div>
                         </div>
 
-                        <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-                            <p className="text-2xl font-bold text-foreground">
+                        <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+                            <p className="text-xl font-bold text-foreground">
                                 {formatCurrency(detail.finalAmount)}
                             </p>
                             {discount > 0 && (
-                                <Badge className="border-green-500/40 bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+                                <Badge className="border-green-500/40 bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700">
                                     Descuento {discount}%
                                 </Badge>
                             )}
                         </div>
 
-                        <p className="mt-1 text-[11px] text-muted-foreground">
+                        <p className="mt-1 text-[10px] text-muted-foreground">
                             Subtotal antes de descuentos: {formatCurrency(detail.calculatedAmount)}
                         </p>
                     </div>
 
-                    <div className="grid gap-2 md:grid-cols-2">
+                    <div className="grid gap-1.5 md:grid-cols-2">
                         <LabelValueComponent
                             label="Entrada"
                             helper={entry.dateLabel}
@@ -161,7 +161,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                         <LabelValueComponent
                             label="Tiempo de gracia"
                             helper="Ventana sin cargo"
-                            value={`${detail.graceTimeInMinutes} min`}
+                            value={`${detail.gracePeriodMinutes} min`}
                             icon={<TimerReset className="h-4 w-4" />}
                             size="mini"
                         />
@@ -169,34 +169,34 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                 </CardContent>
             </Card>
 
-            <Card className="flex flex-col border border-border/60 bg-card/90 shadow-sm">
-                <CardHeader className="py-3">
+            <Card className="flex flex-col border border-border/60 bg-card/95 shadow-sm">
+                <CardHeader className="py-2.5">
                     <CardTitle className="text-sm font-semibold">Reglas aplicadas</CardTitle>
-                    <CardDescription className="text-[11px]">
+                    <CardDescription className="text-[10px]">
                         {rules.length
                             ? "Resumen compacto de los ajustes aplicados."
                             : "No se encontraron reglas aplicadas para esta sesión."}
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-2 py-3">
+                <CardContent className="space-y-1.5 py-2.5">
                     {visibleRules.length ? (
-                        <div className="grid gap-2 sm:grid-cols-2">
+                        <div className="grid gap-1.5 sm:grid-cols-2">
                             {visibleRules.map((rule, idx) => (
                                 <div
                                     key={`${rule.ruleType}-${idx}`}
-                                    className="rounded-2xl border border-border/60 px-3 py-2"
+                                    className="rounded-2xl border border-border/60 px-3 py-1.5"
                                 >
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span className="text-[13px] font-semibold text-foreground">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <span className="text-[12px] font-semibold text-foreground">
                                             {rule.ruleType}
                                         </span>
-                                        <Badge variant="outline" className="border-primary/40 px-2 py-0.5 text-[11px] text-foreground">
+                                        <Badge variant="outline" className="border-primary/40 px-2 py-0.5 text-[10px] text-foreground">
                                             {formatCurrency(rule.amount ?? 0)}
                                         </Badge>
                                     </div>
                                     {rule.description && (
-                                        <p className="mt-1 text-[11px] text-muted-foreground line-clamp-2">
+                                        <p className="mt-1 text-[10px] text-muted-foreground line-clamp-2">
                                             {rule.description}
                                         </p>
                                     )}
@@ -204,13 +204,13 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                             ))}
                         </div>
                     ) : (
-                        <div className="rounded-2xl border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+                        <div className="rounded-2xl border border-dashed px-3 py-4 text-center text-sm text-muted-foreground">
                             Sin reglas aplicadas para este cálculo.
                         </div>
                     )}
 
                     {hiddenRules > 0 && (
-                        <p className="text-center text-xs text-muted-foreground">
+                        <p className="text-center text-[10px] text-muted-foreground">
                             + {hiddenRules} reglas adicionales no mostradas para mantener el resumen compacto.
                         </p>
                     )}

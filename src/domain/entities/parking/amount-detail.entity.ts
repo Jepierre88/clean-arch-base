@@ -12,5 +12,5 @@ export interface IAmountDetailEntity {
     rateProfileName: string;
     agreementName: string;
     appliedRules: IRuleAppliedEntity[];
-    graceTimeInMinutes: number;
+    gracePeriodMinutes: number;
 }
