@@ -1,12 +1,32 @@
 import { useState } from "react";
+import type { ChangeEvent } from "react";
+import type {
+  ControllerFieldState,
+  ControllerRenderProps,
+  FieldPath,
+  FieldValues,
+} from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/src/shared/components/ui/field";
 import { QrCode } from "lucide-react";
 import { Input } from "./input";
+import { cn } from "@/src/lib/utils";
 
-export function QrScanInput({ field, fieldState }) {
+type QrScanInputProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+> = {
+  field: ControllerRenderProps<TFieldValues, TName>;
+  fieldState: ControllerFieldState;
+  label?: string;
+};
+
+export function QrScanInput<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({ field, fieldState, label = "Leer QR" }: QrScanInputProps<TFieldValues, TName>) {
   const [flash, setFlash] = useState(false);
 
-  const onScan = (value) => {
+  const onScan = (value: string) => {
     field.onChange(value);
     if (value?.length > 3) {
       setFlash(true);
@@ -16,12 +36,12 @@ export function QrScanInput({ field, fieldState }) {
 
   return (
     <Field data-invalid={fieldState.invalid}>
-      <FieldLabel>Leer QR</FieldLabel>
+      <FieldLabel>{label}</FieldLabel>
       <div className="flex items-center gap-3">
         <QrCode className="w-6 h-6 text-primary" />
         <Input
           {...field}
-          onChange={(e) => onScan(e.target.value)}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => onScan(event.target.value)}
           placeholder="Escanea el QR de ingreso"
           className={cn(
             "border-0 border-b-2 rounded-none focus-visible:ring-0 text-lg px-0 bg-transparent",

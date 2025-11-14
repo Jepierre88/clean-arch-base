@@ -60,25 +60,24 @@ export default function YesNoFormComponent({
 
   return (
     <form>
-      <div className="flex items-center justify-end gap-2 mt-4">
+      <div className="flex items-center justify-end gap-4 mt-6">
         <Button
           type="button"
-          className="flex-1"
+          size="lg"
           onClick={handleYes}
           disabled={pending || Boolean(isLoading)}
-          isLoading={isLoading}
-          icon={<Check />}
         >
+          <Check className="mr-2 size-4" />
           {yesText}
         </Button>
         <Button
           type="button"
           variant="outline"
-          className="flex-1"
+          size="lg"
           onClick={handleNo}
-          icon={<X/>}
           disabled={pending || Boolean(isLoading)}
         >
+          <X className="mr-2 size-4" />
           {noText}
         </Button>
       </div>
