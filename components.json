@@ -17,5 +17,8 @@
     "ui": "@/src/shared/components/ui",
     "lib": "@/src/lib",
     "hooks": "@/src/hooks"
+  },
+  "registries": {
+    "@acme": "https://acme.com/r/{name}.json"
   }
 }

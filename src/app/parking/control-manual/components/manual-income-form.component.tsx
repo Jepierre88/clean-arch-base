@@ -129,8 +129,8 @@ const IncomeForm = ({
 
   return (
     <form onSubmit={handleFormSubmit} className="w-full">
-      <Card className="border border-border bg-card shadow-sm">
-        <CardHeader className="space-y-3">
+      <Card>
+        <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
@@ -152,7 +152,7 @@ const IncomeForm = ({
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+  <CardContent className="space-y-6">
           <div className="rounded-lg border border-border/70 bg-muted/30 px-4 py-4">
             <div className="flex flex-wrap items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -281,7 +281,7 @@ const IncomeForm = ({
           </div>
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-4 border-t border-border bg-muted/10 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <CardFooter className="flex-col gap-4 bg-muted/10 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
             El registro quedará auditado en el historial de control manual.
           </p>

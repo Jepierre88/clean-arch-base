@@ -73,8 +73,8 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
 
     return (
         <section className={cn("flex h-full flex-col gap-2 py-2", className)}>
-            <Card className="flex flex-col border border-border/60 bg-card/95 shadow-sm">
-                <CardHeader className="space-y-2 pb-0">
+            <Card className="bg-card/95">
+                <CardHeader className="gap-2 pb-2">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
@@ -101,7 +101,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-3 pb-3 pt-2">
+                <CardContent className="space-y-3 pt-2">
                     <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent px-3 py-2.5 shadow-inner">
                         <div className="flex items-center gap-2.5 text-foreground">
                             <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-primary/10">
@@ -169,8 +169,8 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                 </CardContent>
             </Card>
 
-            <Card className="flex flex-col border border-border/60 bg-card/95 shadow-sm">
-                <CardHeader className="py-2.5">
+            <Card className="bg-card/95">
+                <CardHeader className="gap-1.5 pb-3">
                     <CardTitle className="text-sm font-semibold">Reglas aplicadas</CardTitle>
                     <CardDescription className="text-[10px]">
                         {rules.length
@@ -179,7 +179,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-1.5 py-2.5">
+                <CardContent className="space-y-1.5 py-3">
                     {visibleRules.length ? (
                         <div className="grid gap-1.5 sm:grid-cols-2">
                             {visibleRules.map((rule, idx) => (

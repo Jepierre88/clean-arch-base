@@ -10,7 +10,6 @@ import {
 import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
 import QrScannerInput from "@/src/shared/components/form/qr-scanner-input.component";
 import { Badge } from "@/src/shared/components/ui/badge";
-import { CalendarClock, QrCode, Sparkles } from "lucide-react";
 
 import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
@@ -41,43 +40,16 @@ function QrFormComponent({
   });
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-3xl border border-border/70 bg-card/95 px-6 py-5 shadow-sm">
-        <div className="flex gap-3">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary-foreground">
-            <Sparkles className="h-5 w-5 text-foreground" />
-          </span>
-          <div className="space-y-1">
-            <p className="text-sm font-semibold text-foreground">
-              Procesa el cobro en dos pasos
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Define la hora real de salida y luego permite que la pistola lectora capture el ticket para validar automáticamente.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-3 text-xs text-muted-foreground sm:grid-cols-2">
-          <div className="flex items-center gap-2">
-            <CalendarClock className="h-4 w-4 text-primary-foreground" />
-            <span>Ajusta la hora exacta en la que el vehículo abandona el parqueadero.</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <QrCode className="h-4 w-4 text-primary-foreground" />
-            <span>Escanea el QR del ticket y validamos el valor del cobro al instante.</span>
-          </div>
-        </div>
-      </section>
-
+    <div className="flex flex-col gap-6 py-3">
       <form
-        className="flex flex-col gap-5"
+        className="flex flex-1 flex-col gap-6"
         onChange={validateFeeForm.handleSubmit(async (data) => {
           await onValidateFee(data);
         })}
       >
-        <div className="rounded-2xl border border-border/70 bg-card/90 px-5 py-4 shadow-inner">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+        <div className="rounded-2xl border border-border/70 bg-card px-5 py-5 shadow-sm sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               <Badge variant="outline" className="border-primary/40 text-foreground">
                 Paso 1
               </Badge>
@@ -87,10 +59,10 @@ function QrFormComponent({
           </div>
 
           <p className="mt-2 text-xs text-muted-foreground">
-            Selecciona la hora y fecha exactas según el control manual o el registro de la barrera.
+            Define la hora y fecha exactas según el control manual o la barrera.
           </p>
 
-          <div className="mt-3">
+          <div className="mt-4">
             <Controller
               control={validateFeeForm.control}
               name="exitTime"
@@ -109,9 +81,9 @@ function QrFormComponent({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border/70 bg-card/90 px-5 py-4 shadow-inner">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+        <div className="rounded-2xl border border-border/70 bg-card px-5 py-5 shadow-sm sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               <Badge variant="outline" className="border-primary/40 text-foreground">
                 Paso 2
               </Badge>
@@ -121,10 +93,10 @@ function QrFormComponent({
           </div>
 
           <p className="mt-2 text-xs text-muted-foreground">
-            Usa la pistola lectora para capturar el código del ticket. En cuanto se detecte, calcularemos el valor a pagar.
+            Usa la pistola lectora para capturar el ticket y obtén el valor final al instante.
           </p>
 
-          <div className="mt-3">
+          <div className="mt-4">
             <Controller
               control={validateFeeForm.control}
               name="parkingSessionId"

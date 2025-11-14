@@ -1,11 +1,15 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ILoginParams } from "@/domain/index";
-import { LoginSchema } from "@/src/shared/schemas/auth/login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { EyeIcon, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+import { loginAction } from "@/src/app/auth/actions/login.action";
+import { ILoginParams } from "@/domain/index";
 import { Button } from "@/src/shared/components/ui/button";
 import {
   Card,
@@ -14,21 +18,19 @@ import {
   CardDescription,
   CardAction,
   CardContent,
+  CardFooter,
 } from "@/src/shared/components/ui/card";
 import {
+  Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
-  Form,
 } from "@/src/shared/components/ui/form";
 import { Input } from "@/src/shared/components/ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-// import setCompanyClientService from "@/src/shared/services/data/auth/set-company-client.service";
-import { EyeIcon, EyeOff } from "lucide-react";
-import { loginAction } from "@/src/app/auth/actions/login.action";
+import { Separator } from "@/src/shared/components/ui/separator";
+import { LoginSchema } from "@/src/shared/schemas/auth/login.schema";
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
   if (typeof error === "string" && error.trim().length > 0) {
@@ -54,6 +56,7 @@ export default function LoginPage() {
   });
 
   const [isShownPassword, setIsShownPassword] = useState(false);
+  const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit: SubmitHandler<ILoginParams> = async (data) => {
     const loadingToast = toast.loading("Iniciando sesión...");
@@ -98,17 +101,28 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="w-full max-w-sm mx-auto my-auto">
-      <CardHeader>
-        <CardTitle>Inicia sesión en CHRONOPARK</CardTitle>
-        <CardDescription>Ingresa tu correo electrónico y contraseña.</CardDescription>
-        <CardAction>
-          <Button variant="link">Registrarse</Button>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <div className="flex flex-1 items-center justify-center px-4 pb-12 pt-10 sm:px-8">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold">Inicia sesión en CHRONOPARK</CardTitle>
+          <CardDescription>
+            Ingresa tus credenciales para acceder al panel de administración.
+          </CardDescription>
+          <CardAction>
+            <Button
+              type="button"
+              variant="link"
+              onClick={() =>
+                toast.info("Contacta al administrador de ChronoPark para crear o recuperar tu acceso.")
+              }
+            >
+              ¿Necesitas ayuda?
+            </Button>
+          </CardAction>
+        </CardHeader>
+  <CardContent>
+          <Form {...form}>
+            <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="identifier"
@@ -117,9 +131,11 @@ export default function LoginPage() {
                     <FormLabel>Correo electrónico</FormLabel>
                     <FormControl>
                       <Input
-                        type="email"
-                        placeholder="Correo electrónico"
                         {...field}
+                        autoComplete="username"
+                        inputMode="email"
+                        placeholder="nombre@empresa.com"
+                        type="email"
                       />
                     </FormControl>
                     <FormMessage />
@@ -135,22 +151,22 @@ export default function LoginPage() {
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder="Contraseña"
-                          type={isShownPassword ? "text" : "password"}
                           {...field}
+                          autoComplete="current-password"
+                          placeholder="Ingresa tu contraseña"
+                          type={isShownPassword ? "text" : "password"}
+                          className="pr-12"
                         />
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-0 top-1/2 -translate-y-1/2"
                           type="button"
-                          onClick={() => setIsShownPassword(!isShownPassword)}
+                          variant="ghost"
+                          size="icon-sm"
+                          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                          onClick={() => setIsShownPassword((prev) => !prev)}
+                          aria-label={isShownPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                          aria-pressed={isShownPassword}
                         >
-                          {isShownPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <EyeIcon className="h-4 w-4" />
-                          )}
+                          {isShownPassword ? <EyeOff className="size-4" /> : <EyeIcon className="size-4" />}
                         </Button>
                       </div>
                     </FormControl>
@@ -159,14 +175,23 @@ export default function LoginPage() {
                 )}
               />
 
-              <div className="w-full flex justify-end gap-4">
-                <Button type="submit" disabled={form.formState.isSubmitting}>
-                  Iniciar sesión
-                </Button>
-              </div>
+              <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+                Iniciar sesión
+              </Button>
             </form>
-        </Form>
-      </CardContent>
-    </Card>
+          </Form>
+        </CardContent>
+        <CardFooter className="flex-col items-center text-center">
+          <Separator className="w-full bg-border/60" />
+          <p className="text-sm text-muted-foreground">
+            ¿No tienes acceso? Comunícate con tu administrador para solicitar una cuenta.
+          </p>
+          <Button variant="link" asChild>
+            <Link href="mailto:soporte@chronopark.com">Escríbenos a soporte@chronopark.com</Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

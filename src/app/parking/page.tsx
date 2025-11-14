@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/src/components/ui/button";
 import { signOut, useClientSession } from "@/src/lib/session-client";
+import { Button } from "@/src/shared/components/ui/button";
 
 export default function ParkingPage() {
   const router = useRouter();
