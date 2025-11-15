@@ -10,6 +10,13 @@ import {
 import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
 import QrScannerInput from "@/src/shared/components/form/qr-scanner-input.component";
 import { Badge } from "@/src/shared/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/shared/components/ui/card";
 
 import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
@@ -24,7 +31,13 @@ export function QrSectionComponent() {
     return success;
   };
 
-  return <QrFormComponent onValidateFee={onValidateFee} />;
+  return (
+    <Card>
+      <CardContent className="py-0">
+        <QrFormComponent onValidateFee={onValidateFee} />
+      </CardContent>
+    </Card>
+  );
 }
 
 function QrFormComponent({
@@ -42,7 +55,7 @@ function QrFormComponent({
 
   return (
       <form
-        className="flex flex-1 flex-col gap-4"
+        className="flex flex-1 flex-col gap-4 py-4"
         onChange={validateFeeForm.handleSubmit(async (data) => {
           const isValid = await onValidateFee(data);
           if (!isValid) {
