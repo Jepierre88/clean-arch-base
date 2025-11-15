@@ -3,7 +3,7 @@
 import type { ComponentType } from "react";
 import { useRouter } from "next/navigation";
 
-import { signOut, useClientSession } from "@/src/lib/session-client";
+import { useClientSession } from "@/src/lib/session-client";
 import { Button } from "@/src/shared/components/ui/button";
 import {
   Card,
@@ -36,16 +36,6 @@ export default function ParkingPage() {
     } catch {
       return "—";
     }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-    await refresh(true);
-    router.replace("/auth/login");
-  };
-
-  const handleRefreshSession = async () => {
-    await refresh(true);
   };
 
   const modules = [
@@ -104,18 +94,6 @@ export default function ParkingPage() {
             <p className="max-w-2xl text-base text-muted-foreground">
               Despliega acciones rápidas, accede a los módulos disponibles y monitorea la salud de tu sesión.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button size="lg" onClick={() => router.push("/parking/control-manual")}>
-              Ir al control manual
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <Button size="lg" variant="outline" onClick={handleRefreshSession}>
-              Actualizar sesión
-            </Button>
-            <Button size="lg" variant="ghost" onClick={handleSignOut}>
-              Cerrar sesión
-            </Button>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <SummaryTile label="Rol" value={userRoleLabel} />

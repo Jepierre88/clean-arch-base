@@ -11,9 +11,9 @@ export default function ManualControlPage() {
         <ManualIncomeFormComponent />
       </div>
       <Separator orientation="vertical" className="h-full" />
-      <article className="flex flex-1 min-w-0 flex-col gap-4 rounded-2xl border border-border/60 bg-card/80 p-4">
+      <div className="flex flex-1 min-w-0">
         <Title>Salida manual</Title>
-      </article>
+      </div>
     </div>
   );
 }
