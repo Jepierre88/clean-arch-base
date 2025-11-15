@@ -19,8 +19,9 @@ import {
 const inOutSearchParamsSchema = z.object({
     page: z.coerce.number().int().positive().default(IN_OUT_DEFAULT_PAGE),
     limit: z.coerce.number().int().positive().default(IN_OUT_DEFAULT_LIMIT),
-    status: z.nativeEnum(InOutStatusEnum).default(InOutStatusEnum.ACTIVE),
+    status: z.enum(Object.values(InOutStatusEnum)).default(InOutStatusEnum.ACTIVE),
     vehicleTypeId: z.string().optional(),
+    search: z.string().optional(),
 });
 
 export async function getInOutsAction(
@@ -30,6 +31,7 @@ export async function getInOutsAction(
         const params = buildSearchParams(inOutSearchParamsSchema, searchParams);
         const useCase = container.resolve(InOutUsecase);
         const response = await useCase.listInOuts(params);
+        console.log("InOuts fetched with params:", params);
         return { success: true, data: response };
     } catch (error) {
         return {

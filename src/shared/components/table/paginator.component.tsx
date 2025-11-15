@@ -123,91 +123,109 @@ export function Paginator({
   }, [currentPage, safeTotalPages]);
 
   return (
-    <div
-      className={cn(
-        "flex w-full flex-wrap items-center justify-between gap-3 p-4",
-        className
-      )}
+<div
+  className={cn(
+    "flex w-full flex-col xl:flex-row xl:items-center xl:justify-between gap-4 p-4",
+    className
+  )}
+>
+  {/* Pagination */}
+  <div className="w-full xl:w-auto flex justify-center xl:justify-start">
+    <Pagination
+      aria-busy={pending}
+      data-pending={pending ? "true" : "false"}
+      className="flex"
     >
-      <Pagination aria-busy={pending} data-pending={pending ? "true" : "false"}>
-        <PaginationContent
-          className="transition-opacity duration-200 data-[pending=true]:pointer-events-none data-[pending=true]:opacity-50"
-          data-pending={pending ? "true" : "false"}
-        >
-          <PaginationItem>
-            <PaginationPrevious
-              href={buildUrl({ [pageParam]: String(Math.max(1, currentPage - 1)) })}
-              onClick={(event) => {
-                event.preventDefault();
-                goPrev();
-              }}
-              aria-disabled={pending || currentPage === 1}
-              className={cn({ "pointer-events-none opacity-50": pending || currentPage === 1 })}
-            />
-          </PaginationItem>
+      <PaginationContent
+        className="transition-opacity duration-200 data-[pending=true]:pointer-events-none data-[pending=true]:opacity-50"
+        data-pending={pending ? "true" : "false"}
+      >
+        {/* Prev */}
+        <PaginationItem>
+          <PaginationPrevious
+            href={buildUrl({ [pageParam]: String(Math.max(1, currentPage - 1)) })}
+            onClick={(event) => {
+              event.preventDefault();
+              goPrev();
+            }}
+            aria-disabled={pending || currentPage === 1}
+            className={cn({
+              "pointer-events-none opacity-50": pending || currentPage === 1,
+            })}
+          />
+        </PaginationItem>
 
-          {pages.map((page, index) => {
-            if (page === "ellipsis-left" || page === "ellipsis-right") {
-              return <PaginationEllipsis key={`${page}-${index}`} />;
-            }
+        {/* Pages */}
+        {pages.map((page, index) => {
+          if (page === "ellipsis-left" || page === "ellipsis-right") {
+            return <PaginationEllipsis key={`${page}-${index}`} />;
+          }
 
-            const pageNumber = page as number;
-            const isActive = pageNumber === currentPage;
-            return (
-              <PaginationItem key={pageNumber}>
-                <PaginationLink
-                  href={buildUrl({ [pageParam]: String(pageNumber) })}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    goToPage(pageNumber);
-                  }}
-                  isActive={isActive}
-                  aria-disabled={pending}
-                  className="transition-transform duration-150 data-[active=true]:scale-105 data-[active=false]:opacity-70"
-                >
-                  {pageNumber}
-                </PaginationLink>
-              </PaginationItem>
-            );
-          })}
+          const pageNumber = page as number;
+          const isActive = pageNumber === currentPage;
 
-          <PaginationItem>
-            <PaginationNext
-              href={buildUrl({ [pageParam]: String(Math.min(safeTotalPages, currentPage + 1)) })}
-              onClick={(event) => {
-                event.preventDefault();
-                goNext();
-              }}
-              aria-disabled={pending || currentPage === safeTotalPages}
-              className={cn({
-                "pointer-events-none opacity-50": pending || currentPage === safeTotalPages,
-              })}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+          return (
+            <PaginationItem key={pageNumber}>
+              <PaginationLink
+                href={buildUrl({ [pageParam]: String(pageNumber) })}
+                onClick={(event) => {
+                  event.preventDefault();
+                  goToPage(pageNumber);
+                }}
+                isActive={isActive}
+                aria-disabled={pending}
+                className="transition-transform duration-150 data-[active=true]:scale-105 data-[active=false]:opacity-70"
+              >
+                {pageNumber}
+              </PaginationLink>
+            </PaginationItem>
+          );
+        })}
 
-      {showLimitSelector && limitOptions.length > 0 && (
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{limitLabel}</span>
-          <Select
-            value={String(currentLimit)}
-            onValueChange={handleLimitChange}
-            disabled={pending}
-          >
-            <SelectTrigger className="w-24">
-              <SelectValue placeholder={String(currentLimit)} />
-            </SelectTrigger>
-            <SelectContent>
-              {limitOptions.map((option) => (
-                <SelectItem key={option} value={String(option)}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+        {/* Next */}
+        <PaginationItem>
+          <PaginationNext
+            href={buildUrl({
+              [pageParam]: String(Math.min(safeTotalPages, currentPage + 1)),
+            })}
+            onClick={(event) => {
+              event.preventDefault();
+              goNext();
+            }}
+            aria-disabled={pending || currentPage === safeTotalPages}
+            className={cn({
+              "pointer-events-none opacity-50":
+                pending || currentPage === safeTotalPages,
+            })}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  </div>
+
+  {/* Limit selector */}
+  {showLimitSelector && limitOptions.length > 0 && (
+    <div className="flex w-full xl:w-auto items-center justify-center xl:justify-end gap-2">
+      <span className="text-sm text-muted-foreground">{limitLabel}</span>
+      <Select
+        value={String(currentLimit)}
+        onValueChange={handleLimitChange}
+        disabled={pending}
+      >
+        <SelectTrigger className="w-24">
+          <SelectValue placeholder={String(currentLimit)} />
+        </SelectTrigger>
+        <SelectContent>
+          {limitOptions.map((option) => (
+            <SelectItem key={option} value={String(option)}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
+  )}
+</div>
+
   );
 }
