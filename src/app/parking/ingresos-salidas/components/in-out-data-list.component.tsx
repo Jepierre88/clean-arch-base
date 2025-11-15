@@ -9,6 +9,8 @@ import { Car, Layers, ListOrdered, Clock } from "lucide-react";
 
 import { createInOutColumns } from "./table/columns.component";
 import { cn } from "@/src/lib/utils";
+import { UseDialogContext } from "@/src/shared/context/dialog.context";
+import { InOutDetailDialogContent } from "./in-out-detail-dialog-content";
 
 interface Props {
   items: IInOutEntity[];
@@ -23,14 +25,23 @@ export default function InOutDataListComponent({
   totalPages,
   pageSize,
 }: Props) {
-  const columns = React.useMemo(() => createInOutColumns(), []);
+  const { openDialog } = UseDialogContext();
+
+  const handleViewDetail = React.useCallback(
+    (item: IInOutEntity) => {
+      openDialog({
+        title: `Detalle de ${item.vehicle.licensePlate}`,
+        description: "Información detallada del movimiento seleccionado",
+        content: <InOutDetailDialogContent item={item} />,
+      });
+    },
+    [openDialog]
+  );
+
+  const columns = React.useMemo(() => createInOutColumns(handleViewDetail), [handleViewDetail]);
   const safeTotalPages = Math.max(1, totalPages || Math.ceil(total / pageSize) || 1);
   const vehicleTypes = React.useMemo(
     () => new Set(items.map((item) => item.vehicleType.name)).size,
-    [items]
-  );
-  const rates = React.useMemo(
-    () => new Set(items.map((item) => item.rateProfile.name)).size,
     [items]
   );
   const latestEntry = React.useMemo(() => {
@@ -83,6 +94,7 @@ export default function InOutDataListComponent({
       <div className="rounded-2xl border border-dashed border-border/60 bg-muted/40 p-4">
         <Paginator
           totalPages={safeTotalPages}
+          className="flex-col gap-4 p-0 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-between"
         />
       </div>
     </section>

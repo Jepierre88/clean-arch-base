@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback } from "react";
+
 import { UseDialogContext } from "../../context/dialog.context";
 import {
   Dialog,
@@ -12,10 +13,28 @@ import {
 } from "../ui/dialog";
 
 export default function CustomDialog() {
-  const { isOpen, title, renderContent, renderFooter, description, setIsOpen } =
-    UseDialogContext();
+  const {
+    isOpen,
+    title,
+    renderContent,
+    renderFooter,
+    description,
+    setIsOpen,
+    closeDialog,
+  } = UseDialogContext();
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open) {
+        setIsOpen(true);
+        return;
+      }
+      closeDialog();
+    },
+    [closeDialog, setIsOpen]
+  );
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

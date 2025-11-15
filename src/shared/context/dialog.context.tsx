@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback } from "react";
 import YesNoFormComponent from "../components/form/yes-no-form.component";
 
 
@@ -32,6 +32,7 @@ type TDialogContext = {
   showYesNoDialog: (options: YesNoDialogOptions) => void;
     openDialog: (options: OpenDialogOptions) => void;
     setIsOpen: (isOpen: boolean) => void;
+    closeDialog: () => void;
 };
 
 const DialogContext = createContext<TDialogContext>({} as TDialogContext);
@@ -48,6 +49,18 @@ export const DialogProvider = ({ children }: DialogProviderProps) => {
   const [renderContent, setRenderContent] = useState<ReactNode>(null);
   const [renderFooter, setRenderFooter] = useState<ReactNode>(null);
   const [description, setDescription] = useState("");
+
+  const resetDialogState = useCallback(() => {
+    setTitle("");
+    setDescription("");
+    setRenderContent(null);
+    setRenderFooter(null);
+  }, []);
+
+  const closeDialog = useCallback(() => {
+    setIsOpen(false);
+    resetDialogState();
+  }, [resetDialogState]);
 
   const showYesNoDialog = ({ handleYes, handleNo, title, description, requiresReloadOnYes }: YesNoDialogOptions) => {
     setDescription(description);
@@ -76,16 +89,6 @@ export const DialogProvider = ({ children }: DialogProviderProps) => {
     setIsOpen(true);
   };
 
-  useEffect(() => {
-    if (isOpen === false) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTitle("");
-      setDescription("");
-      setRenderContent(null);
-      setRenderFooter(null);
-    }
-  }, [isOpen]);
-
   return (
     <DialogContext.Provider
       value={{
@@ -96,7 +99,8 @@ export const DialogProvider = ({ children }: DialogProviderProps) => {
         showYesNoDialog,
         description,
         openDialog,
-        setIsOpen
+        setIsOpen,
+        closeDialog,
       }}
     >
       {children}
