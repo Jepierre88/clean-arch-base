@@ -41,7 +41,6 @@ function QrFormComponent({
   });
 
   return (
-    <div className="flex flex-col gap-6 py-3">
       <form
         className="flex flex-1 flex-col gap-6"
         onChange={validateFeeForm.handleSubmit(async (data) => {
@@ -120,6 +119,5 @@ function QrFormComponent({
           </div>
         </div>
       </form>
-    </div>
   );
 }
