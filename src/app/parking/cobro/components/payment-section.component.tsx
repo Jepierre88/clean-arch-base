@@ -5,8 +5,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { Badge } from "@/src/shared/components/ui/badge";
 import { Button } from "@/src/shared/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/src/shared/components/ui/card";
 import { Input } from "@/src/shared/components/ui/input";
 import { Label } from "@/src/shared/components/ui/label";
+import { Separator } from "@/src/shared/components/ui/separator";
 
 const TOTAL_AMOUNT = 8540;
 
@@ -30,30 +39,10 @@ const paymentMethods = [
 ];
 
 const steps = [
-  {
-    id: "user",
-    badge: "Paso 1",
-    title: "Usuario del tercero",
-    description: "Define quién autoriza el pago para asignar el convenio correcto.",
-  },
-  {
-    id: "method",
-    badge: "Paso 2",
-    title: "Medio de pago",
-    description: "Selecciona dónde quedará registrado el recaudo.",
-  },
-  {
-    id: "amount",
-    badge: "Paso 3",
-    title: "Monto recibido",
-    description: "Digita el valor entregado para calcular el cambio.",
-  },
-  {
-    id: "confirm",
-    badge: "Paso 4",
-    title: "Registrar pago",
-    description: "Confirma el resumen y completa el proceso (mock).",
-  },
+  { id: "user", badge: "1", title: "Usuario", description: "" },
+  { id: "method", badge: "2", title: "Medio", description: "" },
+  { id: "amount", badge: "3", title: "Monto", description: "" },
+  { id: "confirm", badge: "4", title: "Confirmar", description: "" },
 ];
 
 const formatCurrency = (value: number) =>
@@ -118,72 +107,48 @@ export function PaymentSectionComponent() {
   };
 
   return (
-    <div className="flex h-full flex-col gap-4">
-      <div className="rounded-2xl border border-primary/15 bg-linear-to-r from-primary/10 via-primary/5 to-transparent p-4 shadow-lg">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <Card className="gap-0">
+      <CardHeader>
+        <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-primary/80">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               Total del cobro
             </p>
-            <p className="text-2xl font-semibold text-foreground">{formatCurrency(TOTAL_AMOUNT)}</p>
-            <p className="text-xs text-muted-foreground">Valor final enviado por el QR.</p>
+            <CardTitle className="text-xl font-semibold tracking-tight">
+              {formatCurrency(TOTAL_AMOUNT)}
+            </CardTitle>
           </div>
           <div className="text-right">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-primary/80">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               Cambio estimado
             </p>
             <p
-              className={cn(
-                "text-xl font-semibold",
-                changeValue > 0 ? "text-emerald-400" : "text-muted-foreground"
-              )}
+              className={cn("text-lg font-semibold", changeValue > 0 ? "text-emerald-400" : "text-muted-foreground")}
             >
               {changeValue > 0 ? formatCurrency(changeValue) : "--"}
             </p>
-            <p className="text-xs text-muted-foreground">Se actualiza con el monto recibido.</p>
           </div>
         </div>
-
-        <div className="mt-4 h-1 rounded-full bg-white/40">
+        <CardDescription className="text-[10px]">
+          Sigue los pasos para registrar el pago y validar los datos antes de confirmar.
+        </CardDescription>
+        <div className="h-1 rounded-full bg-border/50">
           <div
             className="h-full rounded-full bg-primary transition-[width] duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
-      </div>
+      </CardHeader>
 
-      <div className="rounded-2xl border border-border/50 bg-card/80 p-4 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
-              Secuencia de cobro
-            </p>
-            <p className="text-sm font-semibold text-foreground">
-              Paso {currentStep + 1} de {steps.length}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon-sm"
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              aria-label="Paso anterior"
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              onClick={handleContinue}
-              aria-label="Paso siguiente"
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </div>
+      <CardContent className="py-0">
+        <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground pt-2">
+          <span>Pasos</span>
+          <span>
+            {currentStep + 1}/{steps.length}
+          </span>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1">
           {steps.map((step, index) => {
             const isActive = currentStep === index;
             return (
@@ -192,52 +157,62 @@ export function PaymentSectionComponent() {
                 type="button"
                 onClick={() => goToStep(index)}
                 className={cn(
-                  "group flex flex-col rounded-xl border px-3 py-2 text-left transition-all",
+                  "flex items-center gap-1 rounded-md border px-2 py-1 text-xs font-semibold transition-all",
                   isActive
-                    ? "border-primary/60 bg-primary/5 text-foreground shadow-sm"
-                    : "border-border/50 bg-background/60 text-muted-foreground hover:border-primary/40"
+                    ? "border-primary/50 bg-primary/10 text-foreground"
+                    : "border-border/50 text-muted-foreground hover:border-primary/40"
                 )}
               >
-                <span
-                  className={cn(
-                    "text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground",
-                    isActive && "text-primary"
-                  )}
-                >
+                <Badge variant="outline" className="w-5 shrink-0 border-primary/30 text-[10px]">
                   {step.badge}
-                </span>
-                <span className="text-sm font-semibold text-foreground">{step.title}</span>
+                </Badge>
+                <span>{step.title}</span>
               </button>
             );
           })}
         </div>
 
-        <div className="relative mt-4 overflow-hidden rounded-2xl border border-border/60 bg-background/70">
+        <div className="relative flex-1 overflow-hidden">
           <div
-            className="flex transition-transform duration-300"
+            className="flex h-full transition-transform duration-300"
             style={{ transform: `translateX(-${currentStep * 100}%)` }}
           >
             {steps.map((step) => {
               return (
-                <div key={step.id} className="flex w-full shrink-0 basis-full flex-col gap-3 p-4">
-                  <header className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
-                    <Badge variant="outline" className="border-primary/40 text-foreground">
-                      {step.badge}
-                    </Badge>
+                <div key={step.id} className="flex w-full shrink-0 basis-full flex-col gap-2 p-2.5">
+                  <header className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
                     <span>{step.title}</span>
+                    <div className="flex items-center gap-1 text-[10px]">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={prevStep}
+                        disabled={currentStep === 0}
+                        aria-label="Paso anterior"
+                      >
+                        <ChevronLeft className="size-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={handleContinue}
+                        aria-label="Paso siguiente"
+                      >
+                        <ChevronRight className="size-3" />
+                      </Button>
+                    </div>
                   </header>
-                  <p className="text-xs text-muted-foreground">{step.description}</p>
 
-                  <div className="min-h-[140px]">
+                  <div>
                     {step.id === "user" && (
-                      <div className="grid gap-1.5">
+                      <div className="flex gap-1 sm:grid sm:grid-cols-2">
                         {thirdPartyUsers.map((user) => (
                           <button
                             key={user.id}
                             type="button"
                             onClick={() => handleUserSelect(user.id)}
                             className={cn(
-                              "w-full rounded-lg border px-3 py-2 text-left shadow-sm transition-all",
+                              "w-full rounded-lg border px-2.5 py-1.5 text-left shadow-sm transition-all",
                               selectedUser === user.id
                                 ? "border-primary/60 bg-primary/10 text-foreground"
                                 : "border-border/60 bg-background/60 text-muted-foreground hover:border-primary/40"
@@ -251,17 +226,17 @@ export function PaymentSectionComponent() {
                     )}
 
                     {step.id === "method" && (
-                      <div className="grid gap-1.5 sm:grid-cols-3">
+                      <div className="grid gap-1 sm:grid-cols-3">
                         {paymentMethods.map((method) => (
                           <button
                             key={method.id}
                             type="button"
                             onClick={() => handleMethodSelect(method.id)}
                             className={cn(
-                              "w-full rounded-lg border px-3 py-2 text-left text-sm font-semibold shadow-sm transition-all",
+                              "w-full rounded-lg border px-2.5 py-1.5 text-left text-sm font-semibold shadow-sm transition-all",
                               selectedMethod === method.id
                                 ? "border-primary/60 bg-primary/10 text-foreground"
-                                : "border-border/60 bg-background/60 text-muted-foreground hover:border-primary/40"
+                                : "border-border/60 bg-background/60 text-muted-foreground hover-border-primary/40"
                             )}
                           >
                             {method.label}
@@ -271,7 +246,7 @@ export function PaymentSectionComponent() {
                     )}
 
                     {step.id === "amount" && (
-                      <div className="space-y-1.5">
+                      <div className="space-y-0.5">
                         <Label htmlFor="amount-received" className="text-[11px] text-muted-foreground">
                           Cantidad
                         </Label>
@@ -292,39 +267,37 @@ export function PaymentSectionComponent() {
                     )}
 
                     {step.id === "confirm" && (
-                      <div className="flex h-full flex-col justify-between gap-3 rounded-xl border border-border/70 bg-background/70 px-4 py-3 shadow-sm">
-                        <div className="space-y-2">
-                          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
-                            Resumen
-                          </p>
-                          <div className="space-y-1 text-sm">
-                            <div className="flex items-center justify-between text-muted-foreground">
-                              <span>Usuario</span>
-                              <span className="font-semibold text-foreground">
-                                {thirdPartyUsers.find((user) => user.id === selectedUser)?.label}
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                          {[ 
+                            {
+                              label: "Usuario",
+                              value: thirdPartyUsers.find((user) => user.id === selectedUser)?.label ?? "--",
+                            },
+                            {
+                              label: "Medio",
+                              value: paymentMethods.find((method) => method.id === selectedMethod)?.label ?? "--",
+                            },
+                            {
+                              label: "Recibido",
+                              value: formatCurrency(Number(amountReceived) || 0),
+                            },
+                            {
+                              label: "Cambio",
+                              value: changeValue > 0 ? formatCurrency(changeValue) : "--",
+                            },
+                          ].map((item) => (
+                            <div key={item.label} className="flex min-w-[120px] flex-1 flex-col px-1.5">
+                              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                                {item.label}
+                              </span>
+                              <span className="text-sm font-semibold text-foreground">
+                                {item.value}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between text-muted-foreground">
-                              <span>Medio</span>
-                              <span className="font-semibold text-foreground">
-                                {paymentMethods.find((method) => method.id === selectedMethod)?.label}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between text-muted-foreground">
-                              <span>Recibido</span>
-                              <span className="font-semibold text-foreground">
-                                {formatCurrency(Number(amountReceived) || 0)}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between text-muted-foreground">
-                              <span>Cambio</span>
-                              <span className="font-semibold text-foreground">
-                                {changeValue > 0 ? formatCurrency(changeValue) : "--"}
-                              </span>
-                            </div>
-                          </div>
+                          ))}
                         </div>
-                        <Button size="sm" className="w-full py-2" onClick={handleRegisterPayment}>
+                        <Button size="sm" className="w-full" onClick={handleRegisterPayment}>
                           Registrar pago (mock)
                         </Button>
                       </div>
@@ -335,25 +308,19 @@ export function PaymentSectionComponent() {
             })}
           </div>
         </div>
-
+      </CardContent>
+      <CardFooter>
         {currentStep < steps.length - 1 && (
-          <div className="mt-4 flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              className="flex-1"
-            >
+          <div className="ml-auto flex items-center gap-2 text-xs">
+            <Button variant="ghost" size="sm" onClick={prevStep} disabled={currentStep === 0}>
               Atrás
             </Button>
-            <Button size="sm" className="flex-1" onClick={handleContinue}>
+            <Button size="sm" onClick={handleContinue}>
               Siguiente
             </Button>
           </div>
         )}
-      </div>
-
-    </div>
+      </CardFooter>
+    </Card>
   );
 }

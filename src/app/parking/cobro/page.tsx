@@ -13,11 +13,7 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card className="flex h-full flex-1">
-          <CardContent className="flex flex-1 flex-col pt-6 sm:px-4">
-            <PaymentSectionComponent />
-          </CardContent>
-        </Card>
+        <PaymentSectionComponent />
       </div>
       <QrDetailSectionComponent />
     </section>
