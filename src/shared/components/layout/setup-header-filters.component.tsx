@@ -1,4 +1,7 @@
-'use client'
+"use client";
+
+import { useEffect } from "react";
+
 import { UseHeaderContext } from "../../context/header.context";
 
 interface SetupHeaderFiltersProps {
@@ -8,11 +11,17 @@ interface SetupHeaderFiltersProps {
 
 export const SetupHeaderFilters = ({
     showDatePicker,
-    showSearch
-}: SetupHeaderFiltersProps)=>{
-    const {setShowDatePicker, setShowSearch} = UseHeaderContext();
-    setShowDatePicker(showDatePicker);
-    setShowSearch(showSearch);
+    showSearch,
+}: SetupHeaderFiltersProps) => {
+    const { setShowDatePicker, setShowSearch } = UseHeaderContext();
 
-    return null
-}
+    useEffect(() => {
+        setShowDatePicker(showDatePicker);
+    }, [setShowDatePicker, showDatePicker]);
+
+    useEffect(() => {
+        setShowSearch(showSearch);
+    }, [setShowSearch, showSearch]);
+
+    return null;
+};

@@ -19,8 +19,9 @@ export function QrSectionComponent() {
 
   const onValidateFee = async (data: IValidateAmountParamsEntity) => {
     clearValidateResult();
-    if (!data.parkingSessionId) return;
-    await validateFee(data);
+    if (!data.parkingSessionId) return false;
+    const success = await validateFee(data);
+    return success;
   };
 
   return <QrFormComponent onValidateFee={onValidateFee} />;
@@ -29,7 +30,7 @@ export function QrSectionComponent() {
 function QrFormComponent({
   onValidateFee,
 }: {
-  onValidateFee: (data: IValidateAmountParamsEntity) => Promise<void>;
+  onValidateFee: (data: IValidateAmountParamsEntity) => Promise<boolean>;
 }) {
   const validateFeeForm = useForm({
     resolver: zodResolver(ValidateFeeSchema),
@@ -44,7 +45,10 @@ function QrFormComponent({
       <form
         className="flex flex-1 flex-col gap-6"
         onChange={validateFeeForm.handleSubmit(async (data) => {
-          await onValidateFee(data);
+          const isValid = await onValidateFee(data);
+          if (!isValid) {
+            validateFeeForm.reset({ exitTime: new Date(), parkingSessionId: "" });
+          }
         })}
       >
         <div className="rounded-2xl border border-border/70 bg-card px-5 py-5 shadow-sm sm:px-6">

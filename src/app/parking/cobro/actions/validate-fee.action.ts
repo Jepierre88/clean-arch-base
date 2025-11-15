@@ -8,6 +8,7 @@ import { AxiosError } from "axios";
 
 export async function validateFeeAction(params: IValidateAmountParamsEntity): Promise<IActionResponse<IValidateAmountResponseEntity>> {
     try {
+        console.log("validateFeeAction params:", params);
         const useCase = container.resolve(PaymentUsecase);
         const response = await useCase.validateFee(params);
         return {
