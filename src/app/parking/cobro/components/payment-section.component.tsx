@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ScanQrCode } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { Badge } from "@/src/shared/components/ui/badge";
 import { Button } from "@/src/shared/components/ui/button";
@@ -15,6 +15,8 @@ import {
 } from "@/src/shared/components/ui/card";
 import { Input } from "@/src/shared/components/ui/input";
 import { Label } from "@/src/shared/components/ui/label";
+import EmptyState from "@/src/shared/components/empty-state.component";
+import { usePaymentContext } from "@/src/shared/context/payment.context";
 import { Separator } from "@/src/shared/components/ui/separator";
 
 const TOTAL_AMOUNT = 8540;
@@ -53,6 +55,7 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 export function PaymentSectionComponent() {
+  const { validateRaw } = usePaymentContext();
   const [selectedUser, setSelectedUser] = useState(thirdPartyUsers[0].id);
   const [selectedMethod, setSelectedMethod] = useState(paymentMethods[0].id);
   const [amountReceived, setAmountReceived] = useState("0");
@@ -105,6 +108,31 @@ export function PaymentSectionComponent() {
     }
     nextStep();
   };
+
+  if (!validateRaw) {
+    return (
+      <Card className="gap-0">
+        <CardHeader>
+          <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            Cobro pendiente
+          </p>
+          <CardTitle className="text-lg font-semibold tracking-tight">
+            Escanea el QR para realizar el pago
+          </CardTitle>
+          <CardDescription className="text-[10px]">
+            Necesitamos los datos de la sesión antes de habilitar la captura del cobro.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center py-5">
+          <EmptyState
+            title="Sin datos validados"
+            description="Escanea un código QR o ingresa el número de sesión para continuar con el cobro."
+            icon={<ScanQrCode className="h-8 w-8" />}
+          />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="gap-0">
