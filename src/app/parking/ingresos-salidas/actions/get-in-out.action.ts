@@ -1,0 +1,42 @@
+'use server'
+
+import { container } from "@/di/container";
+
+import { IListInOutResponseEntity, InOutUsecase } from "@/domain/index";
+import { buildSearchParams } from "@/src/lib/search-params";
+import { InOutStatusEnum } from "@/src/shared/enums/parking/in-out-status.enum";
+import IActionResponse from "@/src/shared/interfaces/generic/action-response";
+import IErrorResponse from "@/src/shared/interfaces/generic/error-response.interface";
+import { IPageProps } from "@/src/shared/interfaces/generic/page-props.interface";
+import { AxiosError } from "axios";
+import { z } from "zod";
+
+import {
+    IN_OUT_DEFAULT_LIMIT,
+    IN_OUT_DEFAULT_PAGE,
+} from "../constants";
+
+const inOutSearchParamsSchema = z.object({
+    page: z.coerce.number().int().positive().default(IN_OUT_DEFAULT_PAGE),
+    limit: z.coerce.number().int().positive().default(IN_OUT_DEFAULT_LIMIT),
+    status: z.nativeEnum(InOutStatusEnum).default(InOutStatusEnum.ACTIVE),
+    vehicleTypeId: z.string().optional(),
+});
+
+export async function getInOutsAction(
+    searchParams?: IPageProps["searchParams"]
+): Promise<IActionResponse<IListInOutResponseEntity>> {
+    try {
+        const params = buildSearchParams(inOutSearchParamsSchema, searchParams);
+        const useCase = container.resolve(InOutUsecase);
+        const response = await useCase.listInOuts(params);
+        return { success: true, data: response };
+    } catch (error) {
+        return {
+            success: false,
+            error:
+                (error as AxiosError<IErrorResponse>).response?.data.message ??
+                "Error desconocido",
+        };
+    }
+}

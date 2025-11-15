@@ -12,6 +12,9 @@ export * from "./repositories/parking/common.repository-imp"
 
 export * from "./datasources/parking/payment-datasource.service"
 export * from "./repositories/parking/payment.repository-imp"
+ 
+export * from "./datasources/parking/in-out-datasource.service"
+export * from "./repositories/parking/in-out.repository-imp"
 
 // get-permissions infra removed (permissions flow deprecated)
 // set-company related exports removed (companies flow deprecated)

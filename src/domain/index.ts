@@ -3,12 +3,14 @@ export * from "./repositories/auth/login.repository";
 export * from "./repositories/parking/manual-control.repository"
 export * from "./repositories/parking/common.repository"
 export * from "./repositories/parking/payment.repository"
+export * from "./repositories/parking/in-out.repository"
 
 //USE CASES
 export * from "./usecases/auth/login.usecase";
 export * from "./usecases/parking/manual-control.usecase"
 export * from "./usecases/parking/common.usecase";
 export * from "./usecases/parking/payment.usecase";
+export * from "./usecases/parking/in-out.usecase";
 
 //ENTITIES
 export * from "./entities/auth/get-permissions-response.entity";

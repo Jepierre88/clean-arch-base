@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, isValidElement } from "react";
 import { cn } from "@/src/lib/utils";
 import {
   Table,
@@ -20,11 +20,13 @@ const alignmentClassMap = {
 
 type Alignment = keyof typeof alignmentClassMap;
 
-export type DataTableColumn<T extends Record<string, unknown>> = {
+export type DataTableColumn<T extends object> = {
   /** Unique identifier for the column; falls back to the accessor key */
   id?: string;
   /** Property key used for the default cell renderer */
   accessorKey?: keyof T;
+  /** Function that returns the value to display when no custom cell renderer is provided */
+  accessorFn?: (row: T) => ReactNode;
   /** Column header content */
   header: ReactNode;
   /** Optional custom cell renderer that receives the current row */
@@ -37,7 +39,7 @@ export type DataTableColumn<T extends Record<string, unknown>> = {
   cellClassName?: string;
 };
 
-export type DataTableProps<T extends Record<string, unknown>> = {
+export type DataTableProps<T extends object> = {
   data: T[];
   columns: DataTableColumn<T>[];
   caption?: ReactNode;
@@ -48,7 +50,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
   className?: string;
 };
 
-export function DataTable<T extends Record<string, unknown>>({
+export function DataTable<T extends object>({
   data,
   columns,
   caption,
@@ -59,11 +61,26 @@ export function DataTable<T extends Record<string, unknown>>({
   className,
 }: DataTableProps<T>) {
   const resolveRowKey = (row: T, index: number) => {
-    const key = getRowKey?.(row, index) ?? (row as { id?: string | number })?.id ?? index;
+    const key =
+      getRowKey?.(row, index) ?? (row as { id?: string | number })?.id ?? index;
     return key;
   };
 
   const showEmptyState = !isLoading && data.length === 0;
+
+  const ensureRenderableValue = (value: unknown): ReactNode => {
+    if (value === null || value === undefined) return null;
+    if (typeof value === "string" || typeof value === "number") return value;
+    if (typeof value === "boolean") return value ? "Sí" : "No";
+    if (value instanceof Date) return value.toLocaleString();
+    if (isValidElement(value as ReactNode)) return value as ReactNode;
+
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return String(value);
+    }
+  };
 
   return (
     <Table className={className}>
@@ -105,11 +122,16 @@ export function DataTable<T extends Record<string, unknown>>({
             <TableRow key={resolveRowKey(row, rowIndex)}>
               {columns.map((column, columnIndex) => {
                 const alignmentClass = alignmentClassMap[column.align ?? "left"];
-                const cellContent = column.cell
-                  ? column.cell(row, rowIndex)
-                  : column.accessorKey
-                  ? ((row[column.accessorKey] as ReactNode) ?? null)
-                  : null;
+                let cellContent: ReactNode = null;
+
+                if (column.cell) {
+                  cellContent = column.cell(row, rowIndex);
+                } else if (column.accessorFn) {
+                  cellContent = column.accessorFn(row);
+                } else if (column.accessorKey) {
+                  const key = String(column.accessorKey);
+                  cellContent = ensureRenderableValue((row as Record<string, unknown>)[key]);
+                }
 
                 return (
                   <TableCell

@@ -1,10 +1,12 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 
-import { LoginRepository, ManualControlRepository } from "@/domain/index";
+import { InOutRepository, LoginRepository, ManualControlRepository } from "@/domain/index";
 import {
   CommonDatasourceService,
   CommonRepositoryImp,
+  InOutDatasourceService,
+  InOutRepositoryImp,
   LoginDatasourceService,
   LoginRepositoryImp,
   ManualControlDatasourceService,
@@ -36,6 +38,18 @@ if (!container.isRegistered("ManualControlDatasourceService")) {
     "ManualControlDatasourceService",
     { useClass: ManualControlDatasourceService }
   );
+}
+
+if (!container.isRegistered("InOutRepository")) {
+  container.register<InOutRepository>("InOutRepository", {
+    useClass: InOutRepositoryImp,
+  });
+}
+
+if (!container.isRegistered("InOutDatasourceService")) {
+  container.register<InOutDatasourceService>("InOutDatasourceService", {
+    useClass: InOutDatasourceService,
+  });
 }
 
 if (!container.isRegistered("CommonDatasourceService")) {
