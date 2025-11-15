@@ -23,3 +23,7 @@ export * from "./entities/parking/generate-manual-income-params.entity"
 export * from "./entities/parking/generate-manual-income-response.entity"
 
 export * from "./entities/parking/amount-detail.entity"
+
+export * from "./entities/parking/in-out.entity"
+export * from "./entities/parking/list-in-out-params.entitty"
+export * from "./entities/parking/list-in-out-response.entity"

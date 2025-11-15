@@ -13,9 +13,6 @@ import { Badge } from "@/src/shared/components/ui/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/src/shared/components/ui/card";
 
 import { IValidateAmountParamsEntity } from "@/src/domain";
