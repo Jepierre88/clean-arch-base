@@ -1,9 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { IValidateAmountParamsEntity, IValidateAmountResponseEntity } from "@/domain/index";
 import { validateFeeAction } from "@/src/app/parking/cobro/actions/validate-fee.action";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 type TPaymentContext = {
   // raw action response (IGeneralResponse<IAmountDetailEntity>) wrapped by IActionResponse
@@ -24,6 +25,7 @@ export const usePaymentContext = () => {
 export const PaymentProvider = ({ children }: { children: React.ReactNode }) => {
   const [validateRaw, setValidateRaw] = useState<IValidateAmountResponseEntity | null>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const pathname = usePathname();
 
   const validateFee = useCallback(async (params: IValidateAmountParamsEntity) => {
     setIsValidating(true);
@@ -48,6 +50,10 @@ export const PaymentProvider = ({ children }: { children: React.ReactNode }) => 
   }, []);
 
   const clearValidateResult = useCallback(() => setValidateRaw(null), []);
+
+  useEffect(() => {
+    setValidateRaw(null);
+  }, [pathname]);
 
   // THE IDEA IS THAT WE WILL HAVE ANOTHER PROP WITH THE PAYMENT DATA LIKE MONEY RECEIVED, CHANGE, ETC.
   const value: TPaymentContext = {
