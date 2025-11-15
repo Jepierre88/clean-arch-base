@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/src/shared/components/ui/card";
 import { QrDetailSectionComponent } from "./components/parking-detail-section.component";
 import { QrSectionComponent } from "./components/qr-section.component";
+import { PaymentSectionComponent } from "./components/payment-section.component";
 
 export default function Page() {
   return (
@@ -12,7 +13,11 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card className="h-full flex-1 p-12"></Card>
+        <Card className="flex h-full flex-1">
+          <CardContent className="flex flex-1 flex-col pt-6 sm:px-4">
+            <PaymentSectionComponent />
+          </CardContent>
+        </Card>
       </div>
       <QrDetailSectionComponent />
     </section>

@@ -42,7 +42,7 @@ function QrFormComponent({
 
   return (
       <form
-        className="flex flex-1 flex-col gap-6"
+        className="flex flex-1 flex-col gap-4"
         onChange={validateFeeForm.handleSubmit(async (data) => {
           const isValid = await onValidateFee(data);
           if (!isValid) {
@@ -50,22 +50,22 @@ function QrFormComponent({
           }
         })}
       >
-        <div className="rounded-2xl border border-border/70 bg-card px-5 py-5 shadow-sm sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+        <div className="rounded-xl border border-border/70 bg-card px-4 py-4 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               <Badge variant="outline" className="border-primary/40 text-foreground">
                 Paso 1
               </Badge>
               <span>Hora de salida</span>
             </div>
-            <span className="text-[11px] text-muted-foreground">Requerido</span>
+            <span className="text-[10px] text-muted-foreground">Requerido</span>
           </div>
 
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-[11px] text-muted-foreground">
             Define la hora y fecha exactas según el control manual o la barrera.
           </p>
 
-          <div className="mt-4">
+          <div className="mt-3">
             <Controller
               control={validateFeeForm.control}
               name="exitTime"
@@ -84,22 +84,22 @@ function QrFormComponent({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border/70 bg-card px-5 py-5 shadow-sm sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+        <div className="rounded-xl border border-border/70 bg-card px-4 py-4 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               <Badge variant="outline" className="border-primary/40 text-foreground">
                 Paso 2
               </Badge>
               <span>Escanear QR</span>
             </div>
-            <span className="text-[11px] text-muted-foreground">Lectura automática</span>
+            <span className="text-[10px] text-muted-foreground">Lectura automática</span>
           </div>
 
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-1.5 text-[11px] text-muted-foreground">
             Usa la pistola lectora para capturar el ticket y obtén el valor final al instante.
           </p>
 
-          <div className="mt-4">
+          <div className="mt-3">
             <Controller
               control={validateFeeForm.control}
               name="parkingSessionId"
