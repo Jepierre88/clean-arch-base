@@ -1,103 +1,29 @@
 'use client';
+
 import { cn } from '@/src/lib/utils';
-import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { Monitor, Moon, Sun } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+
 const themes = [
-  {
-    key: 'system',
-    icon: Monitor,
-    label: 'System theme',
-  },
-  {
-    key: 'light',
-    icon: Sun,
-    label: 'Light theme',
-  },
-  {
-    key: 'dark',
-    icon: Moon,
-    label: 'Dark theme',
-  },
+  { key: 'system', icon: Monitor, label: 'System theme' },
+  { key: 'light', icon: Sun, label: 'Light theme' },
+  { key: 'dark', icon: Moon, label: 'Dark theme' },
 ];
-export type ThemeSwitcherProps = {
-  value?: 'light' | 'dark' | 'system';
-  onChange?: (theme: 'light' | 'dark' | 'system') => void;
-  defaultValue?: 'light' | 'dark' | 'system';
-  className?: string;
-};
-export const ThemeSwitcher = ({
-  value,
-  onChange,
-  defaultValue = 'system',
-  className,
-}: ThemeSwitcherProps) => {
-  const STORAGE_KEY = 'theme';
-  const [theme, setTheme] = useControllableState({
-    defaultProp: defaultValue,
-    prop: value,
-    onChange,
-  });
+
+export const ThemeSwitcher = ({ className }: { className?: string }) => {
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  
-  // Initialize from localStorage (only when uncontrolled)
+
+  // Prevent hydration mismatches
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (value === undefined) {
-      const saved = localStorage.getItem(STORAGE_KEY) as 'light' | 'dark' | 'system' | null;
-      if (saved === 'light' || saved === 'dark' || saved === 'system') {
-        setTheme(saved);
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Apply theme to :root and keep in sync with system preference when theme === 'system'
-  useEffect(() => {
-    if (!mounted) return;
-    if (typeof window === 'undefined') return;
-
-    const root = document.documentElement;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const applyMode = (mode: 'light' | 'dark') => {
-      // Tailwind dark mode uses the 'dark' class
-      root.classList.remove('light', 'dark');
-      if (mode === 'dark') root.classList.add('dark');
-      // Also expose an attribute and color-scheme for CSS
-      root.setAttribute('data-theme', mode);
-      root.style.colorScheme = mode;
-    };
-
-    const resolved: 'light' | 'dark' = theme === 'system' ? (mq.matches ? 'dark' : 'light') : theme;
-    applyMode(resolved);
-
-    // Persist preference
-    try {
-      localStorage.setItem(STORAGE_KEY, theme);
-    } catch {}
-
-    // React to OS changes when in 'system'
-    if (theme === 'system') {
-      const handler = (e: MediaQueryListEvent) => applyMode(e.matches ? 'dark' : 'light');
-      mq.addEventListener?.('change', handler);
-      return () => mq.removeEventListener?.('change', handler);
-    }
-  }, [theme, mounted]);
-  const handleThemeClick = useCallback(
-    (themeKey: 'light' | 'dark' | 'system') => {
-      setTheme(themeKey);
-    },
-    [setTheme]
-  );
-  // Prevent hydration mismatch
-  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
-  if (!mounted) {
-    return null;
-  }
+
+  if (!mounted) return null;
+
   return (
     <div
       className={cn(
@@ -107,13 +33,14 @@ export const ThemeSwitcher = ({
     >
       {themes.map(({ key, icon: Icon, label }) => {
         const isActive = theme === key;
+
         return (
           <button
-            aria-label={label}
-            className="relative h-6 w-6 rounded-full"
             key={key}
-            onClick={() => handleThemeClick(key as 'light' | 'dark' | 'system')}
             type="button"
+            aria-label={label}
+            onClick={() => setTheme(key)}
+            className="relative h-6 w-6 rounded-full"
           >
             {isActive && (
               <motion.div
