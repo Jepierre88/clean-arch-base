@@ -29,8 +29,8 @@ export function QrSectionComponent({ className }: QrSectionProps) {
 
   return (
     <Card className={cn("overflow-hidden pb-0", className)}>
-      <CardContent className="flex h-full flex-col py-4">
-      <CardHeader>
+      <CardContent className="flex h-full flex-col">
+      <CardHeader className="px-0">
         <CardTitle className="text-lg font-semibold">Validar tarifa</CardTitle>
         <CardDescription>Escanea el QR para validar la tarifa de parqueo</CardDescription>
       </CardHeader>
