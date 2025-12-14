@@ -16,7 +16,6 @@ import {
   ChronoSidebarMenuSubButton,
   ChronoSidebarMenuSubItem,
   ChronoSidebarRail,
-  useChronoSidebar,
 } from "@chrono/chrono-sidebar.component";
 import { ChronoNavUser } from "@chrono/chrono-nav-user.component";
 import {
@@ -28,6 +27,8 @@ import { TResource } from "../../types/auth/resource.type";
 import AppIcons from "../icons.component";
 import { EIconNames } from "../../enums/icon-names.enum";
 import Image from "next/image";
+import { useClientSession } from "@/src/lib/session-client";
+import { useState } from "react";
 
 export default function SidebarComponent({
   applications,
@@ -36,12 +37,7 @@ export default function SidebarComponent({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
-  const userData = {
-    name: "Usuario de prueba",
-    email: "usuario@prueba.com",
-    avatar: "https://avatars.githubusercontent.com/u/50754836?v=4",
-  };
+  const {data} = useClientSession()
 
   const isResourceWithoutSubresources = (resource: TResource) => {
     return resource.subresources.length === 0;
@@ -163,7 +159,11 @@ export default function SidebarComponent({
         ))}
       </ChronoSidebarContent>
       <ChronoSidebarFooter>
-        <ChronoNavUser user={userData} />
+        <ChronoNavUser user={{
+          name: data?.user.name || "Usuario",
+          email: data?.user.email || "",
+          avatar:  "",
+        }} />
       </ChronoSidebarFooter>
       <ChronoSidebarRail />
     </ChronoSidebar>
