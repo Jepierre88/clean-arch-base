@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import { ENVIRONMENT } from "../shared/constants/environment";
 import { destroySession, getSession } from "./session";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 let apiServer: ReturnType<typeof axios.create> | null = null;
 
@@ -66,6 +67,7 @@ export function getServerApi(queryParams?: Record<string, unknown>) {
       if (status === 401) {
         try {
           await destroySession();
+          toast.info("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.");
           redirect("/auth/login");
         } catch (destroyError) {
           console.error("Error al cerrar sesión tras 401", destroyError);
