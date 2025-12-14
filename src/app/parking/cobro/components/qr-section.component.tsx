@@ -7,7 +7,7 @@ import { Field, FieldError } from "@/src/shared/components/ui/field";
 import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
 import QrScannerInput from "@/src/shared/components/form/qr-scanner-input.component";
 import { Badge } from "@/src/shared/components/ui/badge";
-import { Card, CardContent, CardFooter } from "@/src/shared/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/shared/components/ui/card";
 
 import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
@@ -30,6 +30,10 @@ export function QrSectionComponent({ className }: QrSectionProps) {
   return (
     <Card className={cn("overflow-hidden pb-0", className)}>
       <CardContent className="flex h-full flex-col py-4">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold">Validar tarifa</CardTitle>
+        <CardDescription>Escanea el QR para validar la tarifa de parqueo</CardDescription>
+      </CardHeader>
         <QrFormComponent onValidateFee={onValidateFee} onClear={clearValidateResult} />
       </CardContent>
     </Card>
@@ -53,7 +57,7 @@ function QrFormComponent({
 
   return (
       <form
-        className="flex flex-col gap-3 overflow-y-auto max-h-min"
+        className="flex flex-col gap-2 my-4 overflow-y-auto sm:flex-row"
         onChange={validateFeeForm.handleSubmit(async (data) => {
           const isValid = await onValidateFee(data);
           if (!isValid) {
@@ -61,64 +65,55 @@ function QrFormComponent({
           }
         })}
       >
-        <div className="rounded-xl border border-border/70 bg-card px-4 py-4 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2.5">
-            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-              <Badge variant="outline" className="border-primary/40 text-foreground">
-                Paso 1
-              </Badge>
-              <span>Hora de salida</span>
-            </div>
+        <div className="flex flex-1 flex-col gap-3 rounded-xl justify-center">
+          <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            <Badge variant="outline" className="border-primary/40 text-foreground">
+              Paso 1
+            </Badge>
+            <span>Hora de salida</span>
           </div>
+          <Controller
+            control={validateFeeForm.control}
+            name="exitTime"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <DateTimePicker
+                  {...field}
+                  date={field.value as Date | undefined}
+                  setDate={(value) => field.onChange(value)}
+                />
 
-          <div className="mt-3">
-            <Controller
-              control={validateFeeForm.control}
-              name="exitTime"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <DateTimePicker
-                    {...field}
-                    date={field.value as Date | undefined}
-                    setDate={(value) => field.onChange(value)}
-                  />
-
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          </div>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
         </div>
 
-        <div className="rounded-xl border border-border/70 bg-card px-4 py-4 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2.5">
-            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-              <Badge variant="outline" className="border-primary/40 text-foreground">
-                Paso 2
-              </Badge>
-              <span>Escanear QR</span>
-            </div>
+        <div className="flex flex-1 flex-col gap-3 rounded-xl py-2">
+          <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            <Badge variant="outline" className="border-primary/40 text-foreground">
+              Paso 2
+            </Badge>
+            <span>Escanear QR</span>
           </div>
 
-          <div className="mt-3">
-            <Controller
-              control={validateFeeForm.control}
-              name="parkingSessionId"
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <QrScannerInput
-                    {...field}
-                    id="parkingSessionId"
-                    value={field.value ?? ""}
-                    onClear={onClear}
-                    placeholder="Escanea el QR con la pistola lectora"
-                  />
+          <Controller
+            control={validateFeeForm.control}
+            name="parkingSessionId"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <QrScannerInput
+                  {...field}
+                  id="parkingSessionId"
+                  value={field.value ?? ""}
+                  onClear={onClear}
+                  placeholder="Escanea el código"
+                />
 
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          </div>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
         </div>
       </form>
   );

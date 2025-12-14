@@ -97,13 +97,13 @@ ref
   return (
     <div
       className={cn(
-        "flex items-center gap-4 rounded-xl border bg-card px-4 py-2 shadow-sm transition-colors",
-        focused && "border-primary ring-2 ring-primary/50 animate-pulse",
-        flash && "ring-2 ring-green-400/70",
+        "flex items-center gap-4 rounded-xl border border-border/40 bg-card px-4 shadow-sm transition-colors duration-200",
+        focused && "border-primary",
+        flash && "border-emerald-400",
         className
       )}
     >
-      <div className="flex h-10 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <div className="flex h-10 w-12 items-center justify-center rounded-full text-primary">
         <QrCode className="h-6 w-6" />
       </div>
       
@@ -115,15 +115,20 @@ ref
         onFocus={handleFocus}
         onBlur={handleBlur}
         className={cn(
-          "border-0 bg-transparent px-0 text-lg font-medium tracking-wide focus-visible:ring-0",
+          "border-0 bg-transparent px-0 text-lg font-medium shadow-none tracking-wide focus-visible:ring-0",
           props.readOnly && "text-muted-foreground"
         )}
       />
       <div>
-        <Button type="button" onClick={()=>{
-          clearAndFocus()
-        }}>
-          <RefreshCcw/>
+        <Button
+          type="button"
+          className="h-8 w-8"
+          variant="ghost"
+          onClick={() => {
+            clearAndFocus();
+          }}
+        >
+          <RefreshCcw className="h-4 w-4" />
         </Button>
       </div>
     </div>
