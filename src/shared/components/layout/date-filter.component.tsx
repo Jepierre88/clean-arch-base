@@ -3,10 +3,14 @@
 import { MotionProps, motion } from "framer-motion";
 import { ArrowLeftToLine, ArrowRightToLine } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
-import { Button } from "../ui/button";
+import ChronoButton from "@chrono/chrono-button.component";
+import { ChronoCalendar } from "@chrono/chrono-calendar.component";
+import {
+  ChronoPopover,
+  ChronoPopoverContent,
+  ChronoPopoverTrigger,
+} from "@chrono/chrono-popover.component";
 import { useRouter } from "next/navigation";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Calendar } from "../ui/calendar";
 
 export function DateRangeComponent() {
 
@@ -82,17 +86,17 @@ export function DateRangeComponent() {
 
   return (
     <div className="flex items-center gap-2">
-      <Button
+      <ChronoButton
         variant={"ghost"}
         onClick={() => {
           operateDay(-1);
         }}
       >
         <ArrowLeftToLine />
-      </Button>
-      <Popover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
-        <PopoverTrigger asChild>
-          <Button
+      </ChronoButton>
+      <ChronoPopover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
+        <ChronoPopoverTrigger asChild>
+          <ChronoButton
             type="button"
             variant="outline"
             className="min-w-[300px] h-9 relative overflow-hidden justify-center z-20"
@@ -114,26 +118,26 @@ export function DateRangeComponent() {
                   })}
             </motion.div>
             <span className="sr-only">Seleccionar fecha</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="center">
-          <Calendar
+          </ChronoButton>
+        </ChronoPopoverTrigger>
+        <ChronoPopoverContent className="w-auto p-0" align="center">
+          <ChronoCalendar
             mode="single"
             selected={currentDate ?? undefined}
             defaultMonth={currentDate ?? new Date()}
             onSelect={(date) => handleSelectDate(date ?? null)}
             initialFocus
           />
-        </PopoverContent>
-      </Popover>
-      <Button
+        </ChronoPopoverContent>
+      </ChronoPopover>
+      <ChronoButton
         variant={"ghost"}
         onClick={() => {
           operateDay(1);
         }}
       >
         <ArrowRightToLine />
-      </Button>
+      </ChronoButton>
     </div>
   );
 }

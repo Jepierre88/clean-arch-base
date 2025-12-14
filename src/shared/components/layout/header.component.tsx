@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { SidebarTrigger, useSidebar } from "../ui/sidebar";
+import {
+  ChronoSidebarTrigger,
+  useChronoSidebar,
+} from "@chrono/chrono-sidebar.component";
 import BreadcrumbComponent from "./breadcrumb.component";
 import SearchComponent from "./search.component";
-import { Button } from "../ui/button";
 import { motion, MotionProps } from "framer-motion";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,7 +14,7 @@ import { DateRangeComponent } from "./date-filter.component";
 import { UseHeaderContext } from "../../context/header.context";
 
 export default function HeaderComponent() {
-  const { open, isMobile } = useSidebar();
+  const { open, isMobile } = useChronoSidebar();
   const {showDatePicker, showSearch} = UseHeaderContext();
   return (
     <header
@@ -38,7 +40,7 @@ export default function HeaderComponent() {
         } px-4 py-1 rounded h-14`}
       >
         <div className="flex items-center gap-3">
-          <SidebarTrigger className="shrink-0" />
+          <ChronoSidebarTrigger className="shrink-0" />
           <BreadcrumbComponent hideRoot />
         </div>
         {showDatePicker && <DateRangeComponent />}

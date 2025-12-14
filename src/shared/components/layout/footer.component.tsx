@@ -1,9 +1,9 @@
 "use client";
-import { useSidebar } from "../ui/sidebar";
+import { useChronoSidebar } from "@chrono/chrono-sidebar.component";
 import { ThemeSwitcher } from "./theme-switcher.component";
 
 export default function FooterComponent() {
-  const { open, isMobile } = useSidebar();
+  const { open, isMobile } = useChronoSidebar();
 
   return (
     <footer

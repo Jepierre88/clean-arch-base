@@ -3,26 +3,27 @@ import { User } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { TApplication } from "../../types/auth/application.type";
 import {
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-  SidebarRail,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
-} from "../ui/sidebar";
-import { NavUser } from "../ui/nav-user";
+  ChronoSidebar,
+  ChronoSidebarContent,
+  ChronoSidebarFooter,
+  ChronoSidebarGroup,
+  ChronoSidebarGroupLabel,
+  ChronoSidebarHeader,
+  ChronoSidebarMenu,
+  ChronoSidebarMenuButton,
+  ChronoSidebarMenuItem,
+  ChronoSidebarMenuSub,
+  ChronoSidebarMenuSubButton,
+  ChronoSidebarMenuSubItem,
+  ChronoSidebarRail,
+  useChronoSidebar,
+} from "@chrono/chrono-sidebar.component";
+import { ChronoNavUser } from "@chrono/chrono-nav-user.component";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../ui/collapsible";
+  ChronoCollapsible,
+  ChronoCollapsibleContent,
+  ChronoCollapsibleTrigger,
+} from "@chrono/chrono-collapsible.component";
 import { TResource } from "../../types/auth/resource.type";
 import AppIcons from "../icons.component";
 import { EIconNames } from "../../enums/icon-names.enum";
@@ -59,8 +60,8 @@ export default function SidebarComponent({
   };
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="mx-auto">
+    <ChronoSidebar collapsible="icon">
+      <ChronoSidebarHeader className="mx-auto">
         <Image
           src="/img/BLACK_LOGO.png"
           alt="Logotipo ChronoPOS"
@@ -78,13 +79,13 @@ export default function SidebarComponent({
           priority
         />{" "}
         {/* CompanySwitcher removed: companies are not part of the session anymore */}
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>General</SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
+      </ChronoSidebarHeader>
+      <ChronoSidebarContent>
+        <ChronoSidebarGroup>
+          <ChronoSidebarGroupLabel>General</ChronoSidebarGroupLabel>
+          <ChronoSidebarMenu>
+            <ChronoSidebarMenuItem>
+              <ChronoSidebarMenuButton
                 className={`cursor-pointer ${
                   pathname === "/parking/dashboard"
                     ? "bg-accent text-accent-foreground"
@@ -94,21 +95,21 @@ export default function SidebarComponent({
               >
                 <AppIcons iconName={EIconNames.DASHBOARD} />
                 Dashboard
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
+              </ChronoSidebarMenuButton>
+            </ChronoSidebarMenuItem>
+          </ChronoSidebarMenu>
+        </ChronoSidebarGroup>
         {applications.map((app) => (
-          <SidebarGroup key={app.id}>
-            <SidebarGroupLabel>{app.name}</SidebarGroupLabel>
-            <SidebarMenu>
+          <ChronoSidebarGroup key={app.id}>
+            <ChronoSidebarGroupLabel>{app.name}</ChronoSidebarGroupLabel>
+            <ChronoSidebarMenu>
               {app.resources.map((res) => {
                 const resPath = normalizeToAbsolutePath(res.path);
                 const isActive = pathname.startsWith(resPath);
 
                 return isResourceWithoutSubresources(res) ? (
-                  <SidebarMenuItem key={res.id}>
-                    <SidebarMenuButton
+                  <ChronoSidebarMenuItem key={res.id}>
+                    <ChronoSidebarMenuButton
                       className={`cursor-pointer ${
                         isActive ? "bg-accent text-accent-foreground" : ""
                       }`}
@@ -116,30 +117,30 @@ export default function SidebarComponent({
                     >
                       <AppIcons iconName={res.icon as EIconNames} />
                       {res.name}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                    </ChronoSidebarMenuButton>
+                  </ChronoSidebarMenuItem>
                 ) : (
-                  <Collapsible key={res.id} defaultOpen={isActive}>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton
+                  <ChronoCollapsible key={res.id} defaultOpen={isActive}>
+                    <ChronoCollapsibleTrigger asChild>
+                      <ChronoSidebarMenuButton
                         className={
                           isActive ? "bg-accent text-accent-foreground" : ""
                         }
                       >
                         <User />
                         {res.name}
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
+                      </ChronoSidebarMenuButton>
+                    </ChronoCollapsibleTrigger>
+                    <ChronoCollapsibleContent>
+                      <ChronoSidebarMenuSub>
                         {res.subresources.map((subresource) => {
                           const subPath = normalizeToAbsolutePath(
                             subresource.path
                           );
                           const isSubActive = pathname.startsWith(subPath);
                           return (
-                            <SidebarMenuSubItem key={subresource.name}>
-                              <SidebarMenuSubButton
+                            <ChronoSidebarMenuSubItem key={subresource.name}>
+                              <ChronoSidebarMenuSubButton
                                 className={
                                   isSubActive
                                     ? "bg-accent text-accent-foreground"
@@ -148,23 +149,23 @@ export default function SidebarComponent({
                                 onClick={() => handleRedirect(subPath)}
                               >
                                 {subresource.name}
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
+                              </ChronoSidebarMenuSubButton>
+                            </ChronoSidebarMenuSubItem>
                           );
                         })}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </Collapsible>
+                      </ChronoSidebarMenuSub>
+                    </ChronoCollapsibleContent>
+                  </ChronoCollapsible>
                 );
               })}
-            </SidebarMenu>
-          </SidebarGroup>
+            </ChronoSidebarMenu>
+          </ChronoSidebarGroup>
         ))}
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={userData} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+      </ChronoSidebarContent>
+      <ChronoSidebarFooter>
+        <ChronoNavUser user={userData} />
+      </ChronoSidebarFooter>
+      <ChronoSidebarRail />
+    </ChronoSidebar>
   );
 }

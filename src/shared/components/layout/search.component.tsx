@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Input } from "../ui/input";
 import { Search, X } from "lucide-react";
 import { useDebounce } from "use-debounce";
 import { usePathname, useRouter } from "next/navigation";
-import { useSidebar } from "../ui/sidebar";
-import { Button } from "../ui/button";
+import { ChronoInput } from "@chrono/chrono-input.component";
+import ChronoButton from "@chrono/chrono-button.component";
+import { useChronoSidebar } from "@chrono/chrono-sidebar.component";
 import { ENVIRONMENT } from "../../constants/environment";
 
 export default function SearchComponent() {
   const pathname = usePathname();
   const { replace } = useRouter();
-  const { isMobile } = useSidebar();
+  const { isMobile } = useChronoSidebar();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -59,18 +59,18 @@ export default function SearchComponent() {
     return (
       <div className="flex items-center justify-end gap-2 w-full">
         {!isOpen ? (
-          <Button
+          <ChronoButton
             variant="outline"
             size="icon-sm"
             aria-label="Abrir búsqueda"
             onClick={() => setIsOpen(true)}
           >
             <Search className="w-5 h-5" />
-          </Button>
+          </ChronoButton>
         ) : (
           <div className="flex w-full items-center gap-2">
             <Search className="ml-2 h-4 w-4 text-muted-foreground" />
-            <Input
+            <ChronoInput
               ref={inputRef}
               type="text"
               value={searchTerm}
@@ -78,7 +78,7 @@ export default function SearchComponent() {
               placeholder="Buscar..."
               className="w-full"
             />
-            <Button
+            <ChronoButton
               type="button"
               variant="ghost"
               size="icon-sm"
@@ -86,7 +86,7 @@ export default function SearchComponent() {
               onClick={() => setIsOpen(false)}
             >
               <X className="h-4 w-4" />
-            </Button>
+            </ChronoButton>
           </div>
         )}
       </div>
@@ -96,7 +96,7 @@ export default function SearchComponent() {
   return (
     <div className="flex items-center justify-between gap-4">
   <Search className="ml-3 h-4 w-4 text-muted-foreground" />
-      <Input
+      <ChronoInput
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
