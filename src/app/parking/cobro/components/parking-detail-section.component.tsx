@@ -72,12 +72,12 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
     const hiddenRules = Math.max(rules.length - visibleRules.length, 0);
 
     return (
-        <section className={cn("flex h-full flex-col gap-2 py-2", className)}>
+        <section className={cn("flex h-full flex-col gap-2", className)}>
             <Card className="bg-card/95">
-                <CardHeader className="gap-2 pb-2">
+                <CardHeader className="gap-2">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                            <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                                 Perfil de tarifa
                             </p>
                             <CardTitle className="text-lg font-semibold tracking-tight">
@@ -90,18 +90,11 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                                     {detail.agreementName}
                                 </Badge>
                             )}
-                            <Badge variant="outline" className="text-[9px] font-semibold">
-                                Sesión #{detail.parkingSessionId}
-                            </Badge>
                         </div>
                     </div>
-
-                    <CardDescription className="text-[10px]">
-                        Revisa la información calculada antes de continuar con el cobro.
-                    </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-3 pt-2">
+                <CardContent className="space-y-1 mb-0">
                     <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent px-3 py-2.5 shadow-inner">
                         <div className="flex items-center gap-2.5 text-foreground">
                             <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-primary/10">
@@ -170,16 +163,11 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
             </Card>
 
             <Card className="bg-card/95">
-                <CardHeader className="gap-1.5 pb-3">
+                <CardHeader className="gap-1.5">
                     <CardTitle className="text-sm font-semibold">Reglas aplicadas</CardTitle>
-                    <CardDescription className="text-[10px]">
-                        {rules.length
-                            ? "Resumen compacto de los ajustes aplicados."
-                            : "No se encontraron reglas aplicadas para esta sesión."}
-                    </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-1.5 py-3">
+                <CardContent className="space-y-1">
                     {visibleRules.length ? (
                         <div className="grid gap-1.5 sm:grid-cols-2">
                             {visibleRules.map((rule, idx) => (
