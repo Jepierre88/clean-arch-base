@@ -52,7 +52,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
 
     if (!detail) {
         return (
-            <section className={cn("flex h-full flex-col", className)}>
+            <section className={cn("flex h-full max-h-[88vh] flex-col overflow-y-auto pr-1", className)}>
                 <div className="flex flex-1 items-center justify-center px-4">
                     <EmptyState
                         title="No hay datos registrados"
@@ -72,8 +72,8 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
     const hiddenRules = Math.max(rules.length - visibleRules.length, 0);
 
     return (
-        <section className={cn("flex h-full flex-col gap-2", className)}>
-            <Card className="bg-card/95">
+        <div className={cn("flex flex-col gap-2 overflow-y-auto pr-1", className)}>
+            <Card className="bg-card/95 h-min">
                 <CardHeader className="gap-2">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
@@ -162,7 +162,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                 </CardContent>
             </Card>
 
-            <Card className="bg-card/95">
+            <Card className="bg-card/95 flex-1">
                 <CardHeader className="gap-1.5">
                     <CardTitle className="text-sm font-semibold">Reglas aplicadas</CardTitle>
                 </CardHeader>
@@ -204,6 +204,6 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                     )}
                 </CardContent>
             </Card>
-        </section>
+        </div>
     );
 }

@@ -3,22 +3,21 @@
 import { Controller, useForm } from "react-hook-form";
 import { ValidateFeeSchema } from "@/src/shared/schemas/parking/validate-fee.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Field,
-  FieldError,
-} from "@/src/shared/components/ui/field";
+import { Field, FieldError } from "@/src/shared/components/ui/field";
 import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
 import QrScannerInput from "@/src/shared/components/form/qr-scanner-input.component";
 import { Badge } from "@/src/shared/components/ui/badge";
-import {
-  Card,
-  CardContent,
-} from "@/src/shared/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/src/shared/components/ui/card";
 
 import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
+import { cn } from "@/src/lib/utils";
 
-export function QrSectionComponent() {
+type QrSectionProps = {
+  className?: string;
+};
+
+export function QrSectionComponent({ className }: QrSectionProps) {
   const { validateFee, clearValidateResult } = usePaymentContext();
 
   const onValidateFee = async (data: IValidateAmountParamsEntity) => {
@@ -29,8 +28,8 @@ export function QrSectionComponent() {
   };
 
   return (
-    <Card>
-      <CardContent className="py-0">
+    <Card className={cn("overflow-hidden pb-0", className)}>
+      <CardContent className="flex h-full flex-col py-4">
         <QrFormComponent onValidateFee={onValidateFee} onClear={clearValidateResult} />
       </CardContent>
     </Card>
@@ -54,7 +53,7 @@ function QrFormComponent({
 
   return (
       <form
-        className="flex flex-1 flex-col gap-4 py-4"
+        className="flex flex-col gap-3 overflow-y-auto max-h-min"
         onChange={validateFeeForm.handleSubmit(async (data) => {
           const isValid = await onValidateFee(data);
           if (!isValid) {

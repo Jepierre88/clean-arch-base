@@ -53,7 +53,11 @@ const formatCurrency = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-export function PaymentSectionComponent() {
+type PaymentSectionProps = {
+  className?: string;
+};
+
+export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   const { validateRaw } = usePaymentContext();
   const [selectedUser, setSelectedUser] = useState(thirdPartyUsers[0].id);
   const [selectedMethod, setSelectedMethod] = useState(paymentMethods[0].id);
@@ -110,13 +114,8 @@ export function PaymentSectionComponent() {
 
   if (!validateRaw) {
     return (
-      <Card className="gap-0">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold tracking-tight">
-            Pago
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex items-center justify-center py-5">
+      <Card className={cn("gap-0 overflow-hidden", className)}>
+        <CardContent className="flex items-center justify-center py-5 my-auto">
           <EmptyState
             title="Sin datos validados"
             description="Escanea un código QR o ingresa el número de sesión para continuar con el cobro."
@@ -128,7 +127,7 @@ export function PaymentSectionComponent() {
   }
 
   return (
-    <Card className="gap-0">
+    <Card className={cn("gap-0 flex h-full flex-col overflow-hidden", className)}>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <div>
@@ -161,7 +160,7 @@ export function PaymentSectionComponent() {
         </div>
       </CardHeader>
 
-      <CardContent className="py-0">
+      <CardContent className="flex-1 overflow-y-auto py-0 pr-1">
         <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground pt-2">
           <span>Pasos</span>
           <span>
@@ -330,7 +329,7 @@ export function PaymentSectionComponent() {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="shrink-0">
         {currentStep < steps.length - 1 && (
           <div className="ml-auto flex items-center gap-2 text-xs">
             <Button variant="ghost" size="sm" onClick={prevStep} disabled={currentStep === 0}>
