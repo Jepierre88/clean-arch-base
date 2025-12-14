@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarProvider } from "@/src/shared/components/ui/sidebar";
+import { ChronoSidebarProvider } from "@chrono/chrono-sidebar.component";
 import { CommonProvider } from "@/src/shared/context/common.context";
 import { HeaderProvider } from "@/src/shared/context/header.context";
 import { PaymentProvider } from "@/src/shared/context/payment.context";
@@ -13,7 +13,7 @@ export default function ParkingProviders({ children }: PropsWithChildren) {
       <PaymentProvider>
         <CommonProvider>
           <DialogProvider>
-            <SidebarProvider>{children}</SidebarProvider>
+            <ChronoSidebarProvider>{children}</ChronoSidebarProvider>
           </DialogProvider>
         </CommonProvider>
       </PaymentProvider>

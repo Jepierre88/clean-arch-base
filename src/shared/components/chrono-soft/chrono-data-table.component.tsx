@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, isValidElement } from "react";
+
 import { cn } from "@/src/lib/utils";
 import {
   Table,
@@ -10,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/src/shared/components/ui/table";
+} from "../ui/table";
 
 const alignmentClassMap = {
   left: "text-left",
@@ -18,30 +19,22 @@ const alignmentClassMap = {
   right: "text-right",
 } as const;
 
-type Alignment = keyof typeof alignmentClassMap;
+export type ChronoDataTableAlignment = keyof typeof alignmentClassMap;
 
-export type DataTableColumn<T extends object> = {
-  /** Unique identifier for the column; falls back to the accessor key */
+export type ChronoDataTableColumn<T extends object> = {
   id?: string;
-  /** Property key used for the default cell renderer */
   accessorKey?: keyof T;
-  /** Function that returns the value to display when no custom cell renderer is provided */
   accessorFn?: (row: T) => ReactNode;
-  /** Column header content */
   header: ReactNode;
-  /** Optional custom cell renderer that receives the current row */
   cell?: (row: T, rowIndex: number) => ReactNode;
-  /** Horizontal alignment for both header and cells */
-  align?: Alignment;
-  /** Additional class names for the header cell */
+  align?: ChronoDataTableAlignment;
   headerClassName?: string;
-  /** Additional class names for the body cell */
   cellClassName?: string;
 };
 
-export type DataTableProps<T extends object> = {
+export type ChronoDataTableProps<T extends object> = {
   data: T[];
-  columns: DataTableColumn<T>[];
+  columns: ChronoDataTableColumn<T>[];
   caption?: ReactNode;
   emptyMessage?: ReactNode;
   loadingMessage?: ReactNode;
@@ -50,7 +43,7 @@ export type DataTableProps<T extends object> = {
   className?: string;
 };
 
-export function DataTable<T extends object>({
+export function ChronoDataTable<T extends object>({
   data,
   columns,
   caption,
@@ -59,12 +52,9 @@ export function DataTable<T extends object>({
   isLoading = false,
   getRowKey,
   className,
-}: DataTableProps<T>) {
-  const resolveRowKey = (row: T, index: number) => {
-    const key =
-      getRowKey?.(row, index) ?? (row as { id?: string | number })?.id ?? index;
-    return key;
-  };
+}: ChronoDataTableProps<T>) {
+  const resolveRowKey = (row: T, index: number) =>
+    getRowKey?.(row, index) ?? (row as { id?: string | number })?.id ?? index;
 
   const showEmptyState = !isLoading && data.length === 0;
 
@@ -90,10 +80,7 @@ export function DataTable<T extends object>({
           {columns.map((column, columnIndex) => (
             <TableHead
               key={column.id ?? String(column.accessorKey ?? columnIndex)}
-              className={cn(
-                alignmentClassMap[column.align ?? "left"],
-                column.headerClassName
-              )}
+              className={cn(alignmentClassMap[column.align ?? "left"], column.headerClassName)}
             >
               {column.header}
             </TableHead>

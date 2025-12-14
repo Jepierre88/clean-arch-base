@@ -4,13 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/src/shared/components/ui/breadcrumb";
+  ChronoBreadcrumb,
+  ChronoBreadcrumbItem,
+  ChronoBreadcrumbLink,
+  ChronoBreadcrumbList,
+  ChronoBreadcrumbPage,
+  ChronoBreadcrumbSeparator,
+} from "@chrono/chrono-breadcrumb.component";
 
 type Props = {
   rootHref?: string;
@@ -55,37 +55,37 @@ export default function BreadcrumbComponent({
   const showRootOnly = crumbs.length === 0;
 
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
+    <ChronoBreadcrumb>
+      <ChronoBreadcrumbList>
         {!hideRoot && (
-          <BreadcrumbItem>
+          <ChronoBreadcrumbItem>
             {showRootOnly ? (
-              <BreadcrumbPage>{rootLabel}</BreadcrumbPage>
+              <ChronoBreadcrumbPage>{rootLabel}</ChronoBreadcrumbPage>
             ) : (
-              <BreadcrumbLink asChild>
+              <ChronoBreadcrumbLink asChild>
                 <Link href={rootHref}>{rootLabel}</Link>
-              </BreadcrumbLink>
+              </ChronoBreadcrumbLink>
             )}
-          </BreadcrumbItem>
+          </ChronoBreadcrumbItem>
         )}
 
-        {!hideRoot && crumbs.length > 0 && <BreadcrumbSeparator />}
+        {!hideRoot && crumbs.length > 0 && <ChronoBreadcrumbSeparator />}
 
         {crumbs.map(({ href, label, isLast }) => (
           <React.Fragment key={href}>
-            <BreadcrumbItem>
+            <ChronoBreadcrumbItem>
               {isLast ? (
-                <BreadcrumbPage>{label}</BreadcrumbPage>
+                <ChronoBreadcrumbPage>{label}</ChronoBreadcrumbPage>
               ) : (
-                <BreadcrumbLink asChild>
+                <ChronoBreadcrumbLink asChild>
                   <Link href={href}>{label}</Link>
-                </BreadcrumbLink>
+                </ChronoBreadcrumbLink>
               )}
-            </BreadcrumbItem>
-            {!isLast && <BreadcrumbSeparator />}
+            </ChronoBreadcrumbItem>
+            {!isLast && <ChronoBreadcrumbSeparator />}
           </React.Fragment>
         ))}
-      </BreadcrumbList>
-    </Breadcrumb>
+      </ChronoBreadcrumbList>
+    </ChronoBreadcrumb>
   );
 }

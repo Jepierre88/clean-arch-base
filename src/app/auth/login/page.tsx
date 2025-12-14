@@ -10,26 +10,26 @@ import { toast } from "sonner";
 
 import { loginAction } from "@/src/app/auth/actions/login.action";
 import { ILoginParams } from "@/domain/index";
-import { Button } from "@/src/shared/components/ui/button";
+import ChronoButton from "@chrono/chrono-button.component";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardAction,
-  CardContent,
-  CardFooter,
-} from "@/src/shared/components/ui/card";
+  ChronoCard,
+  ChronoCardHeader,
+  ChronoCardTitle,
+  ChronoCardDescription,
+  ChronoCardAction,
+  ChronoCardContent,
+  ChronoCardFooter,
+} from "@chrono/chrono-card.component";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/src/shared/components/ui/form";
-import { Input } from "@/src/shared/components/ui/input";
-import { Separator } from "@/src/shared/components/ui/separator";
+  ChronoForm,
+  ChronoFormControl,
+  ChronoFormField,
+  ChronoFormItem,
+  ChronoFormLabel,
+  ChronoFormMessage,
+} from "@chrono/chrono-form.component";
+import { ChronoInput } from "@chrono/chrono-input.component";
+import { ChronoSeparator } from "@chrono/chrono-separator.component";
 import { LoginSchema } from "@/src/shared/schemas/auth/login.schema";
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
@@ -102,14 +102,14 @@ export default function LoginPage() {
 
   return (
     <div className="flex w-full max-w-lg flex-1 items-center justify-center px-2 py-4 sm:px-4">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">Inicia sesión en CHRONOPARK</CardTitle>
-          <CardDescription>
+      <ChronoCard className="w-full">
+        <ChronoCardHeader>
+          <ChronoCardTitle className="text-2xl font-semibold">Inicia sesión en CHRONOPARK</ChronoCardTitle>
+          <ChronoCardDescription>
             Ingresa tus credenciales para acceder al panel de administración.
-          </CardDescription>
-          <CardAction>
-            <Button
+          </ChronoCardDescription>
+          <ChronoCardAction>
+            <ChronoButton
               type="button"
               variant="link"
               onClick={() =>
@@ -117,47 +117,47 @@ export default function LoginPage() {
               }
             >
               ¿Necesitas ayuda?
-            </Button>
-          </CardAction>
-        </CardHeader>
-  <CardContent>
-          <Form {...form}>
+            </ChronoButton>
+          </ChronoCardAction>
+        </ChronoCardHeader>
+  <ChronoCardContent>
+          <ChronoForm {...form}>
             <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
+              <ChronoFormField
                 control={form.control}
                 name="identifier"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Correo electrónico</FormLabel>
-                    <FormControl>
-                      <Input
+                  <ChronoFormItem>
+                    <ChronoFormLabel>Correo electrónico</ChronoFormLabel>
+                    <ChronoFormControl>
+                      <ChronoInput
                         {...field}
                         autoComplete="username"
                         inputMode="email"
                         placeholder="nombre@empresa.com"
                         type="email"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </ChronoFormControl>
+                    <ChronoFormMessage />
+                  </ChronoFormItem>
                 )}
               />
-              <FormField
+              <ChronoFormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contraseña</FormLabel>
-                    <FormControl>
+                  <ChronoFormItem>
+                    <ChronoFormLabel>Contraseña</ChronoFormLabel>
+                    <ChronoFormControl>
                       <div className="relative">
-                        <Input
+                        <ChronoInput
                           {...field}
                           autoComplete="current-password"
                           placeholder="Ingresa tu contraseña"
                           type={isShownPassword ? "text" : "password"}
                           className="pr-12"
                         />
-                        <Button
+                        <ChronoButton
                           type="button"
                           variant="ghost"
                           size="icon-sm"
@@ -167,31 +167,31 @@ export default function LoginPage() {
                           aria-pressed={isShownPassword}
                         >
                           {isShownPassword ? <EyeOff className="size-4" /> : <EyeIcon className="size-4" />}
-                        </Button>
+                        </ChronoButton>
                       </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </ChronoFormControl>
+                    <ChronoFormMessage />
+                  </ChronoFormItem>
                 )}
               />
 
-              <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+              <ChronoButton type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="size-4 animate-spin" />}
                 Iniciar sesión
-              </Button>
+              </ChronoButton>
             </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex-col items-center text-center">
-          <Separator className="w-full bg-border/60" />
+          </ChronoForm>
+        </ChronoCardContent>
+        <ChronoCardFooter className="flex-col items-center text-center">
+          <ChronoSeparator className="w-full bg-border/60" />
           <p className="text-sm text-muted-foreground">
             ¿No tienes acceso? Comunícate con tu administrador para solicitar una cuenta.
           </p>
-          <Button variant="link" asChild>
+          <ChronoButton variant="link" asChild>
             <Link href="mailto:soporte@chronopark.com">Escríbenos a soporte@chronopark.com</Link>
-          </Button>
-        </CardFooter>
-      </Card>
+          </ChronoButton>
+        </ChronoCardFooter>
+      </ChronoCard>
     </div>
   );
 }

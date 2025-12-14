@@ -3,8 +3,8 @@
 import * as React from "react";
 
 import { IInOutEntity } from "@/domain/index";
-import { Badge } from "@/src/shared/components/ui/badge";
-import { Separator } from "@/src/shared/components/ui/separator";
+import { ChronoBadge } from "@chrono/chrono-badge.component";
+import { ChronoSeparator } from "@chrono/chrono-separator.component";
 import { useCommonContext } from "@/src/shared/context/common.context";
 
 interface InOutDetailDialogContentProps {
@@ -52,12 +52,12 @@ export function InOutDetailDialogContent({ item }: InOutDetailDialogContentProps
             {item.vehicle.licensePlate}
           </p>
         </div>
-        <Badge variant="outline" className="text-xs font-semibold">
+        <ChronoBadge variant="outline" className="text-xs font-semibold">
           {vehicleTypeLabel}
-        </Badge>
+        </ChronoBadge>
       </div>
 
-      <Separator />
+      <ChronoSeparator />
       <dl className="grid gap-4 sm:grid-cols-2">
         {detailRows.map((row) => (
           <InfoRow key={row.label} label={row.label} value={row.value} />

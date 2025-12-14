@@ -3,18 +3,18 @@
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, ScanQrCode } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { Badge } from "@/src/shared/components/ui/badge";
-import { Button } from "@/src/shared/components/ui/button";
+import { ChronoBadge } from "@chrono/chrono-badge.component";
+import ChronoButton from "@chrono/chrono-button.component";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/src/shared/components/ui/card";
-import { Input } from "@/src/shared/components/ui/input";
-import { Label } from "@/src/shared/components/ui/label";
+  ChronoCard,
+  ChronoCardContent,
+  ChronoCardDescription,
+  ChronoCardFooter,
+  ChronoCardHeader,
+  ChronoCardTitle,
+} from "@chrono/chrono-card.component";
+import { ChronoInput } from "@chrono/chrono-input.component";
+import { ChronoLabel } from "@chrono/chrono-label.component";
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
 
@@ -114,29 +114,29 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
 
   if (!validateRaw) {
     return (
-      <Card className={cn("gap-0 overflow-hidden", className)}>
-        <CardContent className="flex items-center justify-center py-5 my-auto">
+      <ChronoCard className={cn("gap-0 overflow-hidden", className)}>
+        <ChronoCardContent className="flex items-center justify-center py-5 my-auto">
           <EmptyState
             title="Sin datos validados"
             description="Escanea un código QR o ingresa el número de sesión para continuar con el cobro."
             icon={<ScanQrCode className="h-8 w-8" />}
           />
-        </CardContent>
-      </Card>
+        </ChronoCardContent>
+      </ChronoCard>
     );
   }
 
   return (
-    <Card className={cn("gap-0 flex h-full flex-col overflow-hidden", className)}>
-      <CardHeader>
+    <ChronoCard className={cn("gap-0 flex h-full flex-col overflow-hidden", className)}>
+      <ChronoCardHeader>
         <div className="flex items-center justify-between gap-2">
           <div>
             <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               Total del cobro
             </p>
-            <CardTitle className="text-xl font-semibold tracking-tight">
+            <ChronoCardTitle className="text-xl font-semibold tracking-tight">
               {formatCurrency(TOTAL_AMOUNT)}
-            </CardTitle>
+            </ChronoCardTitle>
           </div>
           <div className="text-right">
             <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
@@ -149,18 +149,18 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
             </p>
           </div>
         </div>
-        <CardDescription className="text-[10px]">
+        <ChronoCardDescription className="text-[10px]">
           Sigue los pasos para registrar el pago y validar los datos antes de confirmar.
-        </CardDescription>
+        </ChronoCardDescription>
         <div className="h-1 rounded-full bg-border/50">
           <div
             className="h-full rounded-full bg-primary transition-[width] duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
-      </CardHeader>
+      </ChronoCardHeader>
 
-      <CardContent className="flex-1 overflow-y-auto py-0 pr-1">
+      <ChronoCardContent className="flex-1 overflow-y-auto py-0 pr-1">
         <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground pt-2">
           <span>Pasos</span>
           <span>
@@ -183,9 +183,9 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                     : "border-border/50 text-muted-foreground hover:border-primary/40"
                 )}
               >
-                <Badge variant="outline" className="w-5 shrink-0 border-primary/30 text-[10px]">
+                <ChronoBadge variant="outline" className="w-5 shrink-0 border-primary/30 text-[10px]">
                   {step.badge}
-                </Badge>
+                </ChronoBadge>
                 <span>{step.title}</span>
               </button>
             );
@@ -203,7 +203,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                   <header className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
                     <span>{step.title}</span>
                     <div className="flex items-center gap-1 text-[10px]">
-                      <Button
+                      <ChronoButton
                         variant="ghost"
                         size="icon-sm"
                         onClick={prevStep}
@@ -211,15 +211,15 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                         aria-label="Paso anterior"
                       >
                         <ChevronLeft className="size-3" />
-                      </Button>
-                      <Button
+                      </ChronoButton>
+                      <ChronoButton
                         variant="ghost"
                         size="icon-sm"
                         onClick={handleContinue}
                         aria-label="Paso siguiente"
                       >
                         <ChevronRight className="size-3" />
-                      </Button>
+                      </ChronoButton>
                     </div>
                   </header>
 
@@ -267,10 +267,10 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
 
                     {step.id === "amount" && (
                       <div className="space-y-0.5">
-                        <Label htmlFor="amount-received" className="text-[11px] text-muted-foreground">
+                        <ChronoLabel htmlFor="amount-received" className="text-[11px] text-muted-foreground">
                           Cantidad
-                        </Label>
-                        <Input
+                        </ChronoLabel>
+                        <ChronoInput
                           id="amount-received"
                           type="number"
                           min="0"
@@ -317,9 +317,9 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                             </div>
                           ))}
                         </div>
-                        <Button size="sm" className="w-full" onClick={handleRegisterPayment}>
+                        <ChronoButton size="sm" className="w-full" onClick={handleRegisterPayment}>
                           Registrar pago (mock)
-                        </Button>
+                        </ChronoButton>
                       </div>
                     )}
                   </div>
@@ -328,19 +328,19 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
             })}
           </div>
         </div>
-      </CardContent>
-      <CardFooter className="shrink-0">
+      </ChronoCardContent>
+      <ChronoCardFooter className="shrink-0">
         {currentStep < steps.length - 1 && (
           <div className="ml-auto flex items-center gap-2 text-xs">
-            <Button variant="ghost" size="sm" onClick={prevStep} disabled={currentStep === 0}>
+            <ChronoButton variant="ghost" size="sm" onClick={prevStep} disabled={currentStep === 0}>
               Atrás
-            </Button>
-            <Button size="sm" onClick={handleContinue}>
+            </ChronoButton>
+            <ChronoButton size="sm" onClick={handleContinue}>
               Siguiente
-            </Button>
+            </ChronoButton>
           </div>
         )}
-      </CardFooter>
-    </Card>
+      </ChronoCardFooter>
+    </ChronoCard>
   );
 }

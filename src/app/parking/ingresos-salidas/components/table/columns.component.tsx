@@ -1,7 +1,7 @@
 "use client"
 import { IInOutEntity } from "@/domain/index";
-import { DataTableColumn } from "@/src/shared/components/table/data-table.component";
-import { Button } from "@/src/shared/components/ui/button";
+import { ChronoDataTableColumn } from "@chrono/chrono-data-table.component";
+import ChronoButton from "@chrono/chrono-button.component";
 
 const formatDateTime = (value?: string) => {
   if (!value) return "-";
@@ -14,8 +14,8 @@ const formatDateTime = (value?: string) => {
 type ViewDetailHandler = (item: IInOutEntity) => void;
 
 export const createInOutColumns = (
-  onViewDetail?: ViewDetailHandler
-): DataTableColumn<IInOutEntity>[] => [
+  onViewDetail?: ViewDetailHandler,
+): ChronoDataTableColumn<IInOutEntity>[] => [
   {
     id: "license-plate",
     header: "Placa",
@@ -51,7 +51,7 @@ export const createInOutColumns = (
     headerClassName: "text-right",
     cellClassName: "text-right",
     cell: (row: IInOutEntity) => (
-      <Button
+      <ChronoButton
         type="button"
         size="sm"
         variant="outline"
@@ -59,7 +59,7 @@ export const createInOutColumns = (
         onClick={() => onViewDetail?.(row)}
       >
         Ver detalle
-      </Button>
+      </ChronoButton>
     ),
   },
 ];

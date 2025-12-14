@@ -2,30 +2,30 @@
 
 import { getRateProfileAction } from "@/src/app/global-actions/get-common.action";
 import { IGenerateManualIncomeParamsEntity } from "@/src/domain";
-import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
-import { Badge } from "@/src/shared/components/ui/badge";
-import { Button } from "@/src/shared/components/ui/button";
+import { ChronoDateTimePicker } from "@chrono/chrono-date-time-picker.component";
+import { ChronoBadge } from "@chrono/chrono-badge.component";
+import ChronoButton from "@chrono/chrono-button.component";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/src/shared/components/ui/card";
+  ChronoCard,
+  ChronoCardContent,
+  ChronoCardDescription,
+  ChronoCardFooter,
+  ChronoCardHeader,
+  ChronoCardTitle,
+} from "@chrono/chrono-card.component";
 import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/src/shared/components/ui/field";
-import { Input } from "@/src/shared/components/ui/input";
+  ChronoField,
+  ChronoFieldError,
+  ChronoFieldLabel,
+} from "@chrono/chrono-field.component";
+import { ChronoInput } from "@chrono/chrono-input.component";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/shared/components/ui/select";
+  ChronoSelect,
+  ChronoSelectContent,
+  ChronoSelectItem,
+  ChronoSelectTrigger,
+  ChronoSelectValue,
+} from "@chrono/chrono-select.component";
 import { useCommonContext } from "@/src/shared/context/common.context";
 import {
   ManualIncomeForm,
@@ -129,30 +129,30 @@ const IncomeForm = ({
 
   return (
     <form onSubmit={handleFormSubmit} className="flex h-full w-full">
-      <Card className="flex w-full flex-1 flex-col">
-        <CardHeader>
+      <ChronoCard className="flex w-full flex-1 flex-col">
+        <ChronoCardHeader>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge
+            <ChronoBadge
               variant="outline"
               className="text-[11px] font-medium text-muted-foreground"
             >
               Control manual
-            </Badge>
+            </ChronoBadge>
             {rateProfiles.length > 0 && (
-              <Badge className="bg-muted text-[11px] font-medium text-muted-foreground">
+              <ChronoBadge className="bg-muted text-[11px] font-medium text-muted-foreground">
                 {rateProfiles.length} perfiles
-              </Badge>
+              </ChronoBadge>
             )}
           </div>
           <div>
-            <CardTitle className="text-2xl font-semibold text-foreground">Registrar ingreso manual</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">
+            <ChronoCardTitle className="text-2xl font-semibold text-foreground">Registrar ingreso manual</ChronoCardTitle>
+            <ChronoCardDescription className="text-sm text-muted-foreground">
               Registra entradas manuales manteniendo consistencia con el módulo de cobro.
-            </CardDescription>
+            </ChronoCardDescription>
           </div>
-        </CardHeader>
+        </ChronoCardHeader>
 
-        <CardContent className="space-y-4">
+        <ChronoCardContent className="space-y-4">
           <div className="rounded-xl border border-border/60 bg-muted/20 px-4 py-3">
             <div className="flex flex-wrap items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -179,22 +179,22 @@ const IncomeForm = ({
               control={control}
               name="licensePlate"
               render={({ field, fieldState }) => (
-                <Field
+                <ChronoField
                   data-invalid={fieldState.invalid}
                   className={`${fieldContainerClasses} md:col-span-2`}
                 >
-                  <FieldLabel htmlFor="licensePlate" className={fieldLabelClasses}>
+                  <ChronoFieldLabel htmlFor="licensePlate" className={fieldLabelClasses}>
                     Placa
-                  </FieldLabel>
-                  <Input
+                  </ChronoFieldLabel>
+                  <ChronoInput
                     {...field}
                     id="licensePlate"
                     placeholder="QJJ15G"
                     className="mt-1 h-12 text-lg font-semibold uppercase tracking-[0.6em]"
                     maxLength={6}
                   />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
+                  {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+                </ChronoField>
               )}
             />
 
@@ -202,32 +202,32 @@ const IncomeForm = ({
               name="vehicleTypeId"
               control={control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className={fieldContainerClasses}>
-                  <FieldLabel htmlFor="vehicleTypeId" className={fieldLabelClasses}>
+                <ChronoField data-invalid={fieldState.invalid} className={fieldContainerClasses}>
+                  <ChronoFieldLabel htmlFor="vehicleTypeId" className={fieldLabelClasses}>
                     Tipo de vehículo
-                  </FieldLabel>
+                  </ChronoFieldLabel>
 
-                  <Select
+                  <ChronoSelect
                     onValueChange={(value) => {
                       field.onChange(value);
                       vehicleTypeChanged(value);
                     }}
                     value={field.value ?? ""}
                   >
-                    <SelectTrigger className="mt-1 text-left">
-                      <SelectValue placeholder="Seleccionar tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
+                    <ChronoSelectTrigger className="mt-1 text-left">
+                      <ChronoSelectValue placeholder="Seleccionar tipo" />
+                    </ChronoSelectTrigger>
+                    <ChronoSelectContent>
                       {vehicleTypes?.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
+                        <ChronoSelectItem key={type.value} value={type.value}>
                           {type.label}
-                        </SelectItem>
+                        </ChronoSelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </ChronoSelectContent>
+                  </ChronoSelect>
 
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
+                  {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+                </ChronoField>
               )}
             />
 
@@ -235,18 +235,18 @@ const IncomeForm = ({
               name="entryTime"
               control={control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className={fieldContainerClasses}>
-                  <FieldLabel htmlFor="entryTime" className={fieldLabelClasses}>
+                <ChronoField data-invalid={fieldState.invalid} className={fieldContainerClasses}>
+                  <ChronoFieldLabel htmlFor="entryTime" className={fieldLabelClasses}>
                     Fecha y hora de ingreso
-                  </FieldLabel>
+                  </ChronoFieldLabel>
 
-                  <DateTimePicker
+                  <ChronoDateTimePicker
                     date={field.value as Date | undefined}
                     setDate={(value) => field.onChange(value)}
                   />
 
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
+                  {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+                </ChronoField>
               )}
             />
 
@@ -254,38 +254,38 @@ const IncomeForm = ({
               name="rateProfileId"
               control={control}
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className={fieldContainerClasses}>
-                  <FieldLabel htmlFor="rateProfileId" className={fieldLabelClasses}>
+                <ChronoField data-invalid={fieldState.invalid} className={fieldContainerClasses}>
+                  <ChronoFieldLabel htmlFor="rateProfileId" className={fieldLabelClasses}>
                     Perfil de tarifa
-                  </FieldLabel>
-                  <Select
+                  </ChronoFieldLabel>
+                  <ChronoSelect
                     onValueChange={(value) => field.onChange(value)}
                     disabled={rateProfiles.length === 0}
                     value={field.value ?? ""}
                   >
-                    <SelectTrigger className="mt-1 text-left">
-                      <SelectValue placeholder="Seleccionar perfil de tarifa" />
-                    </SelectTrigger>
-                    <SelectContent>
+                    <ChronoSelectTrigger className="mt-1 text-left">
+                      <ChronoSelectValue placeholder="Seleccionar perfil de tarifa" />
+                    </ChronoSelectTrigger>
+                    <ChronoSelectContent>
                       {rateProfiles?.map((profile) => (
-                        <SelectItem key={profile.value} value={profile.value}>
+                        <ChronoSelectItem key={profile.value} value={profile.value}>
                           {profile.label}
-                        </SelectItem>
+                        </ChronoSelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
+                    </ChronoSelectContent>
+                  </ChronoSelect>
+                  {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+                </ChronoField>
               )}
             />
           </div>
-        </CardContent>
+        </ChronoCardContent>
 
-        <CardFooter className="flex-col gap-3 bg-muted/5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <ChronoCardFooter className="flex-col gap-3 bg-muted/5 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
             El registro quedará auditado en el historial de control manual.
           </p>
-          <Button
+          <ChronoButton
             type="submit"
             size="lg"
             disabled={isSubmitting || !isValid}
@@ -302,9 +302,9 @@ const IncomeForm = ({
                 Generar ingreso manual
               </>
             )}
-          </Button>
-        </CardFooter>
-      </Card>
+          </ChronoButton>
+        </ChronoCardFooter>
+      </ChronoCard>
     </form>
   );
 };

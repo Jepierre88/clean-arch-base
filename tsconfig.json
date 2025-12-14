@@ -42,6 +42,9 @@
       ],
       "@/public/*": [
         "./public/*"
+      ],
+      "@chrono/*": [
+        "./src/shared/components/chrono-soft/*"
       ]
     }
   },

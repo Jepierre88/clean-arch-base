@@ -2,15 +2,15 @@
 
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
-import { Badge } from "@/src/shared/components/ui/badge";
+import { ChronoBadge } from "@chrono/chrono-badge.component";
 import LabelValueComponent from "@/src/app/parking/cobro/components/label-value.component";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/src/shared/components/ui/card";
+    ChronoCard,
+    ChronoCardContent,
+    ChronoCardDescription,
+    ChronoCardHeader,
+    ChronoCardTitle,
+} from "@chrono/chrono-card.component";
 import { CalendarClock, Clock8, TimerReset, Wallet2, X } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 
@@ -73,28 +73,28 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
 
     return (
         <div className={cn("flex flex-col gap-2 overflow-y-auto pr-1", className)}>
-            <Card className="bg-card/95 h-min">
-                <CardHeader className="gap-2">
+            <ChronoCard className="bg-card/95 h-min">
+                <ChronoCardHeader className="gap-2">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
                                 Perfil de tarifa
                             </p>
-                            <CardTitle className="text-lg font-semibold tracking-tight">
+                            <ChronoCardTitle className="text-lg font-semibold tracking-tight">
                                 {detail.rateProfileName}
-                            </CardTitle>
+                            </ChronoCardTitle>
                         </div>
                         <div className="flex flex-wrap items-center gap-1.5">
                             {detail.agreementName && (
-                                <Badge className="border border-primary/30 bg-primary/10 text-xs text-foreground">
+                                <ChronoBadge className="border border-primary/30 bg-primary/10 text-xs text-foreground">
                                     {detail.agreementName}
-                                </Badge>
+                                </ChronoBadge>
                             )}
                         </div>
                     </div>
-                </CardHeader>
+                </ChronoCardHeader>
 
-                <CardContent className="space-y-1 mb-0">
+                <ChronoCardContent className="space-y-1 mb-0">
                     <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent px-3 py-2.5 shadow-inner">
                         <div className="flex items-center gap-2.5 text-foreground">
                             <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-primary/10">
@@ -115,9 +115,9 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                                 {formatCurrency(detail.finalAmount)}
                             </p>
                             {discount > 0 && (
-                                <Badge className="border-green-500/40 bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                                <ChronoBadge className="border-green-500/40 bg-green-50 px-2 py-0.5 text-[10px] font-semibold text-green-700">
                                     Descuento {discount}%
-                                </Badge>
+                                </ChronoBadge>
                             )}
                         </div>
 
@@ -159,15 +159,15 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                             size="mini"
                         />
                     </div>
-                </CardContent>
-            </Card>
+                </ChronoCardContent>
+            </ChronoCard>
 
-            <Card className="bg-card/95 flex-1">
-                <CardHeader className="gap-1.5">
-                    <CardTitle className="text-sm font-semibold">Reglas aplicadas</CardTitle>
-                </CardHeader>
+            <ChronoCard className="bg-card/95 flex-1">
+                <ChronoCardHeader className="gap-1.5">
+                    <ChronoCardTitle className="text-sm font-semibold">Reglas aplicadas</ChronoCardTitle>
+                </ChronoCardHeader>
 
-                <CardContent className="space-y-1">
+                <ChronoCardContent className="space-y-1">
                     {visibleRules.length ? (
                         <div className="grid gap-1.5 sm:grid-cols-2">
                             {visibleRules.map((rule, idx) => (
@@ -179,9 +179,9 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                                         <span className="text-[12px] font-semibold text-foreground">
                                             {rule.ruleType}
                                         </span>
-                                        <Badge variant="outline" className="border-primary/40 px-2 py-0.5 text-[10px] text-foreground">
+                                        <ChronoBadge variant="outline" className="border-primary/40 px-2 py-0.5 text-[10px] text-foreground">
                                             {formatCurrency(rule.amount ?? 0)}
-                                        </Badge>
+                                        </ChronoBadge>
                                     </div>
                                     {rule.description && (
                                         <p className="mt-1 text-[10px] text-muted-foreground line-clamp-2">
@@ -202,8 +202,8 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                             + {hiddenRules} reglas adicionales no mostradas para mantener el resumen compacto.
                         </p>
                     )}
-                </CardContent>
-            </Card>
+                </ChronoCardContent>
+            </ChronoCard>
         </div>
     );
 }

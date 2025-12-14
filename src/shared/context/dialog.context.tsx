@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode, useCallback } from "react";
-import YesNoFormComponent from "../components/form/yes-no-form.component";
+import ChronoYesNoFormComponent from "@chrono/chrono-yes-no-form.component";
 
 
 type DialogProviderProps = {
@@ -67,7 +67,7 @@ export const DialogProvider = ({ children }: DialogProviderProps) => {
     setTitle(title);
     setRenderFooter(null);
     setRenderContent(
-      <YesNoFormComponent
+      <ChronoYesNoFormComponent
         onYes={handleYes}
         onNo={handleNo}
         requiresReloadOnYes={requiresReloadOnYes}

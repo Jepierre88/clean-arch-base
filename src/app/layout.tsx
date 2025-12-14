@@ -5,7 +5,7 @@ import "reflect-metadata";
 import RootProviders from "@/src/app/providers";
 import { AppBackground } from "@/src/shared/components/layout/app-background.component";
 import { Toaster } from "sonner";
-import CustomDialog from "../shared/components/dialog/custom-dialog.component";
+import ChronoCustomDialog from "@chrono/chrono-custom-dialog.component";
 
 
 const geistSans = Geist({
@@ -35,7 +35,7 @@ export default function RootLayout({
           <RootProviders>
             {children}
             <Toaster richColors />
-            <CustomDialog />
+            <ChronoCustomDialog />
           </RootProviders>
         </AppBackground>
       </body>

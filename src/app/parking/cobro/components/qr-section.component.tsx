@@ -3,11 +3,17 @@
 import { Controller, useForm } from "react-hook-form";
 import { ValidateFeeSchema } from "@/src/shared/schemas/parking/validate-fee.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Field, FieldError } from "@/src/shared/components/ui/field";
-import { DateTimePicker } from "@/src/shared/components/form/date-time-pricker.component";
-import QrScannerInput from "@/src/shared/components/form/qr-scanner-input.component";
-import { Badge } from "@/src/shared/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/shared/components/ui/card";
+import { ChronoField, ChronoFieldError } from "@chrono/chrono-field.component";
+import { ChronoDateTimePicker } from "@chrono/chrono-date-time-picker.component";
+import ChronoQrScannerInput from "@chrono/chrono-qr-scanner-input.component";
+import { ChronoBadge } from "@chrono/chrono-badge.component";
+import {
+  ChronoCard,
+  ChronoCardContent,
+  ChronoCardDescription,
+  ChronoCardHeader,
+  ChronoCardTitle,
+} from "@chrono/chrono-card.component";
 
 import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
@@ -28,15 +34,15 @@ export function QrSectionComponent({ className }: QrSectionProps) {
   };
 
   return (
-    <Card className={cn("overflow-hidden pb-0", className)}>
-      <CardContent className="flex h-full flex-col">
-      <CardHeader className="px-0">
-        <CardTitle className="text-lg font-semibold">Validar tarifa</CardTitle>
-        <CardDescription>Escanea el QR para validar la tarifa de parqueo</CardDescription>
-      </CardHeader>
+    <ChronoCard className={cn("overflow-hidden pb-0", className)}>
+      <ChronoCardContent className="flex h-full flex-col">
+      <ChronoCardHeader className="px-0">
+        <ChronoCardTitle className="text-lg font-semibold">Validar tarifa</ChronoCardTitle>
+        <ChronoCardDescription>Escanea el QR para validar la tarifa de parqueo</ChronoCardDescription>
+      </ChronoCardHeader>
         <QrFormComponent onValidateFee={onValidateFee} onClear={clearValidateResult} />
-      </CardContent>
-    </Card>
+      </ChronoCardContent>
+    </ChronoCard>
   );
 }
 
@@ -67,33 +73,33 @@ function QrFormComponent({
       >
         <div className="flex flex-1 flex-col gap-3 rounded-xl justify-center">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            <Badge variant="outline" className="border-primary/40 text-foreground">
+            <ChronoBadge variant="outline" className="border-primary/40 text-foreground">
               Paso 1
-            </Badge>
+            </ChronoBadge>
             <span>Hora de salida</span>
           </div>
           <Controller
             control={validateFeeForm.control}
             name="exitTime"
             render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <DateTimePicker
+              <ChronoField data-invalid={fieldState.invalid}>
+                <ChronoDateTimePicker
                   {...field}
                   date={field.value as Date | undefined}
                   setDate={(value) => field.onChange(value)}
                 />
 
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-              </Field>
+                {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+              </ChronoField>
             )}
           />
         </div>
 
         <div className="flex flex-1 flex-col gap-3 rounded-xl py-2">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            <Badge variant="outline" className="border-primary/40 text-foreground">
+            <ChronoBadge variant="outline" className="border-primary/40 text-foreground">
               Paso 2
-            </Badge>
+            </ChronoBadge>
             <span>Escanear QR</span>
           </div>
 
@@ -101,8 +107,8 @@ function QrFormComponent({
             control={validateFeeForm.control}
             name="parkingSessionId"
             render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <QrScannerInput
+              <ChronoField data-invalid={fieldState.invalid}>
+                <ChronoQrScannerInput
                   {...field}
                   id="parkingSessionId"
                   value={field.value ?? ""}
@@ -110,8 +116,8 @@ function QrFormComponent({
                   placeholder="Escanea el código"
                 />
 
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-              </Field>
+                {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+              </ChronoField>
             )}
           />
         </div>

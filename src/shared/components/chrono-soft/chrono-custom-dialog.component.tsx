@@ -12,16 +12,9 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 
-export default function CustomDialog() {
-  const {
-    isOpen,
-    title,
-    renderContent,
-    renderFooter,
-    description,
-    setIsOpen,
-    closeDialog,
-  } = UseDialogContext();
+export default function ChronoCustomDialog() {
+  const { isOpen, title, renderContent, renderFooter, description, setIsOpen, closeDialog } =
+    UseDialogContext();
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -31,8 +24,9 @@ export default function CustomDialog() {
       }
       closeDialog();
     },
-    [closeDialog, setIsOpen]
+    [closeDialog, setIsOpen],
   );
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-4xl">

@@ -4,16 +4,16 @@ import type { ComponentType } from "react";
 import { useRouter } from "next/navigation";
 
 import { useClientSession } from "@/src/lib/session-client";
-import { Button } from "@/src/shared/components/ui/button";
+import ChronoButton from "@chrono/chrono-button.component";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/src/shared/components/ui/card";
-import { Badge } from "@/src/shared/components/ui/badge";
+  ChronoCard,
+  ChronoCardContent,
+  ChronoCardDescription,
+  ChronoCardFooter,
+  ChronoCardHeader,
+  ChronoCardTitle,
+} from "@chrono/chrono-card.component";
+import { ChronoBadge } from "@chrono/chrono-badge.component";
 import { ArrowRight, CalendarClock, ClipboardCheck, CreditCard, LoaderCircle } from "lucide-react";
 
 export default function ParkingPage() {
@@ -87,7 +87,7 @@ export default function ParkingPage() {
         <div className="absolute inset-y-0 right-0 hidden w-1/2 bg-linear-to-l from-primary/20 via-primary/5 to-transparent sm:block" />
         <div className="relative z-10 space-y-6">
           <div className="space-y-2">
-            <Badge variant="outline" className="text-xs font-medium">Módulo operativo</Badge>
+            <ChronoBadge variant="outline" className="text-xs font-medium">Módulo operativo</ChronoBadge>
             <h1 className="text-3xl font-semibold text-foreground sm:text-4xl">
               Hola {userName}, este es tu centro de control de ChronoPark
             </h1>
@@ -123,24 +123,24 @@ export default function ParkingPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {modules.map(({ key, title, description, href, icon: Icon, badge }) => (
-            <Card key={key} className="border border-border bg-card/90">
-              <CardHeader className="flex flex-row items-start justify-between gap-4">
+            <ChronoCard key={key} className="border border-border bg-card/90">
+              <ChronoCardHeader className="flex flex-row items-start justify-between gap-4">
                 <div className="rounded-lg bg-primary/10 p-2 text-primary">
                   <Icon className="h-5 w-5" />
                 </div>
-                {badge && <Badge variant="secondary">{badge}</Badge>}
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-                <CardDescription>{description}</CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" size="sm" className="ml-auto" onClick={() => router.push(href)}>
+                {badge && <ChronoBadge variant="secondary">{badge}</ChronoBadge>}
+              </ChronoCardHeader>
+              <ChronoCardContent className="space-y-2">
+                <ChronoCardTitle className="text-lg font-semibold">{title}</ChronoCardTitle>
+                <ChronoCardDescription>{description}</ChronoCardDescription>
+              </ChronoCardContent>
+              <ChronoCardFooter>
+                <ChronoButton variant="outline" size="sm" className="ml-auto" onClick={() => router.push(href)}>
                   Abrir módulo
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardFooter>
-            </Card>
+                </ChronoButton>
+              </ChronoCardFooter>
+            </ChronoCard>
           ))}
         </div>
       </div>
