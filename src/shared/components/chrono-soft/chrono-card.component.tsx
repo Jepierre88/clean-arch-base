@@ -14,12 +14,11 @@ export type ChronoCardProps = ComponentProps<typeof Card> & {
   elevated?: boolean;
 };
 
-export function ChronoCard({ className, elevated = true, ...props }: ChronoCardProps) {
+export function ChronoCard({ className, ...props }: ChronoCardProps) {
   return (
     <Card
       className={cn(
         "chrono-card",
-        elevated ? "shadow-[0_25px_65px_-35px_rgba(15,23,42,0.75)]" : "shadow-none",
         className
       )}
       {...props}
