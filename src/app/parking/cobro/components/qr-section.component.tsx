@@ -31,7 +31,7 @@ export function QrSectionComponent() {
   return (
     <Card>
       <CardContent className="py-0">
-        <QrFormComponent onValidateFee={onValidateFee} />
+        <QrFormComponent onValidateFee={onValidateFee} onClear={clearValidateResult} />
       </CardContent>
     </Card>
   );
@@ -39,8 +39,10 @@ export function QrSectionComponent() {
 
 function QrFormComponent({
   onValidateFee,
+  onClear
 }: {
   onValidateFee: (data: IValidateAmountParamsEntity) => Promise<boolean>;
+  onClear: () => void;
 }) {
   const validateFeeForm = useForm({
     resolver: zodResolver(ValidateFeeSchema),
@@ -68,12 +70,7 @@ function QrFormComponent({
               </Badge>
               <span>Hora de salida</span>
             </div>
-            <span className="text-[10px] text-muted-foreground">Requerido</span>
           </div>
-
-          <p className="mt-1.5 text-[11px] text-muted-foreground">
-            Define la hora y fecha exactas según el control manual o la barrera.
-          </p>
 
           <div className="mt-3">
             <Controller
@@ -102,12 +99,7 @@ function QrFormComponent({
               </Badge>
               <span>Escanear QR</span>
             </div>
-            <span className="text-[10px] text-muted-foreground">Lectura automática</span>
           </div>
-
-          <p className="mt-1.5 text-[11px] text-muted-foreground">
-            Usa la pistola lectora para capturar el ticket y obtén el valor final al instante.
-          </p>
 
           <div className="mt-3">
             <Controller
@@ -119,6 +111,7 @@ function QrFormComponent({
                     {...field}
                     id="parkingSessionId"
                     value={field.value ?? ""}
+                    onClear={onClear}
                     placeholder="Escanea el QR con la pistola lectora"
                   />
 

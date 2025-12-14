@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 type QrScannerInputProps = ComponentProps<typeof Input> & {
   /** Minimum characters to trigger the scan flash animation */
   minScanLength?: number;
+  onClear?: () => void;
 };
 
 const QrScannerInput = forwardRef<HTMLInputElement, QrScannerInputProps>(function QrScannerInput(
@@ -24,6 +25,7 @@ const QrScannerInput = forwardRef<HTMLInputElement, QrScannerInputProps>(functio
   value,
   onChange,
   minScanLength = 4,
+  onClear = ()=> {},
   ...props
 },
 ref
@@ -89,6 +91,7 @@ ref
 
     onChange?.(syntheticEvent);
     target.focus();
+    onClear();
   };
 
   return (

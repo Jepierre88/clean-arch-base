@@ -17,7 +17,6 @@ import { Input } from "@/src/shared/components/ui/input";
 import { Label } from "@/src/shared/components/ui/label";
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
-import { Separator } from "@/src/shared/components/ui/separator";
 
 const TOTAL_AMOUNT = 8540;
 
@@ -113,15 +112,9 @@ export function PaymentSectionComponent() {
     return (
       <Card className="gap-0">
         <CardHeader>
-          <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            Cobro pendiente
-          </p>
           <CardTitle className="text-lg font-semibold tracking-tight">
-            Escanea el QR para realizar el pago
+            Pago
           </CardTitle>
-          <CardDescription className="text-[10px]">
-            Necesitamos los datos de la sesión antes de habilitar la captura del cobro.
-          </CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center py-5">
           <EmptyState
