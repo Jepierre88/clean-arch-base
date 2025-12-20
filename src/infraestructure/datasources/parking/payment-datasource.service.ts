@@ -1,10 +1,10 @@
 import { injectable } from "tsyringe";
-import { IValidateAmountParamsEntity, IValidateAmountResponseEntity, PaymentRepository } from "@/domain/index";
+import { IGeneratePaymentParamsEntity, IGeneratePaymentResponseEntity, IValidateAmountParamsEntity, IValidateAmountResponseEntity, PaymentRepository } from "@/domain/index";
 import { AxiosServerInstance } from "../axios-server.intance";
 @injectable()
 export class PaymentDatasourceService extends AxiosServerInstance implements PaymentRepository {
     async validateFee(params: IValidateAmountParamsEntity): Promise<IValidateAmountResponseEntity> {
-        const { parkingSessionId, plate, exitDate } = params;
+        const { parkingSessionId, plate, exitTime } = params;
 
         const identifier = parkingSessionId || plate;
         if (!identifier) {
@@ -12,7 +12,19 @@ export class PaymentDatasourceService extends AxiosServerInstance implements Pay
         }
 
         return this.api
-            .post<IValidateAmountResponseEntity>(`/parking-sessions/${identifier}/calculate-fee`, { exitDate })
+            .post<IValidateAmountResponseEntity>(`/parking-sessions/${identifier}/calculate-fee`, { exitDate: exitTime })
+            .then(response => response.data);
+    }
+
+    async generatePayment(params: IGeneratePaymentParamsEntity): Promise<IGeneratePaymentResponseEntity> {
+        const { parkingSessionId, paymentMethod, amountReceived, notes } = params;
+
+        return this.api
+            .post<IGeneratePaymentResponseEntity>(`/parking-sessions/${parkingSessionId}/checkout`, {
+                paymentMethod,
+                amountReceived,
+                notes: notes || ""
+            })
             .then(response => response.data);
     }
 }

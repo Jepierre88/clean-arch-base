@@ -21,6 +21,9 @@ export * from "./entities/auth/login-params.entity";
 export * from "./entities/parking/validate-amount-params.entity";
 export * from "./entities/parking/validate-amount-response.entity";
 
+export * from "./entities/parking/generate-payment-params.entity";
+export * from "./entities/parking/generate-payment-response.entity";
+
 export * from "./entities/parking/generate-manual-income-params.entity"
 export * from "./entities/parking/generate-manual-income-response.entity"
 
