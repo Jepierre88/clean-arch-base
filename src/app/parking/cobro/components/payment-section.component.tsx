@@ -212,7 +212,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
           >
             {steps.map((step) => {
               return (
-                <div key={step.id} className="flex w-full shrink-0 basis-full flex-col gap-1 p-1.5">
+                <div key={step.id} className="flex w-full shrink-0 basis-full flex-col gap-2 p-1.5 justify-center">
 
                   <div>
                     {step.id === "method" && (
@@ -247,7 +247,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                     )}
 
                     {step.id === "amount" && (
-                      <div className="space-y-1.5">
+                      <div className="space-y-4">
                         <div className="space-y-0.5">
                           <ChronoLabel htmlFor="amount-received" className="text-xs text-muted-foreground">
                             Monto recibido
@@ -316,14 +316,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                             </div>
                           )}
                         </div>
-                        <ChronoButton 
-                          size="sm" 
-                          className="w-full" 
-                          onClick={handleRegisterPayment}
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? "Procesando..." : "Registrar pago"}
-                        </ChronoButton>
+
                       </div>
                     )}
                   </div>
@@ -334,16 +327,22 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
         </div>
       </ChronoCardContent>
       <ChronoCardFooter>
-        {currentStep < steps.length - 1 && (
-          <div className="ml-auto flex items-center gap-2 text-xs">
-            <ChronoButton variant="ghost" size="sm" onClick={prevStep} disabled={currentStep === 0}>
+        <div className="ml-auto flex items-center gap-2 text-xs">
+          {currentStep > 0 && (
+            <ChronoButton variant="ghost" size="sm" onClick={prevStep}>
               Atrás
             </ChronoButton>
+          )}
+          {currentStep < steps.length - 1 ? (
             <ChronoButton size="sm" onClick={handleContinue}>
               Siguiente
             </ChronoButton>
-          </div>
-        )}
+          ) : (
+            <ChronoButton size="sm" onClick={handleRegisterPayment} disabled={isSubmitting}>
+              {isSubmitting ? "Procesando..." : "Registrar pago"}
+            </ChronoButton>
+          )}
+        </div>
       </ChronoCardFooter>
     </ChronoCard>
   );
