@@ -4,6 +4,7 @@ import {
   ArrowRight,
   BarChart3,
   Clock9,
+  LogIn,
   QrCode,
   ShieldCheck,
   Sparkles,
@@ -95,7 +96,6 @@ export default function Home() {
                 className="hidden dark:block"
               />
             <div className="text-left">
-              <p className="text-sm font-semibold uppercase tracking-[0.35em] text-muted-foreground">Chronosoft</p>
               <p className="text-lg font-semibold text-foreground">ChronoPark</p>
             </div>
           </Link>
@@ -115,7 +115,7 @@ export default function Home() {
 
             <ThemeSwitcher className="hidden md:flex" />
 
-            <ChronoButton size="sm" asChild>
+            <ChronoButton size="sm" icon={<LogIn/>} iconPosition="left">
               <Link href="/auth/login">Iniciar sesión</Link>
             </ChronoButton>
           </div>

@@ -1,5 +1,6 @@
 import { ComponentProps, ReactNode } from "react";
 import { Button, buttonVariants } from "../ui/button";
+import { cn } from "@/src/lib/utils";
 
 export type ChronoButtonProps = ComponentProps<typeof Button> & {
     loading?: boolean;
@@ -27,11 +28,11 @@ export default function ChronoButton({
             ) : (
                 <>
                     {icon && iconPosition === "left" && (
-                        <span className="inline-flex shrink-0 items-center justify-center">{icon}</span>
+                       icon
                     )}
                     {children}
                     {icon && iconPosition === "right" && (
-                        <span className="inline-flex shrink-0 items-center justify-center">{icon}</span>
+                       icon
                     )}
                 </>
             )}
