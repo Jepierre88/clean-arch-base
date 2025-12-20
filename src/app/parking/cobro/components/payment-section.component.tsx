@@ -102,9 +102,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
       }
 
       toast.success("Pago registrado exitosamente");
-      console.log("Pago registrado:", result.data);
 
-      // Resetear formulario
       setSelectedMethod(null);
       setAmountReceived("0");
       setNotes("");

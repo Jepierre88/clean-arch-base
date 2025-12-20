@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 
-import { InOutRepository, LoginRepository, ManualControlRepository } from "@/domain/index";
+import { InOutRepository, LoginRepository, ManualControlRepository, PrintRepository } from "@/domain/index";
 import {
   CommonDatasourceService,
   CommonRepositoryImp,
@@ -13,6 +13,8 @@ import {
   ManualControlRepositoryImp,
   PaymentDatasourceService,
   PaymentRepositoryImp,
+  PrintDatasourceService,
+  PrintRepositoryImpl,
 } from "@/infraestructure/index";
 
 if (!container.isRegistered("LoginRepository")) {
@@ -68,6 +70,14 @@ if(!container.isRegistered("PaymentDatasourceService")){
 
 if(!container.isRegistered("PaymentRepository")){
   container.register("PaymentRepository", { useClass: PaymentRepositoryImp });
+}
+
+if(!container.isRegistered("PrintDatasourceService")){
+  container.register("PrintDatasourceService", { useClass: PrintDatasourceService });
+}
+
+if(!container.isRegistered("PrintRepository")){
+  container.register("PrintRepository", { useClass: PrintRepositoryImpl });
 }
 
 // set-company bindings removed (companies flow deprecated)

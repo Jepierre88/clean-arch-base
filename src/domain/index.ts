@@ -4,6 +4,7 @@ export * from "./repositories/parking/manual-control.repository"
 export * from "./repositories/parking/common.repository"
 export * from "./repositories/parking/payment.repository"
 export * from "./repositories/parking/in-out.repository"
+export * from "./repositories/parking/print.repository"
 
 //USE CASES
 export * from "./usecases/auth/login.usecase";
@@ -11,6 +12,7 @@ export * from "./usecases/parking/manual-control.usecase"
 export * from "./usecases/parking/common.usecase";
 export * from "./usecases/parking/payment.usecase";
 export * from "./usecases/parking/in-out.usecase";
+export * from "./usecases/parking/print.usecase";
 
 //ENTITIES
 export * from "./entities/auth/get-permissions-response.entity";
@@ -23,6 +25,9 @@ export * from "./entities/parking/validate-amount-response.entity";
 
 export * from "./entities/parking/generate-payment-params.entity";
 export * from "./entities/parking/generate-payment-response.entity";
+
+export * from "./entities/parking/print-post-payment-invoice-params.entity";
+export * from "./entities/parking/print-post-payment-invoice-response.entity";
 
 export * from "./entities/parking/generate-manual-income-params.entity"
 export * from "./entities/parking/generate-manual-income-response.entity"
