@@ -1,6 +1,5 @@
 import { ComponentProps, ReactNode } from "react";
 import { Button, buttonVariants } from "../ui/button";
-import { cn } from "@/src/lib/utils";
 
 export type ChronoButtonProps = ComponentProps<typeof Button> & {
     loading?: boolean;

@@ -6,14 +6,7 @@ import {
   ChronoCardDescription,
   ChronoCardContent,
 } from "@chrono/chrono-card.component";
-
-interface InOutOverviewCardProps {
-  lastRefreshLabel: string;
-}
-
-export function InOutOverviewCard({
-  lastRefreshLabel,
-}: InOutOverviewCardProps) {
+export function InOutOverviewCard() {
   return (
     <ChronoCard className="border-border/60 bg-card/90 shadow-sm">
       <ChronoCardHeader className="gap-1.5 px-5 pb-3 pt-4">

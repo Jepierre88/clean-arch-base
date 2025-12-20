@@ -28,7 +28,6 @@ import AppIcons from "../icons.component";
 import { EIconNames } from "../../enums/icon-names.enum";
 import Image from "next/image";
 import { useClientSession } from "@/src/lib/session-client";
-import { useState } from "react";
 
 export default function SidebarComponent({
   applications,
@@ -135,7 +134,7 @@ export default function SidebarComponent({
                           );
                           const isSubActive = pathname.startsWith(subPath);
                           return (
-                            <ChronoSidebarMenuSubItem key={subresource.name}>
+                            <ChronoSidebarMenuSubItem key={subresource.id}>
                               <ChronoSidebarMenuSubButton
                                 className={
                                   isSubActive

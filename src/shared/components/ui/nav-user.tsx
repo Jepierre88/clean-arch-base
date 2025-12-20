@@ -1,12 +1,8 @@
 "use client"
 
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
 } from "lucide-react"
 
 import {
@@ -17,7 +13,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -30,7 +25,7 @@ import {
   useSidebar,
 } from "@/src/shared/components/ui/sidebar"
 import { signOut } from "@/src/lib/session-client"
-import { redirect, useRouter } from "next/navigation"
+import { redirect } from "next/navigation"
 
 export function NavUser({
   user,

@@ -8,29 +8,32 @@ import {
   useState,
   type ComponentProps,
 } from "react";
-import { QrCode, RefreshCcw } from "lucide-react";
+import { CarFront, RefreshCcw } from "lucide-react";
 
 import { cn } from "@/src/lib/utils";
 import ChronoButton from "./chrono-button.component";
 import { ChronoInput } from "./chrono-input.component";
 
-type ChronoQrScannerInputProps = ComponentProps<typeof ChronoInput> & {
-  minScanLength?: number;
+type ChronoPlateInputProps = ComponentProps<typeof ChronoInput> & {
   onClear?: () => void;
 };
 
-const ChronoQrScannerInput = forwardRef<HTMLInputElement, ChronoQrScannerInputProps>(
-  function ChronoQrScannerInput({
+const normalizePlate = (value: string) =>
+  value
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "")
+    .slice(0, 6);
+
+const ChronoPlateInput = forwardRef<HTMLInputElement, ChronoPlateInputProps>(
+  function ChronoPlateInput({
     className,
     value,
     onChange,
-    minScanLength = 4,
     onClear = () => {},
     ...props
   }, ref) {
-    const [flash, setFlash] = useState(false);
     const [focused, setFocused] = useState(false);
-    const timerRef = useRef<number | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const assignRef = useCallback(
@@ -47,28 +50,25 @@ const ChronoQrScannerInput = forwardRef<HTMLInputElement, ChronoQrScannerInputPr
     );
 
     useEffect(() => {
-      return () => {
-        if (timerRef.current) {
-          window.clearTimeout(timerRef.current);
-        }
-      };
-    }, []);
+      // Keep controlled value normalized (when value is a string)
+      if (!inputRef.current) return;
+      if (typeof value !== "string") return;
 
-    const triggerFlash = () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
+      const normalized = normalizePlate(value);
+      if (normalized !== value) {
+        inputRef.current.value = normalized;
       }
-
-      setFlash(true);
-      timerRef.current = window.setTimeout(() => setFlash(false), 220);
-    };
+    }, [value]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChange?.(event);
+      const target = event.target;
+      const normalized = normalizePlate(target.value);
 
-      if (event.target.value.length >= minScanLength) {
-        triggerFlash();
+      if (normalized !== target.value) {
+        target.value = normalized;
       }
+
+      onChange?.(event);
     };
 
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -101,17 +101,18 @@ const ChronoQrScannerInput = forwardRef<HTMLInputElement, ChronoQrScannerInputPr
         className={cn(
           "flex items-center gap-4 rounded-xl border border-border/40 px-4 shadow-md transition-colors duration-200 bg-background",
           focused && "border-primary",
-          flash && "border-emerald-400",
           className,
         )}
       >
         <div className="flex h-10 w-12 items-center justify-center rounded-full text-primary">
-          <QrCode className="h-6 w-6" />
+          <CarFront className="h-6 w-6" />
         </div>
 
         <ChronoInput
           ref={assignRef}
           {...props}
+          inputMode="text"
+          autoCapitalize="characters"
           value={value}
           onChange={handleChange}
           onFocus={handleFocus}
@@ -121,6 +122,7 @@ const ChronoQrScannerInput = forwardRef<HTMLInputElement, ChronoQrScannerInputPr
             props.readOnly && "text-muted-foreground",
           )}
         />
+
         <div>
           <ChronoButton type="button" className="h-8 w-8" variant="ghost" onClick={clearAndFocus}>
             <RefreshCcw className="h-4 w-4" />
@@ -131,4 +133,4 @@ const ChronoQrScannerInput = forwardRef<HTMLInputElement, ChronoQrScannerInputPr
   },
 );
 
-export default ChronoQrScannerInput;
+export default ChronoPlateInput;

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChronoField, ChronoFieldError } from "@chrono/chrono-field.component";
 import { ChronoDateTimePicker } from "@chrono/chrono-date-time-picker.component";
 import ChronoQrScannerInput from "@chrono/chrono-qr-scanner-input.component";
+import ChronoPlateInput from "@chrono/chrono-plate-input.component";
 import { ChronoBadge } from "@chrono/chrono-badge.component";
 import {
   ChronoCard,
@@ -18,6 +19,7 @@ import {
 import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
 import { cn } from "@/src/lib/utils";
+import { useDebouncedCallback } from "use-debounce";
 
 type QrSectionProps = {
   className?: string;
@@ -28,7 +30,7 @@ export function QrSectionComponent({ className }: QrSectionProps) {
 
   const onValidateFee = async (data: IValidateAmountParamsEntity) => {
     clearValidateResult();
-    if (!data.parkingSessionId) return false;
+    if (!data.parkingSessionId && !data.plate) return false;
     const success = await validateFee(data);
     return success;
   };
@@ -58,20 +60,38 @@ function QrFormComponent({
     defaultValues: {
       exitTime: new Date(),
       parkingSessionId: "",
+      plate: "",
     },
   });
 
+  const handleFormChange = useDebouncedCallback(async () => {
+    const values = validateFeeForm.getValues() as IValidateAmountParamsEntity;
+    const hasQr = Boolean(values.parkingSessionId?.trim());
+    const hasPlate = Boolean(values.plate?.trim());
+    
+    // Solo validar si hay QR o placa
+    if (!hasQr && !hasPlate) return;
+    
+    // Validar formato antes de enviar
+    const result = await validateFeeForm.trigger();
+    if (!result) return;
+
+    const payload: IValidateAmountParamsEntity = {
+      parkingSessionId: values.parkingSessionId || undefined,
+      plate: values.plate || undefined,
+      exitTime: values.exitTime,
+    };
+
+    await onValidateFee(payload);
+    // NO resetear los campos después de validar
+  }, 800);
+
   return (
       <form
-        className="flex flex-col gap-2 my-4 overflow-y-auto sm:flex-row"
-        onChange={validateFeeForm.handleSubmit(async (data) => {
-          const isValid = await onValidateFee(data);
-          if (!isValid) {
-            validateFeeForm.reset({ exitTime: new Date(), parkingSessionId: "" });
-          }
-        })}
+        className="flex flex-col gap-4 my-4 overflow-y-auto"
+        onChange={handleFormChange}
       >
-        <div className="flex flex-1 flex-col gap-3 rounded-xl justify-center">
+        <div className="flex flex-col gap-3 rounded-xl">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
             <ChronoBadge variant="outline" className="border-primary/40 text-foreground">
               Paso 1
@@ -95,31 +115,51 @@ function QrFormComponent({
           />
         </div>
 
-        <div className="flex flex-1 flex-col gap-3 rounded-xl py-2">
+        <div className="flex flex-col gap-3 rounded-xl pb-1">
           <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
             <ChronoBadge variant="outline" className="border-primary/40 text-foreground">
               Paso 2
             </ChronoBadge>
-            <span>Escanear QR</span>
+            <span>QR o placa</span>
           </div>
 
-          <Controller
-            control={validateFeeForm.control}
-            name="parkingSessionId"
-            render={({ field, fieldState }) => (
-              <ChronoField data-invalid={fieldState.invalid}>
-                <ChronoQrScannerInput
-                  {...field}
-                  id="parkingSessionId"
-                  value={field.value ?? ""}
-                  onClear={onClear}
-                  placeholder="Escanea el código"
-                />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Controller
+              control={validateFeeForm.control}
+              name="parkingSessionId"
+              render={({ field, fieldState }) => (
+                <ChronoField data-invalid={fieldState.invalid} className="flex-1">
+                  <ChronoQrScannerInput
+                    {...field}
+                    id="parkingSessionId"
+                    value={field.value ?? ""}
+                    onClear={onClear}
+                    placeholder="Escanea el código"
+                  />
 
-                {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
-              </ChronoField>
-            )}
-          />
+                  {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+                </ChronoField>
+              )}
+            />
+
+            <Controller
+              control={validateFeeForm.control}
+              name="plate"
+              render={({ field, fieldState }) => (
+                <ChronoField data-invalid={fieldState.invalid} className="flex-1">
+                  <ChronoPlateInput
+                    {...field}
+                    id="plate"
+                    value={field.value as string ?? ""}
+                    onClear={onClear}
+                    placeholder="Placa (ej: ABC123 o ABC12D)"
+                  />
+
+                  {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
+                </ChronoField>
+              )}
+            />
+          </div>
         </div>
       </form>
   );

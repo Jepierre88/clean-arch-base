@@ -5,9 +5,9 @@ export interface IInOutEntity {
     vehicle: {
         licensePlate: string;
         id: string;
+        vehicleType: IIdName;
     };
     rateProfile: IIdName;
     entryTime: string;
     exitTime?: string;
-    vehicleType: IIdName;
 }

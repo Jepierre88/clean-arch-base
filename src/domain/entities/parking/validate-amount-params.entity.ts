@@ -1,4 +1,5 @@
 export interface IValidateAmountParamsEntity {
-    parkingSessionId: string;
-    exitDate?: string;
+    parkingSessionId?: string;
+    plate?: string;
+    exitTime?: string;
 }

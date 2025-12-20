@@ -7,7 +7,6 @@ import LabelValueComponent from "@/src/app/parking/cobro/components/label-value.
 import {
     ChronoCard,
     ChronoCardContent,
-    ChronoCardDescription,
     ChronoCardHeader,
     ChronoCardTitle,
 } from "@chrono/chrono-card.component";

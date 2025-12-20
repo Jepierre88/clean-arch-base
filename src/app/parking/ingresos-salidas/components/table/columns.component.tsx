@@ -26,7 +26,7 @@ export const createInOutColumns = (
     header: "Tipo de vehículo",
     accessorFn: (row: IInOutEntity) => {
       console.log(row);
-      return row.vehicleType.name;
+      return row.vehicle.vehicleType.name;
     },
   },
   {

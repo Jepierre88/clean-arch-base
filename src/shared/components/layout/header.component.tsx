@@ -1,15 +1,10 @@
 "use client";
-
-import { useCallback, useEffect, useState } from "react";
 import {
   ChronoSidebarTrigger,
   useChronoSidebar,
 } from "@chrono/chrono-sidebar.component";
 import BreadcrumbComponent from "./breadcrumb.component";
 import SearchComponent from "./search.component";
-import { motion, MotionProps } from "framer-motion";
-import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { DateRangeComponent } from "./date-filter.component";
 import { UseHeaderContext } from "../../context/header.context";
 

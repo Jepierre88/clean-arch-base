@@ -16,7 +16,7 @@ export async function validateFeeAction(params: IValidateAmountParamsEntity): Pr
             success: true
         };
     } catch (error) {
-        console.log("validateFeeAction error:", error);
+        console.log("validateFeeAction error:", (error as AxiosError<IErrorResponse>).response?.data);
         return {
             success: false,
             error: (error as AxiosError<IErrorResponse>).response?.data.message || "Error inesperado"
