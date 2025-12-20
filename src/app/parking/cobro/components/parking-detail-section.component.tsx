@@ -71,7 +71,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
     const hiddenRules = Math.max(rules.length - visibleRules.length, 0);
 
     return (
-        <div className={cn("flex flex-col gap-2 overflow-y-auto pr-1", className)}>
+        <div className={cn("flex flex-col gap-2 overflow-y-auto pr-1 my-auto py-2", className)}>
             <ChronoCard className="bg-card/95 h-min">
                 <ChronoCardHeader className="gap-2">
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -161,7 +161,7 @@ export function QrDetailSectionComponent({ className }: QrDetailSectionProps) {
                 </ChronoCardContent>
             </ChronoCard>
 
-            <ChronoCard className="bg-card/95 flex-1">
+            <ChronoCard className="bg-card/95 h-min">
                 <ChronoCardHeader className="gap-1.5">
                     <ChronoCardTitle className="text-sm font-semibold">Reglas aplicadas</ChronoCardTitle>
                 </ChronoCardHeader>

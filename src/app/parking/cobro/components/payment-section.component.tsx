@@ -13,37 +13,20 @@ import {
   ChronoCardHeader,
   ChronoCardTitle,
 } from "@chrono/chrono-card.component";
-import { ChronoInput } from "@chrono/chrono-input.component";
+import ChronoCashInput from "@chrono/chrono-cash-input.component";
 import { ChronoLabel } from "@chrono/chrono-label.component";
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
-
-const TOTAL_AMOUNT = 8540;
-
-const thirdPartyUsers = [
-  {
-    id: "cliente",
-    label: "Cliente directo",
-    detail: "Sin convenios",
-  },
-  {
-    id: "empresa",
-    label: "Empresa aliada",
-    detail: "Tercerizado · Torre B",
-  },
-];
-
-const paymentMethods = [
-  { id: "cash", label: "Efectivo" },
-  { id: "card", label: "Tarjeta" },
-  { id: "transfer", label: "Transferencia" },
-];
+import { PaymentMethodEnum } from "@/src/shared/enums/parking/payment-method.enum";
+import { generatePaymentAction } from "@/src/app/parking/cobro/actions/generate-payment.action";
+import { toast } from "sonner";
+import { PAYMENT_METHODS } from "@/src/shared/constants/payment-methods";
+import { ChronoInput } from "@chrono/chrono-input.component";
 
 const steps = [
-  { id: "user", badge: "1", title: "Usuario", description: "" },
-  { id: "method", badge: "2", title: "Medio", description: "" },
-  { id: "amount", badge: "3", title: "Monto", description: "" },
-  { id: "confirm", badge: "4", title: "Confirmar", description: "" },
+  { id: "method", badge: "1", title: "Método de pago", description: "" },
+  { id: "amount", badge: "2", title: "Monto recibido", description: "" },
+  { id: "confirm", badge: "3", title: "Confirmar", description: "" },
 ];
 
 const formatCurrency = (value: number) =>
@@ -59,16 +42,20 @@ type PaymentSectionProps = {
 
 export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   const { validateRaw } = usePaymentContext();
-  const [selectedUser, setSelectedUser] = useState(thirdPartyUsers[0].id);
-  const [selectedMethod, setSelectedMethod] = useState(paymentMethods[0].id);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodEnum | null>(null);
   const [amountReceived, setAmountReceived] = useState("0");
+  const [notes, setNotes] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const totalAmount = validateRaw?.data?.finalAmount ?? 0;
+  const parkingSessionId = validateRaw?.data?.parkingSessionId;
 
   const changeValue = useMemo(() => {
     const parsed = Number(amountReceived);
     if (!Number.isFinite(parsed)) return 0;
-    return Math.max(parsed - TOTAL_AMOUNT, 0);
-  }, [amountReceived]);
+    return Math.max(parsed - totalAmount, 0);
+  }, [amountReceived, totalAmount]);
 
   const clampStep = (index: number) => Math.max(0, Math.min(index, steps.length - 1));
   const progress = ((currentStep + 1) / steps.length) * 100;
@@ -83,25 +70,51 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
     });
   };
 
-  const handleUserSelect = (userId: string) => {
-    setSelectedUser(userId);
-    autoAdvanceFromStep(0);
-  };
-
-  const handleMethodSelect = (methodId: string) => {
+  const handleMethodSelect = (methodId: PaymentMethodEnum) => {
     setSelectedMethod(methodId);
-    autoAdvanceFromStep(1);
   };
 
   const isLastStep = currentStep === steps.length - 1;
 
-  const handleRegisterPayment = () => {
-    // Placeholder action for mock flow; replace with real submit when backend is ready.
-    console.info("Registrar pago (mock)", {
-      selectedUser,
-      selectedMethod,
-      amountReceived,
-    });
+  const handleRegisterPayment = async () => {
+    if (!parkingSessionId) {
+      toast.error("No hay una sesión de parqueo activa");
+      return;
+    }
+
+    if (!selectedMethod) {
+      toast.error("Debes seleccionar un método de pago");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const result = await generatePaymentAction({
+        parkingSessionId,
+        paymentMethod: selectedMethod,
+        amountReceived: Number(amountReceived),
+        notes,
+      });
+
+      if (!result.success) {
+        toast.error(result.error || "Error al registrar el pago");
+        return;
+      }
+
+      toast.success("Pago registrado exitosamente");
+      console.log("Pago registrado:", result.data);
+
+      // Resetear formulario
+      setSelectedMethod(null);
+      setAmountReceived("0");
+      setNotes("");
+      setCurrentStep(0);
+    } catch (error) {
+      console.error("Error al registrar pago:", error);
+      toast.error("Error inesperado al registrar el pago");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleContinue = () => {
@@ -128,14 +141,14 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
 
   return (
     <ChronoCard className={cn("gap-0 flex h-full flex-col overflow-hidden", className)}>
-      <ChronoCardHeader>
+      <ChronoCardHeader className="space-y-1.5">
         <div className="flex items-center justify-between gap-2">
           <div>
             <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               Total del cobro
             </p>
             <ChronoCardTitle className="text-xl font-semibold tracking-tight">
-              {formatCurrency(TOTAL_AMOUNT)}
+              {formatCurrency(totalAmount)}
             </ChronoCardTitle>
           </div>
           <div className="text-right">
@@ -160,8 +173,8 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
         </div>
       </ChronoCardHeader>
 
-      <ChronoCardContent className="flex-1 overflow-y-auto py-0 pr-1">
-        <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground pt-2">
+      <ChronoCardContent className="flex-1 overflow-y-auto py-0 pr-1 flex flex-col">
+        <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground pt-1">
           <span>Pasos</span>
           <span>
             {currentStep + 1}/{steps.length}
@@ -199,126 +212,117 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
           >
             {steps.map((step) => {
               return (
-                <div key={step.id} className="flex w-full shrink-0 basis-full flex-col gap-2 p-2.5">
-                  <header className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
-                    <span>{step.title}</span>
-                    <div className="flex items-center gap-1 text-[10px]">
-                      <ChronoButton
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={prevStep}
-                        disabled={currentStep === 0}
-                        aria-label="Paso anterior"
-                      >
-                        <ChevronLeft className="size-3" />
-                      </ChronoButton>
-                      <ChronoButton
-                        variant="ghost"
-                        size="icon-sm"
-                        onClick={handleContinue}
-                        aria-label="Paso siguiente"
-                      >
-                        <ChevronRight className="size-3" />
-                      </ChronoButton>
-                    </div>
-                  </header>
+                <div key={step.id} className="flex w-full shrink-0 basis-full flex-col gap-1 p-1.5">
 
                   <div>
-                    {step.id === "user" && (
-                      <div className="flex gap-1 sm:grid sm:grid-cols-2">
-                        {thirdPartyUsers.map((user) => (
-                          <button
-                            key={user.id}
-                            type="button"
-                            onClick={() => handleUserSelect(user.id)}
-                            className={cn(
-                              "w-full rounded-lg border px-2.5 py-1.5 text-left shadow-sm transition-all",
-                              selectedUser === user.id
-                                ? "border-primary/60 bg-primary/10 text-foreground"
-                                : "border-border/60 bg-background/60 text-muted-foreground hover:border-primary/40"
-                            )}
-                          >
-                            <p className="text-sm font-semibold text-foreground">{user.label}</p>
-                            <p className="text-xs text-muted-foreground">{user.detail}</p>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
                     {step.id === "method" && (
-                      <div className="grid gap-1 sm:grid-cols-3">
-                        {paymentMethods.map((method) => (
-                          <button
-                            key={method.id}
-                            type="button"
-                            onClick={() => handleMethodSelect(method.id)}
-                            className={cn(
-                              "w-full rounded-lg border px-2.5 py-1.5 text-left text-sm font-semibold shadow-sm transition-all",
-                              selectedMethod === method.id
-                                ? "border-primary/60 bg-primary/10 text-foreground"
-                                : "border-border/60 bg-background/60 text-muted-foreground hover-border-primary/40"
-                            )}
-                          >
-                            {method.label}
-                          </button>
-                        ))}
+                      <div className="grid gap-1.5 grid-cols-3">
+                        {PAYMENT_METHODS.map((method) => {
+                          const Icon = method.icon;
+                          return (
+                            <button
+                              key={method.value}
+                              type="button"
+                              onClick={() => handleMethodSelect(method.value)}
+                              className={cn(
+                                "w-full rounded-lg border px-2.5 py-2 text-left shadow-sm transition-all flex items-center gap-2.5",
+                                selectedMethod === method.value
+                                  ? "border-primary/60 bg-primary/10 text-foreground"
+                                  : "border-border/60 bg-background/60 text-muted-foreground hover:border-primary/40"
+                              )}
+                            >
+                              <div className={cn(
+                                "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
+                                selectedMethod === method.value
+                                  ? "bg-primary/20 text-primary"
+                                  : "bg-muted/50 text-muted-foreground"
+                              )}>
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              <span className="text-sm font-semibold">{method.label}</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     )}
 
                     {step.id === "amount" && (
-                      <div className="space-y-0.5">
-                        <ChronoLabel htmlFor="amount-received" className="text-[11px] text-muted-foreground">
-                          Cantidad
-                        </ChronoLabel>
-                        <ChronoInput
-                          id="amount-received"
-                          type="number"
-                          min="0"
-                          step="100"
-                          value={amountReceived}
-                          onChange={(event) => setAmountReceived(event.target.value)}
-                          className="h-9 text-base font-semibold"
-                        />
-                        <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                          <span>Disponible en caja</span>
-                          <span>{selectedMethod === "cash" ? "Requiere validar billetes" : "Sin vuelto"}</span>
+                      <div className="space-y-1.5">
+                        <div className="space-y-0.5">
+                          <ChronoLabel htmlFor="amount-received" className="text-xs text-muted-foreground">
+                            Monto recibido
+                          </ChronoLabel>
+                          <ChronoCashInput
+                            id="amount-received"
+                            value={amountReceived}
+                            onChange={(event) => setAmountReceived(event.target.value)}
+                            placeholder="0"
+                          />
+                        </div>
+                        <div className="space-y-0.5">
+                          <ChronoLabel htmlFor="notes" className="text-xs text-muted-foreground">
+                            Notas (opcional)
+                          </ChronoLabel>
+                          <ChronoInput
+                            id="notes"
+                            type="text"
+                            value={notes}
+                            onChange={(event) => setNotes(event.target.value)}
+                            className="h-9 text-sm"
+                            placeholder="Observaciones adicionales"
+                          />
                         </div>
                       </div>
                     )}
 
                     {step.id === "confirm" && (
-                      <div className="space-y-3">
-                        <div className="flex flex-wrap gap-2">
+                      <div className="space-y-2">
+                        <div className="rounded-lg border border-border/50 bg-background/30 p-2 space-y-1.5">
                           {[ 
                             {
-                              label: "Usuario",
-                              value: thirdPartyUsers.find((user) => user.id === selectedUser)?.label ?? "--",
+                              label: "Método de pago",
+                              value: PAYMENT_METHODS.find((method) => method.value === selectedMethod)?.label ?? "--",
                             },
                             {
-                              label: "Medio",
-                              value: paymentMethods.find((method) => method.id === selectedMethod)?.label ?? "--",
-                            },
-                            {
-                              label: "Recibido",
+                              label: "Monto recibido",
                               value: formatCurrency(Number(amountReceived) || 0),
                             },
                             {
+                              label: "Total a cobrar",
+                              value: formatCurrency(totalAmount),
+                            },
+                            {
                               label: "Cambio",
-                              value: changeValue > 0 ? formatCurrency(changeValue) : "--",
+                              value: changeValue > 0 ? formatCurrency(changeValue) : "$0",
+                              highlight: changeValue > 0,
                             },
                           ].map((item) => (
-                            <div key={item.label} className="flex min-w-[120px] flex-1 flex-col px-1.5">
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                            <div key={item.label} className="flex justify-between items-center">
+                              <span className="text-xs text-muted-foreground">
                                 {item.label}
                               </span>
-                              <span className="text-sm font-semibold text-foreground">
+                              <span className={cn(
+                                "text-sm font-semibold",
+                                item.highlight ? "text-emerald-400" : "text-foreground"
+                              )}>
                                 {item.value}
                               </span>
                             </div>
                           ))}
+                          {notes && (
+                            <div className="pt-1.5 border-t border-border/50">
+                              <span className="text-xs text-muted-foreground block mb-1">Notas</span>
+                              <span className="text-sm text-foreground">{notes}</span>
+                            </div>
+                          )}
                         </div>
-                        <ChronoButton size="sm" className="w-full" onClick={handleRegisterPayment}>
-                          Registrar pago (mock)
+                        <ChronoButton 
+                          size="sm" 
+                          className="w-full" 
+                          onClick={handleRegisterPayment}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Procesando..." : "Registrar pago"}
                         </ChronoButton>
                       </div>
                     )}
@@ -329,7 +333,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
           </div>
         </div>
       </ChronoCardContent>
-      <ChronoCardFooter className="shrink-0">
+      <ChronoCardFooter>
         {currentStep < steps.length - 1 && (
           <div className="ml-auto flex items-center gap-2 text-xs">
             <ChronoButton variant="ghost" size="sm" onClick={prevStep} disabled={currentStep === 0}>

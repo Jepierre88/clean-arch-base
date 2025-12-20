@@ -12,7 +12,7 @@ export class PaymentDatasourceService extends AxiosServerInstance implements Pay
         }
 
         return this.api
-            .post<IValidateAmountResponseEntity>(`/parking-sessions/${identifier}/calculate-fee`, { exitDate: exitTime })
+            .post<IValidateAmountResponseEntity>(`/parking-sessions/${identifier}/calculate-fee`, { exitTime })
             .then(response => response.data);
     }
 
