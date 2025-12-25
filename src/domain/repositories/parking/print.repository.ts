@@ -1,7 +1,4 @@
-import { IPrintPostPaymentInvoiceParamsEntity, IPrintPostPaymentInvoiceResponseEntity } from "@/domain/index";
-
+import { IPrintRequestEntity } from "@/domain/index";
 export abstract class PrintRepository {
-  abstract printPostPaymentInvoice(
-    params: IPrintPostPaymentInvoiceParamsEntity
-  ): Promise<IPrintPostPaymentInvoiceResponseEntity>;
+  abstract sendToPrinter(request: IPrintRequestEntity): Promise<boolean>;
 }

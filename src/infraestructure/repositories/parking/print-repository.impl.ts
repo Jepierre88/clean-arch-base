@@ -1,8 +1,5 @@
 import { PrintRepository } from "@/domain/repositories/parking/print.repository";
-import {
-  IPrintPostPaymentInvoiceParamsEntity,
-  IPrintPostPaymentInvoiceResponseEntity,
-} from "@/domain/index";
+import { IPrintRequestEntity } from "@/domain/entities/printer/print-request.entity";
 import { PrintDatasourceService } from "@/infraestructure/datasources/parking/print-datasource.service";
 import { inject, injectable } from "tsyringe";
 
@@ -13,9 +10,7 @@ export class PrintRepositoryImpl implements PrintRepository {
     private printDatasource: PrintDatasourceService
   ) {}
 
-  async printPostPaymentInvoice(
-    params: IPrintPostPaymentInvoiceParamsEntity
-  ): Promise<IPrintPostPaymentInvoiceResponseEntity> {
-    return this.printDatasource.printPostPaymentInvoice(params);
+  async sendToPrinter(request: IPrintRequestEntity): Promise<boolean> {
+    return this.printDatasource.sendToPrinter(request);
   }
 }

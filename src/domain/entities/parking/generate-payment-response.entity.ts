@@ -1,3 +1,5 @@
+import IIdName from "@/src/shared/interfaces/generic/id-name.interface";
+
 export interface IGeneratePaymentResponseEntity {
     success: boolean;
     totalAmount: number;
@@ -17,15 +19,9 @@ export interface IGeneratePaymentResponseEntity {
                 lastName: string;
                 documentNumber: string;
             };
-            vehicleType: {
-                id: string;
-                name: string;
-            };
+            vehicleType: IIdName
         };
-        rateProfile: {
-            id: string;
-            name: string;
-        };
+        rateProfile: IIdName
         calculatedAmount: number;
         finalAmount: number;
         discount: number;
