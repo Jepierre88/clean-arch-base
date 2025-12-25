@@ -1,8 +1,7 @@
-import { PaymentMethodEnum } from "@/src/shared/enums/parking/payment-method.enum";
 
 export interface IGeneratePaymentParamsEntity {
     parkingSessionId: string;
-    paymentMethod: PaymentMethodEnum;
+    paymentMethodId: string;
     amountReceived: number;
     notes?: string;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, ScanQrCode } from "lucide-react";
+import { ChevronLeft, ChevronRight, ScanQrCode, Banknote } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { ChronoBadge } from "@chrono/chrono-badge.component";
 import ChronoButton from "@chrono/chrono-button.component";
@@ -18,10 +18,9 @@ import { ChronoLabel } from "@chrono/chrono-label.component";
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
 import { UseDialogContext } from "@/src/shared/context/dialog.context";
-import { PaymentMethodEnum } from "@/src/shared/enums/parking/payment-method.enum";
+import { useCommonContext } from "@/src/shared/context/common.context";
 import { generatePaymentAction } from "@/src/app/parking/cobro/actions/generate-payment.action";
 import { toast } from "sonner";
-import { PAYMENT_METHODS } from "@/src/shared/constants/payment-methods";
 import { ChronoInput } from "@chrono/chrono-input.component";
 
 const steps = [
@@ -44,7 +43,8 @@ type PaymentSectionProps = {
 export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   const { validateRaw } = usePaymentContext();
   const { showYesNoDialog } = UseDialogContext();
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodEnum | null>(null);
+  const { paymentMethods } = useCommonContext();
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [amountReceived, setAmountReceived] = useState("0");
   const [notes, setNotes] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
@@ -72,7 +72,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
     });
   };
 
-  const handleMethodSelect = (methodId: PaymentMethodEnum) => {
+  const handleMethodSelect = (methodId: string) => {
     setSelectedMethod(methodId);
   };
 
@@ -93,7 +93,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
     try {
       const result = await generatePaymentAction({
         parkingSessionId,
-        paymentMethod: selectedMethod,
+        paymentMethodId: selectedMethod,
         amountReceived: Number(amountReceived),
         notes,
       });
@@ -232,8 +232,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                   <div>
                     {step.id === "method" && (
                       <div className="grid gap-1.5 grid-cols-3">
-                        {PAYMENT_METHODS.map((method) => {
-                          const Icon = method.icon;
+                        {paymentMethods.map((method) => {
                           return (
                             <button
                               key={method.value}
@@ -252,7 +251,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                                   ? "bg-primary/20 text-primary"
                                   : "bg-muted/50 text-muted-foreground"
                               )}>
-                                <Icon className="h-4 w-4" />
+                                <Banknote className="h-4 w-4" />
                               </div>
                               <span className="text-sm font-semibold">{method.label}</span>
                             </button>
@@ -296,7 +295,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
                           {[ 
                             {
                               label: "Método de pago",
-                              value: PAYMENT_METHODS.find((method) => method.value === selectedMethod)?.label ?? "--",
+                              value: paymentMethods.find((method) => method.value === selectedMethod)?.label ?? "--",
                             },
                             {
                               label: "Monto recibido",
