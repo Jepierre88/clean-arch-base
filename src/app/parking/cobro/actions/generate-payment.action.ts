@@ -19,7 +19,7 @@ export async function generatePaymentAction(params: IGeneratePaymentParamsEntity
             success: true
         };
     } catch (error) {
-        console.log("generatePaymentAction error:", error);
+        console.log("generatePaymentAction error:", (error as AxiosError).response);
         return {
             success: false,
             error: (error as AxiosError<IErrorResponse>).response?.data.message || "Error inesperado al procesar el pago"

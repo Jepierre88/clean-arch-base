@@ -1,6 +1,6 @@
 // Acciones del lado del cliente, necesarias para ejecutar el llamado a la impresora instalada en el localhost
 
-'use client'
+'use server'
 
 import { container } from "@/di/container";
 import { IGeneratePaymentResponseEntity, PrintUsecase } from "@/src/domain";
