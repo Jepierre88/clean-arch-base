@@ -15,6 +15,8 @@ import {
 } from "@chrono/chrono-card.component";
 import ChronoCashInput from "@chrono/chrono-cash-input.component";
 import { ChronoLabel } from "@chrono/chrono-label.component";
+import { ChronoSectionLabel } from "@chrono/chrono-section-label.component";
+import { ChronoValue } from "@chrono/chrono-value.component";
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
 import { UseDialogContext } from "@/src/shared/context/dialog.context";
@@ -173,26 +175,28 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   }
 
   return (
-    <ChronoCard className={cn("gap-0 flex h-full flex-col overflow-hidden", className)}>
+    <ChronoCard className={cn("gap-0 flex h-full flex-col overflow-hidden animate-in fade-in duration-500", className)}>
       <ChronoCardHeader className="space-y-1.5">
         <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            <ChronoSectionLabel size="xs">
               Total del cobro
-            </p>
-            <ChronoCardTitle className="text-xl font-semibold tracking-tight">
+            </ChronoSectionLabel>
+            <ChronoValue size="lg">
               {formatCurrency(totalAmount)}
-            </ChronoCardTitle>
+            </ChronoValue>
           </div>
           <div className="text-right">
-            <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            <ChronoSectionLabel size="xs">
               Cambio estimado
-            </p>
-            <p
-              className={cn("text-lg font-semibold", changeValue > 0 ? "text-emerald-400" : "text-muted-foreground")}
+            </ChronoSectionLabel>
+            <ChronoValue
+              size="md"
+              className={changeValue > 0 ? "text-emerald-400" : ""}
+              muted={changeValue === 0}
             >
               {changeValue > 0 ? formatCurrency(changeValue) : "--"}
-            </p>
+            </ChronoValue>
           </div>
         </div>
         <ChronoCardDescription className="text-[10px]">
@@ -207,11 +211,13 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
       </ChronoCardHeader>
 
       <ChronoCardContent className="flex-1 overflow-y-auto py-0 pr-1 flex flex-col">
-        <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.35em] text-muted-foreground pt-1">
-          <span>Pasos</span>
-          <span>
+        <div className="flex items-center justify-between pt-1">
+          <ChronoSectionLabel size="md" className="tracking-[0.35em]">
+            Pasos
+          </ChronoSectionLabel>
+          <ChronoSectionLabel size="md" className="tracking-[0.35em]">
             {currentStep + 1}/{steps.length}
-          </span>
+          </ChronoSectionLabel>
         </div>
 
         <div className="flex flex-wrap gap-1">

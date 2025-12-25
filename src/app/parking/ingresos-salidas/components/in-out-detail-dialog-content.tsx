@@ -4,6 +4,8 @@ import * as React from "react";
 
 import { IInOutEntity } from "@/domain/index";
 import { ChronoBadge } from "@chrono/chrono-badge.component";
+import { ChronoSectionLabel } from "@chrono/chrono-section-label.component";
+import { ChronoValue } from "@chrono/chrono-value.component";
 import { ChronoSeparator } from "@chrono/chrono-separator.component";
 import { useCommonContext } from "@/src/shared/context/common.context";
 
@@ -47,10 +49,12 @@ export function InOutDetailDialogContent({ item }: InOutDetailDialogContentProps
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Placa</p>
-          <p className="text-3xl font-semibold tracking-tight text-foreground">
+          <ChronoSectionLabel size="base" className="tracking-[0.25em]">
+            Placa
+          </ChronoSectionLabel>
+          <ChronoValue size="xl">
             {item.vehicle.licensePlate}
-          </p>
+          </ChronoValue>
         </div>
         <ChronoBadge variant="outline" className="text-xs font-semibold">
           {vehicleTypeLabel}

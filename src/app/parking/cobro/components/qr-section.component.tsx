@@ -8,6 +8,7 @@ import { ChronoDateTimePicker } from "@chrono/chrono-date-time-picker.component"
 import ChronoQrScannerInput from "@chrono/chrono-qr-scanner-input.component";
 import ChronoPlateInput from "@chrono/chrono-plate-input.component";
 import { ChronoBadge } from "@chrono/chrono-badge.component";
+import { ChronoSectionLabel } from "@chrono/chrono-section-label.component";
 import {
   ChronoCard,
   ChronoCardContent,
@@ -92,11 +93,13 @@ function QrFormComponent({
         onChange={handleFormChange}
       >
         <div className="flex flex-col gap-3 rounded-xl">
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+          <div className="flex items-center gap-1.5">
             <ChronoBadge variant="outline" className="border-primary/40 text-foreground">
               Paso 1
             </ChronoBadge>
-            <span>Hora de salida</span>
+            <ChronoSectionLabel size="sm">
+              Hora de salida
+            </ChronoSectionLabel>
           </div>
           <Controller
             control={validateFeeForm.control}
@@ -116,11 +119,13 @@ function QrFormComponent({
         </div>
 
         <div className="flex flex-col gap-3 rounded-xl pb-1">
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+          <div className="flex items-center gap-1.5">
             <ChronoBadge variant="outline" className="border-primary/40 text-foreground">
               Paso 2
             </ChronoBadge>
-            <span>QR o placa</span>
+            <ChronoSectionLabel size="sm">
+              QR o placa
+            </ChronoSectionLabel>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
