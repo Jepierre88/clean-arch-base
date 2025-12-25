@@ -3,6 +3,7 @@ import { PrintRepository } from "@/domain/repositories/parking/print.repository"
 import { IPrintPostPaymentInvoiceParamsEntity } from "@/domain/index";
 import { IPrintRequestEntity } from "../../entities/printer/print-request.entity";
 import { IPrinterOperationEntity } from "../../entities/printer/printer-operation.entity";
+import { ENVIRONMENT } from "@/src/shared/constants/environment";
 
 @injectable()
 export class PrintUsecase {
@@ -42,14 +43,13 @@ export class PrintUsecase {
     operations.push({ accion: "text", datos: `ID Pago: ${paymentData.paymentId}` });
     operations.push({ accion: "text", datos: "\n\n" });
 
-    const printerName = process.env.NEXT_PUBLIC_PRINTER_NAME || "EPSON";
+    const printerName = ENVIRONMENT.PRINTER_NAME;
     
     const printRequest: IPrintRequestEntity = {
       nombre_impresora: printerName,
       operaciones: operations
     };
 
-    // Delegar al repository
     return this.printRepository.sendToPrinter(printRequest);
   }
 }

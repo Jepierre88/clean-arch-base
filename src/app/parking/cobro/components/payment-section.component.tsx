@@ -17,6 +17,7 @@ import ChronoCashInput from "@chrono/chrono-cash-input.component";
 import { ChronoLabel } from "@chrono/chrono-label.component";
 import EmptyState from "@/src/shared/components/empty-state.component";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
+import { UseDialogContext } from "@/src/shared/context/dialog.context";
 import { PaymentMethodEnum } from "@/src/shared/enums/parking/payment-method.enum";
 import { generatePaymentAction } from "@/src/app/parking/cobro/actions/generate-payment.action";
 import { toast } from "sonner";
@@ -42,6 +43,7 @@ type PaymentSectionProps = {
 
 export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   const { validateRaw } = usePaymentContext();
+  const { showYesNoDialog } = UseDialogContext();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethodEnum | null>(null);
   const [amountReceived, setAmountReceived] = useState("0");
   const [notes, setNotes] = useState("");
@@ -102,6 +104,21 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
       }
 
       toast.success("Pago registrado exitosamente");
+
+      // Preguntar si desea imprimir usando el diálogo
+      showYesNoDialog({
+        title: "Imprimir comprobante",
+        description: "¿Desea imprimir el comprobante de pago?",
+        handleYes: async () => {
+          if (result.data) {
+            const { printPostPaymentInvoiceAction } = await import("@/src/app/global-actions/printer.actions");
+            await printPostPaymentInvoiceAction(result.data);
+          }
+        },
+        handleNo: () => {
+          // No hacer nada si el usuario elige no imprimir
+        },
+      });
 
       setSelectedMethod(null);
       setAmountReceived("0");
