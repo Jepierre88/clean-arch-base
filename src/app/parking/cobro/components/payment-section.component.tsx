@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, ScanQrCode, Banknote } from "lucide-react";
+import { ScanQrCode, Banknote } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { ChronoBadge } from "@chrono/chrono-badge.component";
 import ChronoButton from "@chrono/chrono-button.component";
@@ -22,6 +22,8 @@ import { useCommonContext } from "@/src/shared/context/common.context";
 import { generatePaymentAction } from "@/src/app/parking/cobro/actions/generate-payment.action";
 import { toast } from "sonner";
 import { ChronoInput } from "@chrono/chrono-input.component";
+import { printPostPaymentInvoiceAction } from "@/src/app/global-actions/printer.actions";
+import { IGeneratePaymentResponseEntity } from "@/domain/index";
 
 const steps = [
   { id: "method", badge: "1", title: "Método de pago", description: "" },
@@ -76,54 +78,68 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
     setSelectedMethod(methodId);
   };
 
-  const isLastStep = currentStep === steps.length - 1;
+  const resetPaymentForm = () => {
+    setSelectedMethod(null);
+    setAmountReceived("0");
+    setNotes("");
+    setCurrentStep(0);
+  };
 
-  const handleRegisterPayment = async () => {
+  const handlePrintPrompt = async (paymentData: IGeneratePaymentResponseEntity) => {
+    showYesNoDialog({
+      title: "Imprimir comprobante",
+      description: "¿Desea imprimir el comprobante de pago?",
+      handleYes: async () => {
+        if (paymentData) {
+          await printPostPaymentInvoiceAction(paymentData);
+        }
+      },
+      handleNo: () => {
+        // No hacer nada si el usuario elige no imprimir
+      },
+    });
+  };
+
+  const processPayment = async () => {
+    const result = await generatePaymentAction({
+      parkingSessionId: parkingSessionId!,
+      paymentMethodId: selectedMethod!,
+      amountReceived: Number(amountReceived),
+      notes,
+    });
+
+    if (!result.success || !result.data) {
+      toast.error(result.error || "Error al registrar el pago");
+      return;
+    }
+
+    toast.success("Pago registrado exitosamente");
+    await handlePrintPrompt(result.data);
+    resetPaymentForm();
+  };
+
+  const validatePaymentData = (): boolean => {
     if (!parkingSessionId) {
       toast.error("No hay una sesión de parqueo activa");
-      return;
+      return false;
     }
 
     if (!selectedMethod) {
       toast.error("Debes seleccionar un método de pago");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleRegisterPayment = async () => {
+    if (!validatePaymentData()) {
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const result = await generatePaymentAction({
-        parkingSessionId,
-        paymentMethodId: selectedMethod,
-        amountReceived: Number(amountReceived),
-        notes,
-      });
-
-      if (!result.success) {
-        toast.error(result.error || "Error al registrar el pago");
-        return;
-      }
-
-      toast.success("Pago registrado exitosamente");
-
-      // Preguntar si desea imprimir usando el diálogo
-      showYesNoDialog({
-        title: "Imprimir comprobante",
-        description: "¿Desea imprimir el comprobante de pago?",
-        handleYes: async () => {
-          if (result.data) {
-            const { printPostPaymentInvoiceAction } = await import("@/src/app/global-actions/printer.actions");
-            await printPostPaymentInvoiceAction(result.data);
-          }
-        },
-        handleNo: () => {
-          // No hacer nada si el usuario elige no imprimir
-        },
-      });
-
-      setSelectedMethod(null);
-      setAmountReceived("0");
-      setNotes("");
-      setCurrentStep(0);
+      await processPayment();
     } catch (error) {
       console.error("Error al registrar pago:", error);
       toast.error("Error inesperado al registrar el pago");
@@ -131,6 +147,8 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
       setIsSubmitting(false);
     }
   };
+
+  const isLastStep = currentStep === steps.length - 1;
 
   const handleContinue = () => {
     if (isLastStep) {

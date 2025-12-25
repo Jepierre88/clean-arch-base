@@ -152,7 +152,7 @@ function QrFormComponent({
                     id="plate"
                     value={field.value as string ?? ""}
                     onClear={onClear}
-                    placeholder="Placa (ej: ABC123 o ABC12D)"
+                    placeholder="Placa"
                   />
 
                   {fieldState.invalid && <ChronoFieldError errors={[fieldState.error]} />}
