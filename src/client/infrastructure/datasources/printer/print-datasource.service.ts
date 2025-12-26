@@ -10,22 +10,17 @@ export class PrintDatasourceService implements PrintRepository {
   async sendToPrinter(request: IPrintRequestEntity): Promise<boolean> {
     const apiUrl = process.env.NEXT_PUBLIC_PRINTER_APIURL || "http://localhost:8080";
 
-    console.log("Enviando a imprimir en impresora:", request.nombre_impresora);
-    console.log("Operaciones:", request.operaciones);
-
     try {
       await axios.post(`${apiUrl}/imprimir`, {
         nombre_impresora: request.nombre_impresora,
         operaciones: [...request.operaciones, { accion: "cut", datos: "" }],
       });
       
-      // Abrir monedero después de imprimir
       await axios.get(`${apiUrl}/abrir-monedero?printer=${request.nombre_impresora}`)
         .catch(e => console.log(e));
       
       return true;
-    } catch (error) {
-      console.log("Error al imprimir", error);
+    } catch (_) {
       return false;
     }
   }

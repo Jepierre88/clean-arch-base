@@ -26,9 +26,9 @@ export function InOutDetailDialogContent({ item }: InOutDetailDialogContentProps
   const isClosed = Boolean(item.exitTime);
 
   const vehicleTypeLabel = React.useMemo(() => {
-    const fromCatalog = vehicleTypes.find((type) => type.value === item.vehicleType.id);
-    return fromCatalog?.label ?? item.vehicleType.name;
-  }, [item.vehicleType.id, item.vehicleType.name, vehicleTypes]);
+    const fromCatalog = vehicleTypes.find((type) => type.value === item.vehicle.vehicleType.id);
+    return fromCatalog?.label ?? item.vehicle.vehicleType.name;
+  }, [item.vehicle.vehicleType.id, item.vehicle.vehicleType.name, vehicleTypes]);
 
   const detailRows = [
     { label: "Placa", value: item.vehicle.licensePlate },

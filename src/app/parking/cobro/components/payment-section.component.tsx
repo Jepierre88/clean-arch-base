@@ -46,7 +46,7 @@ type PaymentSectionProps = {
 };
 
 export function PaymentSectionComponent({ className }: PaymentSectionProps) {
-  const { validateRaw } = usePaymentContext();
+  const { validateRaw, clearValidateResult } = usePaymentContext();
   const { showYesNoDialog, closeDialog } = UseDialogContext();
   const { paymentMethods } = useCommonContext();
   const { printPostPaymentInvoice } = usePrint();
@@ -89,12 +89,21 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
       title: "Imprimir comprobante",
       description: "¿Desea imprimir el comprobante de pago?",
       handleYes: async () => {
+        const toastId = toast.loading("Enviando impresión...");
         if (paymentData) {
-          const success = await printPostPaymentInvoice(paymentData);
+          const res = await printPostPaymentInvoice(paymentData).finally(() => {
+            clearValidateResult();
+            closeDialog();
+          });
 
-          if (!success) {
+          if (!res.success) {
             toast.error("Error al imprimir el comprobante", {
               description: "Intenta nuevamente más tarde desde la sección de pagos.",
+              id: toastId,
+            },)
+          } else {
+            toast.success("Impresión enviada correctamente", {
+              id: toastId,
             });
           }
         }
@@ -106,20 +115,22 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   };
 
   const processPayment = async () => {
-    const result = await generatePaymentAction({
+    const res = await generatePaymentAction({
       parkingSessionId: parkingSessionId!,
       paymentMethodId: selectedMethod!,
       amountReceived: Number(amountReceived),
       notes,
     });
-
-    if (!result.success || !result.data) {
-      toast.error(result.error || "Error al registrar el pago");
+    
+    if(!res.success || !res.data){
+      toast.error("Error al registrar el pago", {
+        description: res.error || "Intenta nuevamente más tarde.",
+      });
       return;
     }
 
     toast.success("Pago registrado exitosamente");
-    await handlePrintPrompt(result.data);
+    await handlePrintPrompt(res.data);
     resetPaymentForm();
   };
 

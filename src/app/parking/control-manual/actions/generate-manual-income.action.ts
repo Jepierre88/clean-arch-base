@@ -8,12 +8,11 @@ import { AxiosError } from "axios";
 
 export async function generateManualIncomeAction(params: IGenerateManualIncomeParamsEntity): Promise<IActionResponse<unknown>> {
     try {
-        console.log("generateManualIncomeAction params:", params);
         const useCase = serverContainer.resolve(ManualControlUseCase);
         const response = await useCase.generateManualIncome(params);
         return { success: true, data: response };
     } catch (error) {
-        console.error(error);
+        console.log("Error en generateManualIncomeAction:", error);
         return { success: false, error: (error as AxiosError<IErrorResponse>).response?.data.message || "Error inesperado"};
     }
 }

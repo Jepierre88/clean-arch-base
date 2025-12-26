@@ -5,24 +5,23 @@ import { IGeneratePaymentResponseEntity } from "@/server/domain";
 import { PrintUsecase } from "@/client/domain/usecases/printer/print.usecase";
 import { clientContainer } from "@/client/di/container";
 import { toast } from "sonner";
+import IActionResponse from "../../interfaces/generic/action-response";
 
 export default function usePrint() {
-  const printPostPaymentInvoice = useCallback(async (paymentData: IGeneratePaymentResponseEntity): Promise<boolean> => {
+  const printPostPaymentInvoice = useCallback(async (paymentData: IGeneratePaymentResponseEntity): Promise<IActionResponse<boolean>> => {
     try {
       const useCase = clientContainer.resolve(PrintUsecase);
-      const result = await useCase.printPostPaymentInvoice({ paymentData });
-      
-      if (result) {
-        toast.success("Impresión enviada correctamente");
-      } else {
-        toast.error("Error al enviar la impresión");
-      }
-      
-      return result;
+      const result = await useCase.printPostPaymentInvoice(paymentData.data);
+      return {
+        success: result,
+        data: result,
+      };
     } catch (error) {
-      console.error("Error al imprimir:", error);
-      toast.error("Error al imprimir el comprobante");
-      return false;
+      
+      return {
+        success: false,
+        data: false,
+      };
     }
   }, []);
 
