@@ -1,5 +1,7 @@
 "use client";
 
+import "reflect-metadata"
+
 import { useMemo, useState } from "react";
 import { ScanQrCode, Banknote } from "lucide-react";
 import { cn } from "@/src/lib/utils";
@@ -11,7 +13,6 @@ import {
   ChronoCardDescription,
   ChronoCardFooter,
   ChronoCardHeader,
-  ChronoCardTitle,
 } from "@chrono/chrono-card.component";
 import ChronoCashInput from "@chrono/chrono-cash-input.component";
 import { ChronoLabel } from "@chrono/chrono-label.component";
@@ -24,8 +25,8 @@ import { useCommonContext } from "@/src/shared/context/common.context";
 import { generatePaymentAction } from "@/src/app/parking/cobro/actions/generate-payment.action";
 import { toast } from "sonner";
 import { ChronoInput } from "@chrono/chrono-input.component";
-import { printPostPaymentInvoiceAction } from "@/src/app/global-actions/printer.actions";
-import { IGeneratePaymentResponseEntity } from "@/domain/index";
+import usePrint from "@/src/shared/hooks/common/use-print.hook";
+import { IGeneratePaymentResponseEntity } from "@/server/domain";
 
 const steps = [
   { id: "method", badge: "1", title: "Método de pago", description: "" },
@@ -46,8 +47,9 @@ type PaymentSectionProps = {
 
 export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   const { validateRaw } = usePaymentContext();
-  const { showYesNoDialog } = UseDialogContext();
+  const { showYesNoDialog, closeDialog } = UseDialogContext();
   const { paymentMethods } = useCommonContext();
+  const { printPostPaymentInvoice } = usePrint();
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [amountReceived, setAmountReceived] = useState("0");
   const [notes, setNotes] = useState("");
@@ -69,12 +71,6 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   const nextStep = () => setCurrentStep((prev) => clampStep(prev + 1));
   const prevStep = () => setCurrentStep((prev) => clampStep(prev - 1));
   const goToStep = (index: number) => setCurrentStep(clampStep(index));
-  const autoAdvanceFromStep = (stepIndex: number) => {
-    setCurrentStep((prev) => {
-      if (prev !== stepIndex) return prev;
-      return clampStep(prev + 1);
-    });
-  };
 
   const handleMethodSelect = (methodId: string) => {
     setSelectedMethod(methodId);
@@ -88,16 +84,23 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
   };
 
   const handlePrintPrompt = async (paymentData: IGeneratePaymentResponseEntity) => {
+    console.log("Prompt de impresión del comprobante", paymentData);
     showYesNoDialog({
       title: "Imprimir comprobante",
       description: "¿Desea imprimir el comprobante de pago?",
       handleYes: async () => {
         if (paymentData) {
-          await printPostPaymentInvoiceAction(paymentData);
+          const success = await printPostPaymentInvoice(paymentData);
+
+          if (!success) {
+            toast.error("Error al imprimir el comprobante", {
+              description: "Intenta nuevamente más tarde desde la sección de pagos.",
+            });
+          }
         }
       },
       handleNo: () => {
-        // No hacer nada si el usuario elige no imprimir
+        closeDialog();
       },
     });
   };

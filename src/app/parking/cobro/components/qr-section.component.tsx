@@ -17,10 +17,11 @@ import {
   ChronoCardTitle,
 } from "@chrono/chrono-card.component";
 
-import { IValidateAmountParamsEntity } from "@/src/domain";
 import { usePaymentContext } from "@/src/shared/context/payment.context";
 import { cn } from "@/src/lib/utils";
 import { useDebouncedCallback } from "use-debounce";
+
+import { IValidateAmountParamsEntity } from "@/server/domain";
 
 type QrSectionProps = {
   className?: string;

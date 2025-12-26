@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { IInOutEntity } from "@/domain/index";
+import { IInOutEntity } from "@/server/domain";
 import { ChronoBadge } from "@chrono/chrono-badge.component";
 import { ChronoSectionLabel } from "@chrono/chrono-section-label.component";
 import { ChronoValue } from "@chrono/chrono-value.component";
