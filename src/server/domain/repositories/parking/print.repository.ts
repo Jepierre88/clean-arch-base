@@ -1,4 +1,5 @@
-import { IPrintRequestEntity } from "@/server/domain/index";
+import { IPrintRequestEntity } from "@/src/client/domain";
+
 export abstract class PrintRepository {
   abstract sendToPrinter(request: IPrintRequestEntity): Promise<boolean>;
 }
