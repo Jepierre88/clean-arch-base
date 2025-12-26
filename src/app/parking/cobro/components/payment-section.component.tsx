@@ -26,7 +26,7 @@ import { generatePaymentAction } from "@/src/app/parking/cobro/actions/generate-
 import { toast } from "sonner";
 import { ChronoInput } from "@chrono/chrono-input.component";
 import usePrint from "@/src/shared/hooks/common/use-print.hook";
-import { IGeneratePaymentResponseEntity } from "@/server/domain";
+import { IGeneratePaymentResponseEntity, IPrintPostPaymentInvoiceParamsEntity } from "@/server/domain";
 
 const steps = [
   { id: "method", badge: "1", title: "Método de pago", description: "" },
@@ -83,8 +83,7 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
     setCurrentStep(0);
   };
 
-  const handlePrintPrompt = async (paymentData: IGeneratePaymentResponseEntity) => {
-    console.log("Prompt de impresión del comprobante", paymentData);
+  const handlePrintPrompt = async (paymentData: IPrintPostPaymentInvoiceParamsEntity) => {
     showYesNoDialog({
       title: "Imprimir comprobante",
       description: "¿Desea imprimir el comprobante de pago?",
@@ -130,7 +129,10 @@ export function PaymentSectionComponent({ className }: PaymentSectionProps) {
     }
 
     toast.success("Pago registrado exitosamente");
-    await handlePrintPrompt(res.data);
+    const dataToPrint: IPrintPostPaymentInvoiceParamsEntity = {
+      ...res.data.data
+    }
+    await handlePrintPrompt(dataToPrint);
     resetPaymentForm();
   };
 

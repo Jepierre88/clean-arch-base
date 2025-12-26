@@ -40,7 +40,6 @@ export class PrintUsecase {
     operations.push({ accion: "text", datos: `Recibido: $${params.amountReceived.toLocaleString()}` });
     operations.push({ accion: "text", datos: `Cambio: $${params.change.toLocaleString()}` });
     operations.push({ accion: "text", datos: "----------------------------------------" });
-    operations.push({ accion: "text", datos: `ID Pago: ${params.paymentId}` });
     operations.push({ accion: "text", datos: "\n\n" });
 
     const printerName = ENVIRONMENT.PRINTER_NAME;

@@ -1,17 +1,16 @@
 'use client'
 
 import { useCallback } from "react";
-import { IGeneratePaymentResponseEntity } from "@/server/domain";
+import { IPrintPostPaymentInvoiceParamsEntity } from "@/server/domain";
 import { PrintUsecase } from "@/client/domain/usecases/printer/print.usecase";
 import { clientContainer } from "@/client/di/container";
-import { toast } from "sonner";
 import IActionResponse from "../../interfaces/generic/action-response";
 
 export default function usePrint() {
-  const printPostPaymentInvoice = useCallback(async (paymentData: IGeneratePaymentResponseEntity): Promise<IActionResponse<boolean>> => {
+  const printPostPaymentInvoice = useCallback(async (paymentData: IPrintPostPaymentInvoiceParamsEntity): Promise<IActionResponse<boolean>> => {
     try {
       const useCase = clientContainer.resolve(PrintUsecase);
-      const result = await useCase.printPostPaymentInvoice(paymentData.data);
+      const result = await useCase.printPostPaymentInvoice(paymentData);
       return {
         success: result,
         data: result,

@@ -1,7 +1,6 @@
-import { LoginRepository } from "@/src/domain/repositories/auth/login.repository";
+import { ILoginParams, ILoginResponse, LoginRepository } from "@/src/server/domain";
 import { AxiosServerInstance } from "../axios-server.intance";
-import { ILoginParams } from "@/src/domain/entities/auth/login-params.entity";
-import { ILoginResponse } from "@/src/domain/entities/auth/login-response.entity";
+
 import { injectable } from "tsyringe";
 
 @injectable()
